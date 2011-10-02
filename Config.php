@@ -2,12 +2,21 @@
 
 
 class Config {
+    private static $instance;
+    
     private $db_hostname="localhost";
     private $db_username='smqdoc';
     private $db_password='sqmdoc';
     private $db_name='smqdoc';
+    private $smtp_username='smqdoc';
+    private $smtp_port='25';
+    private $smtp_host='smtp.gmail.com';
+    private $smtp_password='smqdoc';
+    private $smtp_charset='UTF8';
+    private $smtp_from='smqDoc server';
+    private $email_admin='smqDoc@gmail.com';
+    private $email_developer='smqDoc@gmail.com';
     
-    private static $instance;
     private function __construct() 
     {
         echo 'Я конструктор<br>';
@@ -25,6 +34,7 @@ public static function singleton()
         return self::$instance;
     }
 
+//Db Getters
 public function DbHostName()
 {
     return $this->db_hostname;
@@ -40,6 +50,40 @@ public function DbPassword()
 public function DbName()
 {
     return $this->db_name;
+}
+
+//SMTP Getters
+public function SmtpUserName()
+{
+    return $this->smtp_username;
+}
+public function SmtpPort()
+{
+    return $this->smtp_port;
+}
+public function SmtpHost()
+{
+    return $this->smtp_host;
+}
+public function SmtpPassword()
+{
+    return $this->smtp_password;
+}
+public function SmtpCharset()
+{
+    return $this->smtp_charset;
+}
+public function SmtpFrom()
+{
+    return $this->smtp_from;
+}
+public function EmailAdmin()
+{
+    return $this->email_admin;
+}
+public function EmailDeveloper()
+{
+    return $this->email_developer;
 }
 }
 ?>

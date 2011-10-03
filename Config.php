@@ -5,8 +5,8 @@ class Config {
     private static $instance;
     
     private $db_hostname="localhost";
-    private $db_username='smqdoc';
-    private $db_password='sqmdoc';
+    private $db_username='root';
+    private $db_password='';
     private $db_name='smqdoc';
     private $smtp_username='smqdoc';
     private $smtp_port='25';
@@ -16,10 +16,10 @@ class Config {
     private $smtp_from='smqDoc server';
     private $email_admin='smqDoc@gmail.com';
     private $email_developer='smqDoc@gmail.com';
-    
+    private $errorlog_file='C:\wamp\logs\smqDocLog.txt';
     private function __construct() 
     {
-        echo 'Я конструктор<br>';
+        //echo 'Я конструктор<br>';
     }
     /**
  * @return Config
@@ -84,6 +84,11 @@ public function EmailAdmin()
 public function EmailDeveloper()
 {
     return $this->email_developer;
+}
+
+public function ErrorLogFile()
+{
+    return $this->errorlog_file;
 }
 }
 ?>

@@ -1,26 +1,26 @@
 <?php
 require_once 'Config.php';
-require_once 'SqlHelper.php';
-require_once 'ToolsHelper.php';
+require_once 'Helpers/SqlHelper.php';
+require_once 'Helpers/ToolsHelper.php';
 /*
  * Notification and log class
  */
 class NotificationHelper {
     private static function SaveToLocalOSLog($message)
     {
-        error_log(date("D, d M Y H:i:s")."=> ".$message);
+        error_log(date("d.m.Y h:i:s")."=> ".$message."\n",3,  Config::singleton()->ErrorLogFile());
     }
     public static function SendMail($mail_to,$subject,$message,$headers='')
     {
-        
+        echo "Email sended to ".$mail_to."<br>";
     }
     private static function SendErrorMailToAdmin($subject,$message)
     {
-        self::SendMailToAdmin(Config::singleton()->EmailAdmin(),$subject,$message);
+        self::SendMail(Config::singleton()->EmailAdmin(),$subject,$message);
     }
     private static function SendErrorMailToDeveloper($subject,$message)
     {
-        self::SendMailToAdmin(Config::singleton()->EmailDeveloper(),$subject,$message);
+        self::SendMail(Config::singleton()->EmailDeveloper(),$subject,$message);
     }
     public static function LogWarning($message)
     {
@@ -37,11 +37,11 @@ class NotificationHelper {
         self::SendErrorMailToDeveloper("Critical error in smqDoc", $message);
         self::SendErrorMailToAdmin("Critical error in smqDoc", $message);
     }
-    public static function LogCriticalSQL($message)
+    public static function LogCriticalSqlConnection($message)
     {
         self::SaveToLocalOSLog($message);
-        self::SendErrorMailToDeveloper("Critical error in smqDoc: SQL server", $message);
-        self::SendErrorMailToAdmin("Critical error in smqDoc: SQL server", $message);
+        //self::SendErrorMailToDeveloper("Critical error in smqDoc", $message);
+        self::SendErrorMailToAdmin("Critical error in smqDoc", $message);
     }
 }
 

@@ -8,12 +8,12 @@
         <?php
             require_once 'Helpers/NotificationHelper.php';
 
-            SqlHelper::ExecInsertQuery("INSERT INTO doctemplate_operations (name,code) VALUES('str','str2')");
-            SqlHelper::ExecInsertQuery("INSERT INTO doctemplate_operations (name,code) VALUES('str3','str4')");
-            $arr = SqlHelper::ExecSelectCollectionQuery("Select * from doctemplate_operations");
-            foreach( $arr as $val )
+//            SqlHelper::ExecInsertQuery("INSERT INTO doctemplate_operations (name,code) VALUES('str','str2')");
+//            SqlHelper::ExecInsertQuery("INSERT INTO doctemplate_operations (name,code) VALUES('str3','str4')");
+            $arr = SqlHelper::ExecSelectRowQuery("Select * from doctemplate_operations WHERE id=19");
+            foreach( $arr as $key=>$val )
             {
-                echo "val: ".$val['name'].":".$val['code']."<br>";
+                echo "val: ".$key.":".$val."<br>";
             }
 ?>
     </body>

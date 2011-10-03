@@ -55,10 +55,15 @@ class SqlHelper {
         $sqlCon->close();
         return $retVal;
     }
+    public static function ExecDeleteQuery($query)
+    {
+        ExecUpdateQuery($query);
+    }
     public static function ExecSelectValueQuery($query)
     {
         $retVal=false;
         $sqlCon = self::InitConnection();
+        /* @var $result mysqli_result */
         $result = $sqlCon->query($query);
         if($sqlCon->errno)
             {
@@ -67,10 +72,10 @@ class SqlHelper {
             }
             else
             {
-                if(isset($result[0]))
-                    $retVal = $result[0];                               
-            }
-            
+                $resRow = $result->fetch_row();
+                if(isset($resRow[0]))
+                    $retVal = $resRow[0];                               
+            }  
         $sqlCon->close();
         return $retVal;
     }
@@ -79,6 +84,7 @@ class SqlHelper {
     {
         $retVal=false;
         $sqlCon = self::InitConnection();
+        /* @var $result mysqli_result */
         $result = $sqlCon->query($query);
         if($sqlCon->errno)
             {
@@ -87,8 +93,9 @@ class SqlHelper {
             }
             else
             {
-                if(isset($result[0]) && count($result[0]) > 1 )
-                    $retVal = $result[0];                               
+                $resRow = $result->fetch_all(MYSQLI_ASSOC);
+                if($result->num_rows)
+                    $retVal = $resRow[0];                              
             }
             
         $sqlCon->close();
@@ -99,6 +106,7 @@ class SqlHelper {
     {
         $retVal=false;
         $sqlCon = self::InitConnection();
+        /* @var $result mysqli_result */
         $result = $sqlCon->query($query);
         if($sqlCon->errno)
             {
@@ -107,19 +115,9 @@ class SqlHelper {
             }
             else
             {
-                if(count($result) > 0 )
-                {
-                    //$result->
-                    $i=0;
-                    foreach($result as $value)
-                    {
-                        $retVal[$i] = $value;
-                        $i++;
-                    }
-                }
-                        
+
+                    $retVal = $result->fetch_all(MYSQLI_ASSOC);
             }
-            
         $sqlCon->close();
         return $retVal;
     }

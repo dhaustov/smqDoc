@@ -8,14 +8,14 @@ class Config {
     private $db_username='root';
     private $db_password='';
     private $db_name='smqdoc';
-    private $smtp_username='smqdoc';
-    private $smtp_port='25';
-    private $smtp_host='smtp.gmail.com';
-    private $smtp_password='smqdoc';
+    private $smtp_username='gimn62@list.ru';
+    private $smtp_port='2525';
+    private $smtp_host='smtp.list.ru';
+    private $smtp_password='CA464610';
     private $smtp_charset='UTF8';
     private $smtp_from='smqDoc server';
-    private $email_admin='smqDoc@gmail.com';
-    private $email_developer='smqDoc@gmail.com';
+    private $email_admin='gimn62@list.ru';
+    private $email_developer='gimn62@list.ru';
     private $errorlog_file='C:\wamp\logs\smqDocLog.txt';
     private function __construct() 
     {

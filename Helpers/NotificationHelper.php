@@ -13,6 +13,8 @@ class NotificationHelper {
     
     private static function server_parse($socket, $response, $line = __LINE__) 
     {
+        if(!isset($server_response))
+            $server_response = "";
         while (substr($server_response, 3, 1) != ' ') 
                 {
                 if (!($server_response = fgets($socket, 256))) 

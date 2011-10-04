@@ -17,6 +17,7 @@ class Config {
     private $email_admin='gimn62@list.ru';
     private $email_developer='gimn62@list.ru';
     private $errorlog_file='C:\wamp\logs\smqDocLog.txt';
+    private $errorlog_level=0;
     private function __construct() 
     {
         //echo 'Я конструктор<br>';
@@ -89,6 +90,10 @@ public function EmailDeveloper()
 public function ErrorLogFile()
 {
     return $this->errorlog_file;
+}
+public function ErrorLogLevel()
+{
+    return $this->errorlog_level;
 }
 }
 ?>

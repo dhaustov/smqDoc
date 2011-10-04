@@ -2,6 +2,7 @@
 require_once 'Config.php';
 require_once 'Helpers/SqlHelper.php';
 require_once 'Helpers/ToolsHelper.php';
+require_once 'Enums/EnLogEventType.php';
 /*
  * Notification and log class
  */
@@ -109,15 +110,17 @@ class NotificationHelper {
     }
     public static function LogWarning($message)
     {
-        //add sql log warning code
+        if(Config::singleton()->ErrorLogLevel() <= EnLogEventType::WARNING)
+            SqlHelper::ExecInsertQuery("INSERT INTO eventlog ( EventCode, EventTime, EventType) VALUES ('$message', NOW(),'".EnLogEventType::WARNING."' )");
     }
     public static function LogInformation($message)
     {
-        //add sql log information code
+        if(Config::singleton()->ErrorLogLevel() <= EnLogEventType::INFORMATION)
+        SqlHelper::ExecInsertQuery("INSERT INTO eventlog ( EventCode, EventTime, EventType) VALUES ('$message', NOW(),'".EnLogEventType::INFORMATION."' )");
     }
     public static function LogCritical($message)
     {
-        //add sql log CRITICAL code
+        SqlHelper::ExecInsertQuery("INSERT INTO eventlog ( EventCode, EventTime, EventType) VALUES ('$message', NOW(),'".EnLogEventType::CRITICAL."' )");
         self::SaveToLocalOSLog($message);
         self::SendErrorMailToDeveloper("Critical error in smqDoc", $message);
         self::SendErrorMailToAdmin("Critical error in smqDoc", $message);

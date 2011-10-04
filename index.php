@@ -8,7 +8,9 @@
         <?php
             require_once 'Helpers/NotificationHelper.php';
 
-            echo  NotificationHelper::SendErrorMailToDeveloper("Test message2", "message2222");
+            echo  NotificationHelper::LogInformation("info");
+            echo  NotificationHelper::LogWarning("warning");
+            echo  NotificationHelper::LogCritical("Critical");
     
 ?>
     </body>

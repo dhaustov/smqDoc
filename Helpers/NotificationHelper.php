@@ -1,7 +1,4 @@
 <?php
-//require_once 'Config.php';
-//require_once 'Helpers/SqlHelper.php';
-//require_once 'Helpers/ToolsHelper.php';
 /*
  * Notification and log class
  */

@@ -6,7 +6,7 @@ class Config {
     
     private $db_hostname="localhost";
     private $db_username='root';
-    private $db_password='root';
+    private $db_password='';
     private $db_name='smqdoc';
     private $smtp_username='gimn62@list.ru';
     private $smtp_port='2525';
@@ -16,7 +16,7 @@ class Config {
     private $smtp_from='smqDoc server';
     private $email_admin='';
     private $email_developer='';
-    private $errorlog_file='C:\appserv\smqDocLog.txt';
+    private $errorlog_file='C:\wamp\smqDocLog.txt';
     private function __construct() 
     {
         //echo 'Я конструктор<br>';

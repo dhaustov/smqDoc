@@ -19,6 +19,13 @@ class SqlHelper {
             return $mysqli;
     }
     
+    public static function Real_escape_string($str)
+    {
+        $sqlCon = self::InitConnection();
+        return $sqlCon->real_escape_string($str);
+    }
+
+
     public static function ExecInsertQuery($query)
     {
         $retVal=false;
@@ -26,7 +33,7 @@ class SqlHelper {
         $sqlCon->query($query);
         if($sqlCon->errno>0)
             {
-                NotificationHelper::LogCritical($sqlCon->real_escape_string("Error executing query: ".$query." Error: ".$sqlCon->error));
+                NotificationHelper::LogCritical("Error executing query: ".$query." Error: ".$sqlCon->error);
                 ToolsHelper::RedirectToErrorPage();
             }
             else
@@ -44,7 +51,7 @@ class SqlHelper {
         $sqlCon->query($query);
         if($sqlCon->errno>0)
             {
-                NotificationHelper::LogCritical($sqlCon->real_escape_string("Error executing query: ".$query." Error: ".$sqlCon->error));
+                NotificationHelper::LogCritical("Error executing query: ".$query." Error: ".$sqlCon->error);
                 ToolsHelper::RedirectToErrorPage();
             }
             else
@@ -67,7 +74,7 @@ class SqlHelper {
         $result = $sqlCon->query($query);
         if($sqlCon->errno>0)
             {
-                NotificationHelper::LogCritical($sqlCon->real_escape_string("Error executing query: ".$query." Error: ".$sqlCon->error));
+                NotificationHelper::LogCritical("Error executing query: ".$query." Error: ".$sqlCon->error);
                 ToolsHelper::RedirectToErrorPage();
             }
             else
@@ -88,21 +95,21 @@ class SqlHelper {
         $result = $sqlCon->query($query);
         if($sqlCon->errno>0)
             {
-                NotificationHelper::LogCritical($sqlCon->real_escape_string("Error executing query: ".$query." Error: ".$sqlCon->error));
+                NotificationHelper::LogCritical("Error executing query: ".$query." Error: ".$sqlCon->error);
                 ToolsHelper::RedirectToErrorPage();
             }
             else
             {
-                //$resRow = $result->fetch_all(MYSQLI_ASSOC);
-//                if($result->num_rows)
-//                    $retVal = $resRow[0];                              
-                $row = array();
-                //while($f = $result->fetch_assoc())
-                //    $row[] = $f;
-                while ($row = $result->fetch_assoc())
-                    $retVal = $row;
-                
-                echo "retval login - ".$retval['login'].$retval['id'];
+                $resRow = $result->fetch_all(MYSQLI_ASSOC);
+                if($result->num_rows)
+                    $retVal = $resRow[0];                              
+//                $row = array();
+//                //while($f = $result->fetch_assoc())
+//                //    $row[] = $f;
+//                while ($row = $result->fetch_assoc())
+//                    $retVal = $row;
+//                
+//                echo "retval login - ".$retval['login'].$retval['id'];
             }
             
         $sqlCon->close();
@@ -117,7 +124,7 @@ class SqlHelper {
         $result = $sqlCon->query($query);
         if($sqlCon->errno>0)
             {
-                NotificationHelper::LogCritical($sqlCon->real_escape_string("Error executing query: ".$query." Error: ".$sqlCon->error));
+                NotificationHelper::LogCritical("Error executing query: ".$query." Error: ".$sqlCon->error);
                 ToolsHelper::RedirectToErrorPage();
             }
             else

@@ -40,6 +40,10 @@ class ToolsHelper {
         //обрабатываем переводы строки.
         return $input;
     }
+    public static function RealEscapeString($str)
+    {
+        return SqlHelper::Real_escape_string($str);
+    }
 }
 
 ?>

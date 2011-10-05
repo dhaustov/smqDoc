@@ -110,16 +110,16 @@ class NotificationHelper {
     public static function LogWarning($message)
     {
         if(Config::singleton()->ErrorLogLevel() <= EnLogEventType::WARNING)
-            SqlHelper::ExecInsertQuery("INSERT INTO eventlog ( EventCode, EventTime, EventType) VALUES ('$message', NOW(),'".EnLogEventType::WARNING."' )");
+            SqlHelper::ExecInsertQuery("INSERT INTO eventlog ( EventCode, EventTime, EventType) VALUES ('".ToolsHelper::RealEscapeString($message)."', NOW(),'".EnLogEventType::WARNING."' )");
     }
     public static function LogInformation($message)
     {
         if(Config::singleton()->ErrorLogLevel() <= EnLogEventType::INFORMATION)
-        SqlHelper::ExecInsertQuery("INSERT INTO eventlog ( EventCode, EventTime, EventType) VALUES ('$message', NOW(),'".EnLogEventType::INFORMATION."' )");
+        SqlHelper::ExecInsertQuery("INSERT INTO eventlog ( EventCode, EventTime, EventType) VALUES ('".ToolsHelper::RealEscapeString($message)."', NOW(),'".EnLogEventType::INFORMATION."' )");
     }
     public static function LogCritical($message)
     {
-        SqlHelper::ExecInsertQuery("INSERT INTO eventlog ( EventCode, EventTime, EventType) VALUES ('$message', NOW(),'".EnLogEventType::CRITICAL."' )");
+        SqlHelper::ExecInsertQuery("INSERT INTO eventlog ( EventCode, EventTime, EventType) VALUES ('".ToolsHelper::RealEscapeString($message)."', NOW(),'".EnLogEventType::CRITICAL."' )");
         self::SaveToLocalOSLog($message);
         self::SendErrorMailToDeveloper("Critical error in smqDoc", $message);
         self::SendErrorMailToAdmin("Critical error in smqDoc", $message);

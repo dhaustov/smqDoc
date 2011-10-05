@@ -1,18 +1,18 @@
 <?php
-require_once 'Helpers/NotificationHelper.php';
+//require_once 'Helpers/NotificationHelper.php';
 
 class SqlHelper {
     /**
  * @return mysqli
  */
     private static function InitConnection()
-    {
+    {            
             $conf = Config::singleton();
             $mysqli = new mysqli($conf->DbHostName(),$conf->DbUserName(),
                     $conf->DbPassword(),$conf->DbName());
             if(mysqli_connect_errno())
             {
-                NotificationHelper::LogCriticalSqlConnection("Connection to Sql server Error: ".mysqli_error());
+                NotificationHelper::LogCriticalSqlConnection("Connection to Sql server Error: ".mysqli_error($mysqli));
                 ToolsHelper::RedirectToErrorPage();
                 return false;
             }
@@ -26,7 +26,7 @@ class SqlHelper {
         $sqlCon->query($query);
         if($sqlCon->errno)
             {
-                NotificationHelper::LogCritical("Error executing query: ".$query." Error: ".mysqli_error());
+                NotificationHelper::LogCritical("Error executing query: ".$query." Error: ".mysqli_error($sqlCon));
                 ToolsHelper::RedirectToErrorPage();
             }
             else
@@ -44,7 +44,7 @@ class SqlHelper {
         $sqlCon->query($query);
         if($sqlCon->errno)
             {
-                NotificationHelper::LogCritical("Error executing query: ".$query." Error: ".mysqli_error());
+                NotificationHelper::LogCritical("Error executing query: ".$query." Error: ".mysqli_error($sqlCon));
                 ToolsHelper::RedirectToErrorPage();
             }
             else
@@ -67,7 +67,7 @@ class SqlHelper {
         $result = $sqlCon->query($query);
         if($sqlCon->errno)
             {
-                NotificationHelper::LogCritical("Error executing query: ".$query." Error: ".mysqli_error());
+                NotificationHelper::LogCritical("Error executing query: ".$query." Error: ".mysqli_error($sqlCon));
                 ToolsHelper::RedirectToErrorPage();
             }
             else
@@ -88,14 +88,21 @@ class SqlHelper {
         $result = $sqlCon->query($query);
         if($sqlCon->errno)
             {
-                NotificationHelper::LogCritical("Error executing query: ".$query." Error: ".mysqli_error());
+                NotificationHelper::LogCritical("Error executing query: ".$query." Error: ".mysqli_error($sqlCon));
                 ToolsHelper::RedirectToErrorPage();
             }
             else
             {
-                $resRow = $result->fetch_all(MYSQLI_ASSOC);
-                if($result->num_rows)
-                    $retVal = $resRow[0];                              
+                //$resRow = $result->fetch_all(MYSQLI_ASSOC);
+//                if($result->num_rows)
+//                    $retVal = $resRow[0];                              
+                $row = array();
+                //while($f = $result->fetch_assoc())
+                //    $row[] = $f;
+                while ($row = $result->fetch_assoc())
+                    $retVal = $row;
+                
+                echo "retval login - ".$retval['login'].$retval['id'];
             }
             
         $sqlCon->close();
@@ -110,7 +117,7 @@ class SqlHelper {
         $result = $sqlCon->query($query);
         if($sqlCon->errno)
             {
-                NotificationHelper::LogCritical("Error executing query: ".$query." Error: ".mysqli_error());
+                NotificationHelper::LogCritical("Error executing query: ".$query." Error: ".mysqli_error($sqlCon));
                 ToolsHelper::RedirectToErrorPage();
             }
             else

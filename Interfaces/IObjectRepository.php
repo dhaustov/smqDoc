@@ -2,17 +2,16 @@
 
 interface IObjectRepository
 {
-    function Save($obj) 
-    { }
+    function Save($obj);
     
-    function Delete($obj)
-    { }
+    function Delete($obj);
     
-    function GetByID($id) 
-    { }
     
-    function CheckForExists($obj)
-    { }    
+    function GetByID($id);
+    
+    
+    function CheckForExists($obj);
+    
 }
 
 ?>

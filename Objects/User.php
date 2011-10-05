@@ -6,19 +6,19 @@
  * @author Dmitry G. Haustov
  */
 class UserAccount {
-    public $Id;
-    public $Login;
-    public $Password;
-    public $Status;    
-    public $Name;
-    public $Surname;
-    public $MiddleName;
-    public $LastAccess;
+    var $Id;
+    var $Login;
+    var $Password;
+    var $Status;    
+    var $Name;
+    var $Surname;
+    var $MiddleName;
+    var $LastAccess;
             
-    public function __construct($_id, $_login, $_password, 
-                                $_status, $_name, $_surname, 
-                                $_middlename, $_lastaccess = null)
-    {
+    function __construct($_login = null, $_password = null, 
+                                $_status = null, $_name = null, $_surname = null, 
+                                $_middlename = null, $_id = null ,$_lastaccess = null)
+    {        
         $this->Id = $_id;
         $this->Login = $_login;
         $this->Password = $_password;
@@ -27,7 +27,11 @@ class UserAccount {
         $this->Surname = $_surname;
         $this->MiddleName = $_middlename;
         $this->LastAccess = $_lastaccess;
-    }
+    }    
+
+    //function __construct() {}
+    
+    
 }
 
 ?>

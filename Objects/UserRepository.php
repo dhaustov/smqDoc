@@ -1,8 +1,8 @@
 <?php
-require_once ("../Interfaces/IObjectRepository.php");
-require_once ("../Helpers/ToolsHelper.php");
-require_once ("../Helpers/SqlHelper.php");
-require_once ("User.php");
+//require_once 'User.php';
+//require_once '../Helpers/ToolsHelper.php';
+//require_once '../Helpers/SqlHelper.php';
+//require_once '../Interfaces/IObjectRepository.php';
 
 class UserRepository implements IObjectRepository
 {        
@@ -22,12 +22,13 @@ class UserRepository implements IObjectRepository
                               name = '".ToolsHelper::CleanInputString($user->Name)."',
                               surname = '".ToolsHelper::CleanInputString($user->Surname)."',
                               middlename = '".ToolsHelper::CleanInputString($user->MiddleName)."'
-                          ";
+                          where id =". intval($user->id);
+                
                 $numRows = SqlHelper::ExecUpdateQuery($query);
                 
                 if(!$numRows)
                 {
-                    $this->error = "При сохранении редактируемого пользователя произошла ошибка!";
+                    $this->error = "При обновлении пользователя произошла ошибка!";
                     return false;
                 }
                 return $user->id;
@@ -46,14 +47,14 @@ class UserRepository implements IObjectRepository
                                            '".ToolsHelper::CleanInputString($user->Status)."',
                                            '".ToolsHelper::CleanInputString($user->Name)."',
                                            '".ToolsHelper::CleanInputString($user->Surname)."',
-                                           '".ToolsHelper::CleanInputString($user->MiddleName)."',
+                                           '".ToolsHelper::CleanInputString($user->MiddleName)."'
                                           )";
 
             $newID = SqlHelper::ExecInsertQuery($query);
 
             if(!$newID)
             {
-                $this->error = "При сохранении нового пользователя произошла ошибюка!";
+                $this->error = "При сохранении пользователя возникла ошибка!";
                 return false;
             }
             return $newID;
@@ -61,22 +62,93 @@ class UserRepository implements IObjectRepository
     }
     
     public function Delete($obj)
-    { }
-    
+    { 
+        /* @var $user UserAccount */
+        $user = $obj;
+        $query = "update user_accounts set status = 0 where id =". intval($user->id);
+        $rowNum = SqlHelper::ExecDeleteQuery($query);
+        
+        if (!$rowNum)
+        {
+            $this->error = "При удалении пользователя возникла ошибка!";
+            return false;
+        }
+        return $rowNum;
+    }
+   
     public function GetByID($id) 
-    { }
+    { 
+        /* @var $user UserAccount */
+        $user = new UserAccount();
+        
+        $query = "select * from user_accounts where id = ". intval($id);
+        $obj = SqlHelper::ExecSelectRowQuery($query);
+        
+        if ($obj)
+        {
+            /* @var $user UserAccount */
+            $user->Id = $obj['id'];
+            $user->Login = $obj['login'];
+            $user->Password = $obj['password'];
+            $user->Status = $obj['status'];
+            $user->Name = $obj['name'];
+            $user->Surname = $obj['surname'];
+            $user->MiddleName = $obj['middlename'];
+            $user->LastAccess = $obj['lastaccess'];            
+            
+            return $user;
+        }
+        else 
+            return false;
+        
+    }
     
     public function CheckForExists($obj)
-    { }  
+    { 
+        /* @var $user UserAccount */
+        $user = $obj;
+        
+        $query = "select id from user_accounts where login = '". ToolsHelper::CleanInputString($user->Login)."'";
+        $obj = SqlHelper::ExecSelectValueQuery($query);
+        
+        if ($obj)
+            return true;
+        else 
+            return false;
+        
+    }  
     
     //Additional Public Methods
-    
-    
-    //System Methods
-    private function IsValid($obj)
+    public function GetByLogin($login)
     {
-        //add validation logic here
-        return true;
+        /* @var $user UserAccount */
+        $user = new UserAccount;
+        
+        $query = "select * from user_accounts where login = '". ToolsHelper::CleanInputString($login)."'";
+        $obj = SqlHelper::ExecSelectRowQuery($query);
+        
+        if ($obj)
+        {
+            /* @var $user UserAccount */
+            $user->Id = $obj['id'];
+            $user->Login = $obj['login'];
+            $user->Password = $obj['password'];
+            $user->Status = $obj['status'];
+            $user->Name = $obj['name'];
+            $user->Surname = $obj['surname'];
+            $user->MiddleName = $obj['middlename'];
+            $user->LastAccess = $obj['lastaccess'];            
+            
+            return $user;
+        }
+        else 
+            return false;
+        
+    }
+    
+    public function GetError()
+    {
+        return $this->error;
     }
 }
 

@@ -14,4 +14,7 @@ require_once 'Objects/User.php';
 
 //Repositories
 require_once 'Objects/UserRepository.php';
+
+//Enums
+require_once 'Enums/Enums.php';
 ?>

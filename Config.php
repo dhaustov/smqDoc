@@ -90,5 +90,9 @@ public function ErrorLogFile()
 {
     return $this->errorlog_file;
 }
+public function ErrorLogLevel()
+{
+    return $this->errorlog_level;
+}
 }
 ?>

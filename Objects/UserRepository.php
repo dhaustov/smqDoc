@@ -1,34 +1,39 @@
 <?php
-//require_once 'User.php';
-//require_once '../Helpers/ToolsHelper.php';
-//require_once '../Helpers/SqlHelper.php';
-//require_once '../Interfaces/IObjectRepository.php';
 
+/**
+ * Class for User Repository
+ *
+ * @author Dmitry G. Haustov
+ */
 class UserRepository implements IObjectRepository
 {        
     private $error;
     
-    //IObjectRepository Methods
-    public function Save($obj)     
+    /*
+     * IObjectRepository Methods
+     */
+    
+    public function Save($obj)  
     { 
         /* @var $user UserAccount */
         $user = $obj;
         
-        if( $user->id > 0 ) //Editing Existing User
+        if( $user->id > 0 ) //Updating Existing User
         {
                 $query = "update user_accounts set 
-                              login = '".ToolsHelper::CleanInputString($user->Login)."',
-                              status = '".ToolsHelper::CleanInputString($user->Status)."', 
-                              name = '".ToolsHelper::CleanInputString($user->Name)."',
-                              surname = '".ToolsHelper::CleanInputString($user->Surname)."',
-                              middlename = '".ToolsHelper::CleanInputString($user->MiddleName)."'
+                              login = '".ToolsHelper::CleanInputString($user->login)."',
+                              status = '".ToolsHelper::CleanInputString($user->status)."', 
+                              name = '".ToolsHelper::CleanInputString($user->name)."',
+                              surName = '".ToolsHelper::CleanInputString($user->surName)."',
+                              middleName = '".ToolsHelper::CleanInputString($user->middleName)."'
                           where id =". intval($user->id);
                 
                 $numRows = SqlHelper::ExecUpdateQuery($query);
-                
+                                
                 if(!$numRows)
                 {
                     $this->error = "При обновлении пользователя произошла ошибка!";
+                    NotificationHelper::LogCritical("Error in class: '".__CLASS__."' method: '".__METHOD__."' query: '$query'");
                     return false;
                 }
                 return $user->id;
@@ -41,23 +46,24 @@ class UserRepository implements IObjectRepository
                 return false;
             }
 
-            $query = "insert into user_accounts (login, password, status, name, surname, middlename) 
-                                  values ( '".ToolsHelper::CleanInputString($user->Login)."',
-                                           '".ToolsHelper::CleanInputString($user->Password)."',
-                                           '".ToolsHelper::CleanInputString($user->Status)."',
-                                           '".ToolsHelper::CleanInputString($user->Name)."',
-                                           '".ToolsHelper::CleanInputString($user->Surname)."',
-                                           '".ToolsHelper::CleanInputString($user->MiddleName)."'
+            $query = "insert into user_accounts (login, password, status, name, surName, middleName) 
+                                  values ( '".ToolsHelper::CleanInputString($user->login)."',
+                                           '".ToolsHelper::CleanInputString($user->password)."',
+                                           '".ToolsHelper::CleanInputString($user->status)."',
+                                           '".ToolsHelper::CleanInputString($user->name)."',
+                                           '".ToolsHelper::CleanInputString($user->surName)."',
+                                           '".ToolsHelper::CleanInputString($user->middleName)."'
                                           )";
 
-            $newID = SqlHelper::ExecInsertQuery($query);
+            $newid = SqlHelper::ExecInsertQuery($query);
 
-            if(!$newID)
+            if(!$newid)
             {
                 $this->error = "При сохранении пользователя возникла ошибка!";
+                NotificationHelper::LogCritical("Error in class: '".__CLASS__."' method: '".__METHOD__."' query: '$query'");
                 return false;
             }
-            return $newID;
+            return $newid;
         }                
     }
     
@@ -65,36 +71,37 @@ class UserRepository implements IObjectRepository
     { 
         /* @var $user UserAccount */
         $user = $obj;
-        $query = "update user_accounts set status = 0 where id =". intval($user->id);
+        $query = "update user_accounts set status = ".UserStatus::DELETED." where id =". intval($user->id);
         $rowNum = SqlHelper::ExecDeleteQuery($query);
-        
+                
         if (!$rowNum)
         {
             $this->error = "При удалении пользователя возникла ошибка!";
+            NotificationHelper::LogCritical("Error in class: '".__CLASS__."' method: '".__METHOD__."' query: '$query'");
             return false;
         }
         return $rowNum;
     }
    
-    public function GetByID($id) 
+    public function GetById($id) 
     { 
         /* @var $user UserAccount */
         $user = new UserAccount();
         
-        $query = "select * from user_accounts where id = ". intval($id);
+        $query = "select id, login,password,status, name,surname,middlename,lastaccess from user_accounts where id = ". intval($id);
         $obj = SqlHelper::ExecSelectRowQuery($query);
         
         if ($obj)
         {
             /* @var $user UserAccount */
-            $user->Id = $obj['id'];
-            $user->Login = $obj['login'];
-            $user->Password = $obj['password'];
-            $user->Status = $obj['status'];
-            $user->Name = $obj['name'];
-            $user->Surname = $obj['surname'];
-            $user->MiddleName = $obj['middlename'];
-            $user->LastAccess = $obj['lastaccess'];            
+            $user->id = $obj['id'];
+            $user->login = $obj['login'];
+            $user->password = $obj['password'];
+            $user->status = $obj['status'];
+            $user->name = $obj['name'];
+            $user->surName = $obj['surName'];
+            $user->middleName = $obj['middleName'];
+            $user->lastAccess = $obj['lastAccess'];            
             
             return $user;
         }
@@ -108,7 +115,7 @@ class UserRepository implements IObjectRepository
         /* @var $user UserAccount */
         $user = $obj;
         
-        $query = "select id from user_accounts where login = '". ToolsHelper::CleanInputString($user->Login)."'";
+        $query = "select id from user_accounts where login = '". ToolsHelper::CleanInputString($user->login)."'";
         $obj = SqlHelper::ExecSelectValueQuery($query);
         
         if ($obj)
@@ -118,32 +125,64 @@ class UserRepository implements IObjectRepository
         
     }  
     
-    //Additional Public Methods
+    /*
+     * Additional Methods
+     */
     public function GetByLogin($login)
     {
         /* @var $user UserAccount */
         $user = new UserAccount;
         
-        $query = "select * from user_accounts where login = '". ToolsHelper::CleanInputString($login)."'";
-        $obj = SqlHelper::ExecSelectRowQuery($query);
-        
+        $query = "select id,login,password,status,name,surName,middleName, lastAccess from user_accounts where login = '". ToolsHelper::CleanInputString($login)."'";
+        $obj = SqlHelper::ExecSelectRowQuery($query);                
         if ($obj)
         {
             /* @var $user UserAccount */
-            $user->Id = $obj['id'];
-            $user->Login = $obj['login'];
-            $user->Password = $obj['password'];
-            $user->Status = $obj['status'];
-            $user->Name = $obj['name'];
-            $user->Surname = $obj['surname'];
-            $user->MiddleName = $obj['middlename'];
-            $user->LastAccess = $obj['lastaccess'];            
-            
+            $user->id = $obj['id'];
+            $user->login = $obj['login'];
+            $user->password = $obj['password'];
+            $user->status = $obj['status'];
+            $user->name = $obj['name'];
+            $user->surName = $obj['surName'];
+            $user->middleName = $obj['middleName'];
+            $user->lastAccess = $obj['lastAccess'];                                    
             return $user;
         }
         else 
             return false;
         
+    }
+    
+    public function GetList($status = null)
+    {
+        $retArr = false;
+        $query = "select id,login,password,status,name,surname,middlename,lastaccess from user_accounts ";
+        if($type)
+            $query.=" where status = $type";
+        $res = SqlHelper::ExecSelectCollectionQuery($query);
+        $i=0;
+        foreach($res as $row)
+        {
+            $user = new UserAccount(                        
+                        $row['login'],
+                        $row['password'],
+                        $row['status'],
+                        $row['name'],
+                        $row['surname'],
+                        $row['middlename'],
+                        $row['id'],
+                        $row['lastaccess']
+                    );
+            $retArr[$i] = $user;
+            $i++;
+        }
+        if($retArr)
+            return $retArr;
+        else
+        {
+            $this->error = "Пользователей не найдено";
+            return false;
+        }        
     }
     
     public function GetError()

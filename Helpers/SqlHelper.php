@@ -48,7 +48,7 @@ class SqlHelper {
         $retVal=false;
         $sqlCon = self::InitConnection();
         $sqlCon->query($query);
-        if($sqlCon->errno>0)
+        if($sqlCon->errno > 0)
             {
                 NotificationHelper::LogCritical("Error executing query: ".$query." Error: ".$sqlCon->error);
                 ToolsHelper::RedirectToErrorPage();
@@ -56,6 +56,8 @@ class SqlHelper {
             else
             {
                 $retVal = $sqlCon->affected_rows;
+                echo "retval updated rows:".$retVal." for query $query<br />";
+                
             }
             
         $sqlCon->close();
@@ -63,7 +65,8 @@ class SqlHelper {
     }
     public static function ExecDeleteQuery($query)
     {
-        ExecUpdateQuery($query);
+        $res =  self::ExecUpdateQuery($query);        
+        return $res;
     }
     public static function ExecSelectValueQuery($query)
     {
@@ -99,16 +102,9 @@ class SqlHelper {
             }
             else
             {
-                $resRow = $result->fetch_all(MYSQLI_ASSOC);
-                if($result->num_rows)
-                    $retVal = $resRow[0];                              
-//                $row = array();
-//                //while($f = $result->fetch_assoc())
-//                //    $row[] = $f;
-//                while ($row = $result->fetch_assoc())
-//                    $retVal = $row;
-//                
-//                echo "retval login - ".$retval['login'].$retval['id'];
+                $resRow = $result->fetch_assoc();                
+                    $retVal = $resRow;   
+                    //echo "count resRow: ".count($resRow)."<br />";
             }
             
         $sqlCon->close();
@@ -128,8 +124,13 @@ class SqlHelper {
             }
             else
             {
-
-                    $retVal = $result->fetch_all(MYSQLI_ASSOC);
+                //$retVal = $result->fetch_all(MYSQLI_ASSOC);
+                    $i=0;
+                    while($row = $result->fetch_assoc())
+                    {
+                        $retVal[$i] = $row;
+                        $i++;
+                    }
             }
         $sqlCon->close();
         return $retVal;

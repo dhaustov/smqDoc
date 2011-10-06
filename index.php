@@ -8,7 +8,7 @@
         <?php
            require_once 'Init.php';
         ?>
-        <a href="./dimonTest.php" title="Дмитрий">Дмитрий</a><br>
+        <a href="./dt.php" title="Дмитрий">Дмитрий</a><br>
         <a href="./pavelTest.php" title="Павел">Павел</a>
     </body>
 </html>

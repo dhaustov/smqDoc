@@ -12,4 +12,16 @@ class EnLogEventType {
     const CRITICAL = 2;
     
 }
+
+/**
+ * User account statuses
+ *
+ * @author Dmitry G. Haustov
+ */
+class UserStatus 
+{
+    const DELETED = 0;
+    const ACTIVE = 1;
+    const ADMIN = 2;
+}
 ?>

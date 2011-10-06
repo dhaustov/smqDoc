@@ -6,32 +6,30 @@
  * @author Dmitry G. Haustov
  */
 class UserAccount {
-    var $Id;
-    var $Login;
-    var $Password;
-    var $Status;    
-    var $Name;
-    var $Surname;
-    var $MiddleName;
-    var $LastAccess;
+    var $id;
+    var $login;
+    var $password;
+    var $status;    
+    var $name;
+    var $surName;
+    var $middleName;
+    var $lastAccess;
             
     function __construct($_login = null, $_password = null, 
-                                $_status = null, $_name = null, $_surname = null, 
-                                $_middlename = null, $_id = null ,$_lastaccess = null)
+                                $_status = null, $_name = null, $_surName = null, 
+                                $_middleName = null, $_id = null ,$_lastAccess = null)
     {        
-        $this->Id = $_id;
-        $this->Login = $_login;
-        $this->Password = $_password;
-        $this->Status = $_status;
-        $this->Name = $_name;
-        $this->Surname = $_surname;
-        $this->MiddleName = $_middlename;
-        $this->LastAccess = $_lastaccess;
+        $this->id = $_id;
+        $this->login = $_login;
+        $this->password = $_password;
+        $this->status = $_status;
+        $this->name = $_name;
+        $this->surName = $_surName;
+        $this->middleName = $_middleName;
+        $this->lastAccess = $_lastAccess;
     }    
 
-    //function __construct() {}
-    
-    
+    //function __construct() {}        
 }
 
 ?>

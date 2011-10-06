@@ -8,9 +8,11 @@
 class DocTemplate {
     var $Id;
     var $Name;
-    public function __construct($_name=null,$_id=null) {
+    var $fieldsList;
+    public function __construct($_name=null,$_id=null,$_fieldsList=null) {
         $this->Id = $_id;
         $this->Name = $_name;
+        $this->fieldsList = $_fieldsList;
     }
 }
 

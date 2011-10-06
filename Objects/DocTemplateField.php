@@ -8,10 +8,12 @@ class DocTemplateField {
     var $Id;
     var $Name;
     var $IsCalculated;
+    /* @var $FieldType DocTemplateFieldType */
     var $FieldType;
     var $IsRestricted;
     var $MinVal;
     var $MaxVal;
+    /* @var $Operation DocTemplateOperation */
     var $Operation;
     
     public function __construct($_name=null,$_isCalculated=null,$_fieldType,

@@ -1,10 +1,10 @@
 <?php
 /**
- * Description of DocTemplateOperations
+ * Description of DocTemplateOperation
  *
  * @author Павел
  */
-class DocTemplateOperations {
+class DocTemplateOperation {
     var $Id;
     var $Name;
     var $Code;

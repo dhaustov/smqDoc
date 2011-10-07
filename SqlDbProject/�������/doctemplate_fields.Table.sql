@@ -12,17 +12,17 @@ CREATE TABLE doctemplate_fields (
   IdOperation INT(11) NOT NULL,
   IdDoctemplate INT(11) NOT NULL,
   PRIMARY KEY (Id),
-  UNIQUE INDEX IdDoctemplate (IdDoctemplate),
+  INDEX IdDoctemplate (IdDoctemplate),
   INDEX IdFieldType (IdFieldType),
   INDEX IdOperation (IdOperation),
-  UNIQUE INDEX UK_doctemplate_fields_doctemplateID (IdDoctemplate),
   CONSTRAINT doctemplate_fields_ibfk_1 FOREIGN KEY (IdFieldType)
     REFERENCES doctemplate_fieldtypes(Id) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT doctemplate_fields_ibfk_2 FOREIGN KEY (IdOperation)
-    REFERENCES doctemplate_operations(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    REFERENCES doctemplate_operations(Id) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT FK_doctemplate_fields_doctemplates_id FOREIGN KEY (IdDoctemplate)
     REFERENCES doctemplates(id) ON DELETE RESTRICT ON UPDATE RESTRICT
 )
 ENGINE = INNODB
+AUTO_INCREMENT = 107
 CHARACTER SET utf8
 COLLATE utf8_general_ci;

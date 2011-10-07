@@ -175,6 +175,7 @@ class DocTemplateRepository implements IObjectRepository
     
     function Save($obj)
     {
+        $IdList = "-1";
         if( count($this->docTemplateFieldTypesArr) == 0 )
         {
             $this->LoadDocTemplateFieldTypes();
@@ -183,7 +184,7 @@ class DocTemplateRepository implements IObjectRepository
         {
             $this->LoadDocTemplateOperations();
         }
-        /* @var $docTeml DocTemplate */
+        /* @var $docTempl DocTemplate */
         $docTempl = $obj;
         if($docTempl)
         {
@@ -222,10 +223,11 @@ class DocTemplateRepository implements IObjectRepository
                     $this->error = "При изменении шаблона документа возникла ошибка!";
                     return false;
                 }
+                $IdList+=",'".$field->Id."'";
                }
                else
                {
-                   $prevId = $field->Id;
+                $prevId = $field->Id;
                 $query = "INSERT INTO `".$this->TBL_DOCTEMPLATE_FIELDS."` ( `Name`, `IsCalculated`, `IdFieldType`, `IsRestricted`, `MinVal`, `MaxVal`, `IdOperation`, `IdDocTemplate`) 
                     VALUES ('".$field->Name."','".intval($field->IsCalculated)."','".intval($field->FieldType->Id)."','".intval($field->IsRestricted)."','".
                     $field->MinVal."','".$field->MaxVal."','".intval($field->Operation->Id)."','".$docTempl->Id."')";
@@ -237,7 +239,15 @@ class DocTemplateRepository implements IObjectRepository
                 }
                 unset($docTempl->fieldsList[$prevId]);
                 $docTempl->fieldsList[$field->Id] = $field;
+                
                }
+                $query = "DELETE FROM `".$this->TBL_DOCTEMPLATE_FIELDS."` WHERE `Id` NOT IN (".$IdList.") AND `IdDocTemplate` = '".$docTempl->Id."'";
+                $rowNum = SqlHelper::ExecDeleteQuery($query);
+                if (!$rowNum)
+                {
+                    $this->error = "При изменении полей шаблона документа возникла ошибка!";
+                    return false;
+                }
            }
            return true;
         }
@@ -246,7 +256,7 @@ class DocTemplateRepository implements IObjectRepository
     
     function Delete($obj)
     {
-        /* @var $docTeml DocTemplate */
+        /* @var $docTempl DocTemplate */
         $docTempl = $obj;
         if($docTempl)
         {
@@ -272,17 +282,17 @@ class DocTemplateRepository implements IObjectRepository
         {
             $this->LoadDocTemplateOperations();
         }
-        /* @var $docTeml DocTemplate */
-        $docTeml = new DocTemplate;
+        /* @var $docTempl DocTemplate */
+        $docTempl = new DocTemplate;
         
         $query = "SELECT * FROM `".$this->TBL_DOCTEMPLATES."` WHERE `Id`='".intval($id)."'";
         $row = SqlHelper::ExecSelectRowQuery($query);
         if($row)
         {
-            $docTeml->Id = $row['Id'];
-            $docTeml->Name = $row['Name'];
+            $docTempl->Id = $row['Id'];
+            $docTempl->Name = $row['Name'];
             $query = "SELECT * FROM `".$this->TBL_DOCTEMPLATE_FIELDS."` WHERE `IdDocTemplate`='".
-                    intval($docTeml->Id)."'";
+                    intval($docTempl->Id)."'";
             $datatable = SqlHelper::ExecSelectCollectionQuery($query);
             if($datatable)
             {
@@ -298,9 +308,9 @@ class DocTemplateRepository implements IObjectRepository
                     $fld->MaxVal = intval($row['MaxVal']);
                     $fld->MinVal = intval($row['MinVal']);
                     $fld->Operation = $this->docTemplateOperationsArr[intval($row['IdOperation'])];
-                    $docTeml->fieldsList[$fld->Id] = $fld;
+                    $docTempl->fieldsList[$fld->Id] = $fld;
                 }
-                return $docTeml;
+                return $docTempl;
             }
             else
             {

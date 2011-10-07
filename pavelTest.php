@@ -92,7 +92,7 @@ $docTpl2F3->MinVal  = 10;
 $docTpl2F3->MaxVal = 200;
 $docTpl2->fieldsList[$docTpl2F3->Id] = $docTpl2F3;
 
-$dtpRep->Save($docTpl2);
+if(!$dtpRep->Save($docTpl2))
 
 echo "Get 1 DT from DB<br>";
 /* @var $docTpl1N DocTemplate */

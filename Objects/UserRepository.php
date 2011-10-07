@@ -157,8 +157,8 @@ class UserRepository implements IObjectRepository
     {
         $retArr = false;
         $query = "select id,login,password,status,name,surname,middlename,lastaccess from user_accounts ";
-        if($type)
-            $query.=" where status = $type";
+        if($status)
+            $query.=" where status = $status";
         $res = SqlHelper::ExecSelectCollectionQuery($query);
         $i=0;
         foreach($res as $row)

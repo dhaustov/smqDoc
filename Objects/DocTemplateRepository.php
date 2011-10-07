@@ -15,9 +15,14 @@ class DocTemplateRepository implements IObjectRepository
     public $docTemplateFieldTypesArr = array();
     public $docTemplateOperationsArr = array();
     
+    public function __construct() {
+        $this->LoadDocTemplateFieldTypes();
+        $this->LoadDocTemplateOperations();
+    }
+    
     public function LoadDocTemplateOperations()
     {
-        $docTemplateOperationsArr = array();
+        //$this->docTemplateOperationsArr = array();
         $query = "SELECT * FROM `".$this->TBL_DOCTEMPLATE_FIELD_OPERATIONS."`";
         $datatable = SqlHelper::ExecSelectCollectionQuery($query);
         if($datatable)
@@ -25,11 +30,11 @@ class DocTemplateRepository implements IObjectRepository
             foreach($datatable as $row)
             {
                 /* @var $oper DocTemplateOperation */
-                $oper = new DocTemplateOperations;
+                $oper = new DocTemplateOperation;
                 $oper->Id = intval($row['Id']);
                 $oper->Name = $row['Name'];
                 $oper->Code = $row['Code'];
-                $docTemplateOperationsArr[$oper->Id] = $oper;
+                $this->docTemplateOperationsArr[$oper->Id] = $oper;
             }
         }
         else
@@ -40,7 +45,7 @@ class DocTemplateRepository implements IObjectRepository
     }
     public function LoadDocTemplateFieldTypes()
     {
-        $docTemplateOperationsArr = array();
+        //$this->docTemplateOperationsArr = array();
         $query = "SELECT * FROM `".$this->TBL_DOCTEMPLATE_FIELD_TYPES."`";
         $datatable = SqlHelper::ExecSelectCollectionQuery($query);
         if($datatable)
@@ -52,7 +57,7 @@ class DocTemplateRepository implements IObjectRepository
                 $tp->Id = intval($row['Id']);
                 $tp->Name = $row['Name'];
                 $tp->DataBaseType = $row['DataBaseType'];
-                $docTemplateOperationsArr[$tp->Id] = $tp;
+                $this->docTemplateFieldTypesArr[$tp->Id] = $tp;
             }
         }
         else
@@ -170,6 +175,14 @@ class DocTemplateRepository implements IObjectRepository
     
     function Save($obj)
     {
+        if( count($this->docTemplateFieldTypesArr) == 0 )
+        {
+            $this->LoadDocTemplateFieldTypes();
+        }
+        if( count($this->docTemplateOperationsArr) == 0 )
+        {
+            $this->LoadDocTemplateOperations();
+        }
         /* @var $docTeml DocTemplate */
         $docTempl = $obj;
         if($docTempl)
@@ -186,23 +199,23 @@ class DocTemplateRepository implements IObjectRepository
            }
            else
            {
-            $query = "INSERT INTO `".$this->TBL_DOCTEMPLATES."` VALUES ('".$docTempl->Name."')";
+            $query = "INSERT INTO `".$this->TBL_DOCTEMPLATES."` (`Name`) VALUES ('".$docTempl->Name."')";
             $docTempl->Id = intval(SqlHelper::ExecInsertQuery($query));
-            if (!$rowNum)
+            if ($docTempl->Id <= 0)
             {
                 $this->error = "При добавлении шаблона документа возникла ошибка!";
                 return false;
             }
            }
-           foreach($docTeml->fieldsList as $field)
+           foreach($docTempl->fieldsList as $field)
            {
                /* @var $field DocTemplateField */
                if(intval($field->Id) > 0)
                {
                 $query = "UPDATE `".$this->TBL_DOCTEMPLATE_FIELDS."`SET 
                     ( `Name`, `IsCalculated`, `IdFieldType`, `IsRestricted`, `MinVal`, `MaxVal`, `IdOperation`, `IdDocTemplate`) 
-                    VALUES ('".$field->Name."','".$field->IsCalculated."','".$field->FieldType->Id."','".$field->IsRestricted."','".
-                    $field->MinVal."','".$field->MaxVal."','".$field->Operation->Id."','".$docTempl->Id."') WHERE `Id` ='".intval($field->Id)."'";
+                    VALUES ('".$field->Name."','".intval($field->IsCalculated)."','".intval($field->FieldType->Id)."','".intval($field->IsRestricted)."','".
+                    $field->MinVal."','".$field->MaxVal."','".intval($field->Operation->Id)."','".intval($docTempl->Id)."') WHERE `Id` ='".intval($field->Id)."'";
                 $rowNum = SqlHelper::ExecUpdateQuery($query);
                 if (!$rowNum)
                 {
@@ -212,15 +225,18 @@ class DocTemplateRepository implements IObjectRepository
                }
                else
                {
+                   $prevId = $field->Id;
                 $query = "INSERT INTO `".$this->TBL_DOCTEMPLATE_FIELDS."` ( `Name`, `IsCalculated`, `IdFieldType`, `IsRestricted`, `MinVal`, `MaxVal`, `IdOperation`, `IdDocTemplate`) 
-                    VALUES ('".$field->Name."','".$field->IsCalculated."','".$field->FieldType->Id."','".$field->IsRestricted."','".
-                    $field->MinVal."','".$field->MaxVal."','".$field->Operation->Id."','".$docTempl->Id."')";
+                    VALUES ('".$field->Name."','".intval($field->IsCalculated)."','".intval($field->FieldType->Id)."','".intval($field->IsRestricted)."','".
+                    $field->MinVal."','".$field->MaxVal."','".intval($field->Operation->Id)."','".$docTempl->Id."')";
                 $field->Id = intval(SqlHelper::ExecInsertQuery($query));
-                if (!$rowNum)
+                if ($field->Id <= 0)
                 {
                     $this->error = "При добавлении шаблона документа возникла ошибка!";
                     return false;
                 }
+                unset($docTempl->fieldsList[$prevId]);
+                $docTempl->fieldsList[$field->Id] = $field;
                }
            }
            return true;
@@ -259,7 +275,7 @@ class DocTemplateRepository implements IObjectRepository
         /* @var $docTeml DocTemplate */
         $docTeml = new DocTemplate;
         
-        $query = "SELECT * FROM `".$this->TBL_DOCTEMPLATES."` WHERE `id`='".intval($id)."'";
+        $query = "SELECT * FROM `".$this->TBL_DOCTEMPLATES."` WHERE `Id`='".intval($id)."'";
         $row = SqlHelper::ExecSelectRowQuery($query);
         if($row)
         {
@@ -284,6 +300,7 @@ class DocTemplateRepository implements IObjectRepository
                     $fld->Operation = $this->docTemplateOperationsArr[intval($row['IdOperation'])];
                     $docTeml->fieldsList[$fld->Id] = $fld;
                 }
+                return $docTeml;
             }
             else
             {

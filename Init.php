@@ -11,9 +11,14 @@ require_once 'Interfaces/IObjectRepository.php';
 
 //Objects
 require_once 'Objects/User.php';
+require_once 'Objects/DocTemplate.php';
+require_once 'Objects/DocTemplateField.php';
+require_once 'Objects/DocTemplateFieldType.php';
+require_once 'Objects/DocTemplateOperation.php';
 
 //Repositories
 require_once 'Objects/UserRepository.php';
+require_once 'Objects/DocTemplateRepository.php';
 
 //Enums
 require_once 'Enums/Enums.php';

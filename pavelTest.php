@@ -7,8 +7,6 @@ require_once 'Init.php';
 echo "Create Rep <br>";
 /* @var $dtpRep DocTemplateRepository */
 $dtpRep = new DocTemplateRepository;
-$dtpRep->LoadDocTemplateFieldTypes();
-$dtpRep->LoadDocTemplateOperations();
 echo 'Create 1 DT<br>';
 /* @var $docTpl1 DocTemplate */
 $docTpl1 = new DocTemplate;
@@ -68,7 +66,7 @@ $docTpl2F1->Operation = $dtpRep->docTemplateOperationsArr[1];
 $docTpl2F1->IsRestricted = false;
 $docTpl2F1->MinVal  = 10;
 $docTpl2F1->MaxVal = 20;
-$docTpl2->fieldsList[$docTp2F1->Id] = $docTpl2F1;
+$docTpl2->fieldsList[$docTpl2F1->Id] = $docTpl2F1;
 echo 'Create  DT f2<br>';
 /*@var $docTpl2F2 DocTemplateField*/
 $docTpl2F2 = new DocTemplateField;
@@ -102,11 +100,36 @@ $docTpl1N = $dtpRep->GetByID($docTpl1->Id);
 echo "Get 2 DT from DB<br>";
 /* @var $docTpl2N DocTemplate */
 $docTpl2N = $dtpRep->GetByID($docTpl2->Id);
-echo "Get 3 DT from DB<br>";
-/* @var $docTpl3N DocTemplate */
-$docTpl3N = $dtpRep->GetByID($docTpl3->Id);
 
-if($docTpl1->Name != $docTpl1N->Name)
-    echo "1 Name<br>";
+if($docTpl1 == $docTpl1N)
+{
+    echo "docTp1 CURRECT <br>";
+}
+else
+{
+    echo "docTp1 WRONG <br>";
+    print_r($docTpl1);
+    echo "<br>";
+    print_r($docTpl1N);
+}
+if($docTpl2 == $docTpl2N )
+{
+    echo "docTp2 CURRECT<br>";
+}
+else
+{
+    echo "docTp2 WRONG <br>";
+    print_r($docTpl2);
+    echo "<br>";
+    print_r($docTpl2N);
+}
+if($docTpl1 == $docTpl2 )
+{
+    echo "TEST FALSE <br>";
+}
+else
+{
+    echo "TEST TRUE <br>";
+}
 
 ?>

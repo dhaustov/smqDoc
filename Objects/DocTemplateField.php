@@ -16,8 +16,8 @@ class DocTemplateField {
     /* @var $Operation DocTemplateOperation */
     var $Operation;
     
-    public function __construct($_name=null,$_isCalculated=null,$_fieldType,
-            $_isRestricted,$_minVal,$_maxVal,$_operation,$_id=null) {
+    public function __construct($_name=null,$_isCalculated=null,$_fieldType=null,
+            $_isRestricted=null,$_minVal=null,$_maxVal=null,$_operation=null,$_id=null) {
         $this->Id = $_id;
         $this->Name = $_name;
         $this->IsCalculated = $_isCalculated;

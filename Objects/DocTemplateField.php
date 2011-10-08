@@ -10,6 +10,7 @@ class DocTemplateField {
     var $IsCalculated;
     /* @var $FieldType DocTemplateFieldType */
     var $FieldType;
+    /* @var $IsRestricted boolen */
     var $IsRestricted;
     var $MinVal;
     var $MaxVal;

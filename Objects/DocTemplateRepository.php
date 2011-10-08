@@ -66,6 +66,8 @@ class DocTemplateRepository implements IObjectRepository
             return false;
         }
     }
+    
+// <editor-fold defaultstate="collapsed" desc="редакторы справочников операций и типов полей">
 //    public function SaveDocTemplateOperation($obj)
 //    {
 //        if($obj)
@@ -172,6 +174,7 @@ class DocTemplateRepository implements IObjectRepository
 //        $this->error = "При удалении шаблона типа поля возникла ошибка!";
 //        return false;
 //    }
+    // </editor-fold>
     
     function Save($obj)
     {
@@ -338,6 +341,7 @@ class DocTemplateRepository implements IObjectRepository
 //            return false;
 //        }
     }
+    
     public function GetError()
     {
         return $this->error;

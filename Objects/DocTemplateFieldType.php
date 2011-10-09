@@ -7,13 +7,13 @@
  * @author Павел
  */
 class DocTemplateFieldType {
-    var $Id;
-    var $Name;
-    var $DataBaseType;
+    var $id;
+    var $name;
+    var $dataBaseType;
     public function __construct($_name=null,$_databasetype=null,$_id=null) {
-        $this->Id = $_id;
-        $this->Name = $_name;
-        $this->DataBaseType = $_databasetype;
+        $this->id = $_id;
+        $this->name = $_name;
+        $this->dataBaseType = $_databasetype;
     }
 }
 

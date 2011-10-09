@@ -24,4 +24,10 @@ class UserStatus
     const ACTIVE = 1;
     const ADMIN = 2;
 }
+
+class EnUserGroupDocStatus
+{
+    const DELETED = 0;
+    const EDITED = 1;
+}
 ?>

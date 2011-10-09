@@ -17,27 +17,97 @@ class UserGroupDocRepository implements IObjectRepository
     function Save($obj)
     {
         $idList = "-1";
-        
+        /* @var $userGroupDoc UserGroupDoc */
+        $userGroupDoc = $obj;
+        if($userGroupDoc)
+        {
+            if(!$userGroupDoc->ValidateObjectTypes())
+            {
+                $this->error = "Системная шибка при сохранении  документа (ошибка типов полей)";
+                NotificationHelper::LogCritical($this->error);
+                return false;
+            }
+            $sqlCon = SqlHelper::StartTransaction();
+            if($userGroupDoc->id > 0)
+            {
+                $query = "INSERT INTO `".$this->TBL_DOCSTARAGE."` (`IdAuthor`, `IdGroup`, 
+                    `IdGroupDocs`, `Status`, `DateCreated`, `LastChangedDate`) 
+                VALUES ('".
+                    intval($userGroupDoc->author->id)."','".
+                    intval($userGroupDoc->group->id)."','".
+                    intval($userGroupDoc->groupDocTempl->id)."','".
+                    intval($userGroupDoc->status)."',
+                    'NOW()','NOW()')";
+                $userGroupDoc->id = SqlHelper::ExecInsertQuery($query, $sqlCon);
+                if($docTempl->id <= 0)
+                {
+                    SqlHelper::RollbackTransaction($sqlCon);
+                    $this->error = "При добавлении шаблона документа возникла ошибка!";
+                    return false;
+                }
+            }
+            else
+            {
+                $query = "UPDATE `".$this->TBL_DOCSTARAGE."` SET (`IdAuthor`, `IdGroup`, 
+                    `IdGroupDocs`, `Status`, `DateCreated`, `LastChangedDate`) VALUES ('".
+                    intval($userGroupDoc->author->id)."','".
+                    intval($userGroupDoc->group->id)."','".
+                    intval($userGroupDoc->groupDocTempl->id)."','".
+                    intval($userGroupDoc->status)."','".
+                    ToolsHelper::CleanInputString($userGroupDoc->dateCreated)."','
+                    NOW()') WHERE `id`='".$userGroupDoc->id."'";
+                $userGroupDoc->id = SqlHelper::ExecInsertQuery($query, $sqlCon);
+                if($docTempl->id <= 0)
+                {
+                    SqlHelper::RollbackTransaction($sqlCon);
+                    $this->error = "При добавлении шаблона документа возникла ошибка!";
+                    return false;
+                }
+            }
+           SqlHelper::CommitTransaction($sqlCon);
+           return true;
+        }
+        return false;
     }
     
-    function Delete($obj)
+    function Delete($obj,$uId)
     {
          /* @var $duserGroupDoc UserGroupDoc */
         $userGroupDoc = $obj;
         if($userGroupDoc)
         {
-           
-            $query = "UPDATE `".$this->TBL_DOCSTARAGE."` SET `Status`='".EnUserGroupDocStatus::DELETED."' WHERE `Id` ='".intval($userGroupDoc->id)."'";
-            $rowNum = SqlHelper::ExecUpdateQuery($query);
+            if(!$userGroupDoc->ValidateObjectTypes())
+            {
+                $this->error = "Системная шибка при удалении  документа (ошибка типов полей)";
+                NotificationHelper::LogCritical($this->error);
+                return false;
+            }
+            $sqlCon = SqlHelper::StartTransaction();
+            $query = "UPDATE `".$this->TBL_DOCSTARAGE."` SET `Status`='".
+                    EnUserGroupDocStatus::DELETED."' WHERE `Id` ='".intval($userGroupDoc->id)."'";
+            $rowNum = SqlHelper::ExecUpdateQuery($query,$sqlCon);
             if (!$rowNum)
             {
+                SqlHelper::RollbackTransaction($sqlCon);
                 $this->error = "При удалении документа возникла ошибка!";
                 return false;
             }
+            $query = "INSERT INTO `".$this->TBL_DOCSTORAGE_HISTORY."` (`IdDocument`,
+                `IdUser`, `NewStatus`) VALUES ('".
+                    intval($userGroupDoc->id)."','".
+                    intval($uId)."','".
+                    EnUserGroupDocStatus::DELETED."')";
+            $rowId = SqlHelper::ExecInsertQuery($query,$sqlCon);
+            if (!$rowId)
+            {
+                SqlHelper::RollbackTransaction($sqlCon);
+                $this->error = "При удалении документа возникла ошибка!";
+                return false;
+            }
+            SqlHelper::CommitTransaction($sqlCon);
             return $rowNum;
         }
     }
-    
     
     function GetByID($id)
     {
@@ -48,7 +118,6 @@ class UserGroupDocRepository implements IObjectRepository
         $groupDocTemplsRep = new UserGroupDocTemplatesRepository;
         
         $doc = new UserGroupDocTemplates;
-        
         
         $query = "SELECT * FROM `".$this->TBL_DOCSTARAGE."` WHERE `Id`='".intval($id)."'";
         $row = SqlHelper::ExecSelectRowQuery($query);
@@ -98,7 +167,6 @@ class UserGroupDocRepository implements IObjectRepository
             return false;
         }
     }
-    
     
     function CheckForExists($obj)
     {

@@ -13,6 +13,17 @@ class DocTemplateOperation {
         $this->name = $_name;
         $this->code = $_code;
     }
+    
+    public function ValidateObjectTypes()
+    {
+        if(!is_int($this->id))
+            return false;
+        if(!is_string($this->name))
+            return false;
+        if(!is_string($this->code))
+            return false;
+        return true;
+    }
 }
 
 ?>

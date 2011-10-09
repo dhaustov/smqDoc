@@ -9,15 +9,40 @@ class SqlHelper {
             $conf = Config::singleton();
             $mysqli = new mysqli($conf->DbHostName(),$conf->DbUserName(),
                     $conf->DbPassword(),$conf->DbName());
+            
             if($mysqli->connect_errno>0)
             {
                 NotificationHelper::LogCriticalSqlConnection("Connection to Sql server Error: ".$mysqli->connect_error);
                 ToolsHelper::RedirectToErrorPage();
                 return false;
             }
+            $mysqli->set_charset("utf8");
+            if($mysqli->errno>0)
+            {
+                NotificationHelper::LogCritical("Error setting charset Error: ".$sqlCon->error);
+                ToolsHelper::RedirectToErrorPage();
+                return false;
+            }
             return $mysqli;
     }
-    
+    public static function StartTransaction()
+    {
+        $mysqli = SqlHelper::InitConnection();
+        $mysqli->autocommit(false);
+        return $mysqli;
+    }
+    public static function CommitTransaction($mysqli)
+    {
+        /*@var $mysqli mysqli */
+        $mysqli->commit();
+        $mysqli->close();
+    }
+    public static function RollbackTransaction($mysqli)
+    {
+        /*@var $mysqli mysqli */
+        $mysqli->rollback();
+        $mysqli->close();
+    }
     public static function Real_escape_string($str)
     {
         $sqlCon = self::InitConnection();
@@ -25,10 +50,15 @@ class SqlHelper {
     }
 
 
-    public static function ExecInsertQuery($query)
+    public static function ExecInsertQuery($query,$sqlCon=null)
     {
         $retVal=false;
-        $sqlCon = self::InitConnection();
+        $isNeedClose=false;
+        if(is_null($sqlCon))
+        {
+            $isNeedClose = true;
+            $sqlCon = self::InitConnection();
+        }
         $sqlCon->query($query);
         if($sqlCon->errno>0)
             {
@@ -40,13 +70,18 @@ class SqlHelper {
                 $retVal = $sqlCon->insert_id;
             }
             
-        $sqlCon->close();
+        if($isNeedClose) $sqlCon->close();
         return $retVal;
     }
-    public static function ExecUpdateQuery($query)
+    public static function ExecUpdateQuery($query,$sqlCon=null)
     {
         $retVal=false;
-        $sqlCon = self::InitConnection();
+        $isNeedClose=false;
+        if(is_null($sqlCon))
+        {
+            $isNeedClose = true;
+            $sqlCon = self::InitConnection();
+        }
         $sqlCon->query($query);
         if($sqlCon->errno > 0)
             {
@@ -56,22 +91,27 @@ class SqlHelper {
             else
             {
                 $retVal = $sqlCon->affected_rows;
-                echo "retval updated rows:".$retVal." for query $query<br />";
+                //echo "retval updated rows:".$retVal." for query $query<br />";
                 
             }
             
-        $sqlCon->close();
+        if($isNeedClose) $sqlCon->close();
         return $retVal;
     }
-    public static function ExecDeleteQuery($query)
+    public static function ExecDeleteQuery($query,$sqlCon=null)
     {
-        $res =  self::ExecUpdateQuery($query);        
+        $res =  self::ExecUpdateQuery($query,$sqlCon);        
         return $res;
     }
-    public static function ExecSelectValueQuery($query)
+    public static function ExecSelectValueQuery($query,$sqlCon=null)
     {
         $retVal=false;
-        $sqlCon = self::InitConnection();
+        $isNeedClose=false;
+        if(is_null($sqlCon))
+        {
+            $isNeedClose = true;
+            $sqlCon = self::InitConnection();
+        }
         /* @var $result mysqli_result */
         $result = $sqlCon->query($query);
         if($sqlCon->errno>0)
@@ -85,14 +125,18 @@ class SqlHelper {
                 if(isset($resRow[0]))
                     $retVal = $resRow[0];                               
             }  
-        $sqlCon->close();
+        if($isNeedClose) $sqlCon->close();
         return $retVal;
     }
-    
-    public static function ExecSelectRowQuery($query)
+    public static function ExecSelectRowQuery($query,$sqlCon=null)
     {
         $retVal=false;
-        $sqlCon = self::InitConnection();
+        $isNeedClose=false;
+        if(is_null($sqlCon))
+        {
+            $isNeedClose = true;
+            $sqlCon = self::InitConnection();
+        }
         /* @var $result mysqli_result */
         $result = $sqlCon->query($query);
         if($sqlCon->errno>0)
@@ -107,14 +151,18 @@ class SqlHelper {
                     //echo "count resRow: ".count($resRow)."<br />";
             }
             
-        $sqlCon->close();
+        if($isNeedClose) $sqlCon->close();
         return $retVal;
-        }
-               
-    public static function ExecSelectCollectionQuery($query)
+        }       
+    public static function ExecSelectCollectionQuery($query,$sqlCon=null)
     {
         $retVal=false;
-        $sqlCon = self::InitConnection();
+        $isNeedClose=false;
+        if(is_null($sqlCon))
+        {
+            $isNeedClose = true;
+            $sqlCon = self::InitConnection();
+        }
         /* @var $result mysqli_result */
         $result = $sqlCon->query($query);
         if($sqlCon->errno>0)
@@ -132,7 +180,7 @@ class SqlHelper {
                         $i++;
                     }
             }
-        $sqlCon->close();
+        if($isNeedClose) $sqlCon->close();
         return $retVal;
     }
     

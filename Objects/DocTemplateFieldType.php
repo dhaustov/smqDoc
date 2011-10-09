@@ -15,6 +15,16 @@ class DocTemplateFieldType {
         $this->name = $_name;
         $this->dataBaseType = $_databasetype;
     }
+    public function ValidateObjectTypes()
+    {
+        if(!is_int($this->id))
+            return false;
+        if(!is_string($this->name))
+            return false;
+        if(!is_string($this->dataBaseType))
+            return false;
+        return true;
+    }
 }
 
 ?>

@@ -14,5 +14,8 @@
         </Configurations>
       </Persist>
     </Service>
+    <Service GUID="{c7b76517-6978-4a0b-8d38-57b7f7223edb}">
+      <Persist />
+    </Service>
   </Services>
 </Options>

@@ -2,13 +2,12 @@
 -- Описание для таблицы eventlog
 --
 CREATE TABLE eventlog (
-  id INT(11) NOT NULL AUTO_INCREMENT,
+  Id INT(11) NOT NULL AUTO_INCREMENT,
   EventCode VARCHAR(1024) DEFAULT NULL,
   EventTime DATETIME NOT NULL,
   EventType INT(1) NOT NULL,
-  PRIMARY KEY (id)
+  PRIMARY KEY (Id)
 )
 ENGINE = INNODB
-AUTO_INCREMENT = 18
 CHARACTER SET utf8
 COLLATE utf8_general_ci;

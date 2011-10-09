@@ -33,7 +33,13 @@ class DocTemplateRepository implements IObjectRepository
                 $oper->id = intval($row['Id']);
                 $oper->name = $row['Name'];
                 $oper->code = $row['Code'];
-                $this->docTemplateOperationsArr[$oper->id] = $oper;
+                if($oper->ValidateObjectTypes())
+                    $this->docTemplateOperationsArr[$oper->id] = $oper;
+                else
+                {
+                    $this->error = "Системная шибка при чтении шаблона операций документа (ошибка типов полей)";
+                    NotificationHelper::LogCritical($this->error);
+                }
             }
         }
         else
@@ -55,7 +61,13 @@ class DocTemplateRepository implements IObjectRepository
                 $tp->id = intval($row['Id']);
                 $tp->name = $row['Name'];
                 $tp->dataBaseType = $row['DataBaseType'];
-                $this->docTemplateFieldTypesArr[$tp->id] = $tp;
+                if($tp->ValidateObjectTypes())
+                    $this->docTemplateFieldTypesArr[$tp->id] = $tp;
+                else
+                {
+                    $this->error = "Системная шибка при чтении типой полей шаблона документа (ошибка типов полей)";
+                    NotificationHelper::LogCritical($this->error);
+                }
             }
         }
         else
@@ -176,7 +188,7 @@ class DocTemplateRepository implements IObjectRepository
     
     function Save($obj)
     {
-        $idList = "-1";
+        $idList = "'-1'";
         if( count($this->docTemplateFieldTypesArr) == 0 )
         {
             $this->LoadDocTemplateFieldTypes();
@@ -187,24 +199,36 @@ class DocTemplateRepository implements IObjectRepository
         }
         /* @var $docTempl DocTemplate */
         $docTempl = $obj;
+        
         if($docTempl)
         {
+            if(!$docTempl->ValidateObjectTypes())
+            {
+                $this->error = "Системная шибка при сохранении шаблона документы (ошибка типов полей)";
+                NotificationHelper::LogCritical($this->error);
+                return false;
+            }
+           $sqlCon = SqlHelper::StartTransaction();
            if(intval($docTempl->id) > 0)
            {
-            $query = "UPDATE `".$this->TBL_DOCTEMPLATES."`SET (`Name`) VALUES ('".$docTempl->name."') WHERE `Id` ='".intval($docTempl->id)."'";
-            $rowNum = SqlHelper::ExecUpdateQuery($query);
+            $query = "UPDATE `".$this->TBL_DOCTEMPLATES."`SET (`Name`) VALUES 
+                ('".ToolsHelper::CleanInputString($docTempl->name)."') WHERE `Id` ='".intval($docTempl->id)."'";
+            $rowNum = SqlHelper::ExecUpdateQuery($query,$sqlCon);
             if (!$rowNum)
             {
+                SqlHelper::RollbackTransaction($sqlCon);
                 $this->error = "При изменении шаблона документа возникла ошибка!";
                 return false;
             }
            }
            else
            {
-            $query = "INSERT INTO `".$this->TBL_DOCTEMPLATES."` (`Name`) VALUES ('".$docTempl->name."')";
-            $docTempl->id = intval(SqlHelper::ExecInsertQuery($query));
+            $query = "INSERT INTO `".$this->TBL_DOCTEMPLATES."` (`Name`) VALUES 
+                ('".ToolsHelper::CleanInputString($docTempl->name)."')";
+            $docTempl->id = intval(SqlHelper::ExecInsertQuery($query,$sqlCon));
             if ($docTempl->id <= 0)
             {
+                SqlHelper::RollbackTransaction($sqlCon);
                 $this->error = "При добавлении шаблона документа возникла ошибка!";
                 return false;
             }
@@ -216,40 +240,60 @@ class DocTemplateRepository implements IObjectRepository
                {
                 $query = "UPDATE `".$this->TBL_DOCTEMPLATE_FIELDS."`SET 
                     ( `Name`, `IsCalculated`, `IdFieldType`, `IsRestricted`, `MinVal`, `MaxVal`, `IdOperation`, `IdDocTemplate`) 
-                    VALUES ('".$field->name."','".intval($field->isCalculated)."','".intval($field->fieldType->id)."','".intval($field->isRestricted)."','".
-                    $field->minVal."','".$field->MaxVal."','".intval($field->operation->id)."','".intval($docTempl->id)."') WHERE `Id` ='".intval($field->id)."'";
-                $rowNum = SqlHelper::ExecUpdateQuery($query);
+                    VALUES ('".
+                        ToolsHelper::CleanInputString($field->name)."','".
+                        intval($field->isCalculated)."','".
+                        intval($field->fieldType->id)."','".
+                        intval($field->isRestricted)."','".
+                        $field->minVal."','".
+                        $field->maxVal."','".
+                        intval($field->operation->id)."','".
+                        intval($docTempl->id)."') WHERE `Id` ='".
+                        intval($field->id)."'";
+                $rowNum = SqlHelper::ExecUpdateQuery($query,$sqlCon);
                 if (!$rowNum)
                 {
+                    SqlHelper::RollbackTransaction($sqlCon);
                     $this->error = "При изменении шаблона документа возникла ошибка!";
                     return false;
                 }
-                $idList+=",'".$field->id."'";
+                $idList=$idList.",'".$field->id."'";
                }
                else
                {
                 $prevId = $field->id;
                 $query = "INSERT INTO `".$this->TBL_DOCTEMPLATE_FIELDS."` ( `Name`, `IsCalculated`, `IdFieldType`, `IsRestricted`, `MinVal`, `MaxVal`, `IdOperation`, `IdDocTemplate`) 
-                    VALUES ('".$field->name."','".intval($field->isCalculated)."','".intval($field->fieldType->id)."','".intval($field->isRestricted)."','".
-                    $field->minVal."','".$field->MaxVal."','".intval($field->operation->id)."','".$docTempl->id."')";
-                $field->id = intval(SqlHelper::ExecInsertQuery($query));
+                    VALUES ('".
+                        ToolsHelper::CleanInputString($field->name)."','".
+                        intval($field->isCalculated)."','".
+                        intval($field->fieldType->id)."','".
+                        intval($field->isRestricted)."','".
+                        $field->minVal."','".
+                        $field->maxVal."','".
+                        intval($field->operation->id)."','".
+                        $docTempl->id."')";
+                $field->id = intval(SqlHelper::ExecInsertQuery($query,$sqlCon));
                 if ($field->id <= 0)
                 {
+                    SqlHelper::RollbackTransaction($sqlCon);
                     $this->error = "При добавлении шаблона документа возникла ошибка!";
                     return false;
                 }
                 unset($docTempl->fieldsList[$prevId]);
                 $docTempl->fieldsList[$field->id] = $field;
-                
+                $idList=$idList.",'".$field->id."'";
                }
-                $query = "DELETE FROM `".$this->TBL_DOCTEMPLATE_FIELDS."` WHERE `Id` NOT IN (".$idList.") AND `IdDocTemplate` = '".$docTempl->id."'";
-                $rowNum = SqlHelper::ExecDeleteQuery($query);
-                if (!$rowNum)
+                
+           }
+           $query = "DELETE FROM `".$this->TBL_DOCTEMPLATE_FIELDS."` WHERE (`Id` NOT IN (".$idList.")) AND (`IdDocTemplate` = '".$docTempl->id."')";
+                $rowNum = SqlHelper::ExecDeleteQuery($query,$sqlCon);
+                if (is_null($rowNum))
                 {
+                    SqlHelper::RollbackTransaction($sqlCon);
                     $this->error = "При изменении полей шаблона документа возникла ошибка!";
                     return false;
                 }
-           }
+           SqlHelper::CommitTransaction($sqlCon);
            return true;
         }
         return false;
@@ -259,16 +303,25 @@ class DocTemplateRepository implements IObjectRepository
     {
         /* @var $docTempl DocTemplate */
         $docTempl = $obj;
+        
         if($docTempl)
         {
-           
+           if(!$docTempl->ValidateObjectTypes())
+            {
+                $this->error = "Системная шибка при удалении шаблона документа (ошибка типов полей)";
+                NotificationHelper::LogCritical($this->error);
+                return false;
+            }
+            $sqlCon = SqlHelper::StartTransaction();
             $query = "DELETE FROM `".$this->TBL_DOCTEMPLATES."` WHERE `Id` ='".intval($docTempl->id)."'";
-            $rowNum = SqlHelper::ExecDeleteQuery($query);
+            $rowNum = SqlHelper::ExecDeleteQuery($query,$sqlCon);
             if (!$rowNum)
             {
+                SqlHelper::RollbackTransaction($sqlCon);
                 $this->error = "При удалении шаблона документа возникла ошибка!";
                 return false;
             }
+            SqlHelper::CommitTransaction($sqlCon);
             return $rowNum;
         }
     }
@@ -306,7 +359,7 @@ class DocTemplateRepository implements IObjectRepository
                     $fld->isCalculated = (bool)$row['IsCalculated'];
                     $fld->fieldType = $this->docTemplateFieldTypesArr[intval($row['IdFieldType'])];
                     $fld->isRestricted = (bool)$row['IsRestricted'];
-                    $fld->MaxVal = intval($row['MaxVal']);
+                    $fld->maxVal = intval($row['MaxVal']);
                     $fld->minVal = intval($row['MinVal']);
                     $fld->operation = $this->docTemplateOperationsArr[intval($row['IdOperation'])];
                     $docTempl->fieldsList[$fld->id] = $fld;
@@ -330,24 +383,25 @@ class DocTemplateRepository implements IObjectRepository
     {
       $query = "SELECT * FROM `".$this->TBL_DOCTEMPLATE_FIELDS."` WHERE `IdDocTemplate`='".
                     intval($docTempl->id)."'";
-            $datatable = SqlHelper::ExecSelectCollectionQuery($query);
-            if($datatable)
+            $row = SqlHelper::ExecSelectCollectionQuery($query);
+            if($row)
             {
-                foreach($datatable as $row)
+                /* @var $fld DocTemplateField */
+                $fld = new DocTemplateField;
+                $fld->id = intval($row['Id']);
+                $fld->name = $row['Name'];
+                $fld->isCalculated = (bool)$row['IsCalculated'];
+                $fld->fieldType = $this->docTemplateFieldTypesArr[intval($row['IdFieldType'])];
+                $fld->isRestricted = (bool)$row['IsRestricted'];
+                $fld->maxVal = intval($row['MaxVal']);
+                $fld->minVal = intval($row['MinVal']);
+                $fld->operation = $this->docTemplateOperationsArr[intval($row['IdOperation'])];
+                if(!$fld->ValidateObjectTypes())
                 {
-                    /* @var $fld DocTemplateField */
-                    $fld = new DocTemplateField;
-                    $fld->id = intval($row['Id']);
-                    $fld->name = $row['Name'];
-                    $fld->isCalculated = (bool)$row['IsCalculated'];
-                    $fld->fieldType = $this->docTemplateFieldTypesArr[intval($row['IdFieldType'])];
-                    $fld->isRestricted = (bool)$row['IsRestricted'];
-                    $fld->MaxVal = intval($row['MaxVal']);
-                    $fld->minVal = intval($row['MinVal']);
-                    $fld->operation = $this->docTemplateOperationsArr[intval($row['IdOperation'])];
-                    $docTempl->fieldsList[$fld->id] = $fld;
+                    $this->error = "Системная шибка при чтении поля шаблона документа (ошибка типов полей) Id поля".$id;
+                    NotificationHelper::LogCritical($this->error);
                 }
-                return $docTempl;
+                return $fld;
             }
             else
             {

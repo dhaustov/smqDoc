@@ -1,6 +1,6 @@
-﻿-- Скрипт сгенерирован Devart dbForge Studio for MySQL, Версия 5.0.48.1
+﻿-- Скрипт сгенерирован Devart dbForge Studio for MySQL, Версия 5.0.50.1
 -- Домашняя страница продукта: http://www.devart.com/ru/dbforge/mysql/studio
--- Дата скрипта: 06.10.2011 23:52:57
+-- Дата скрипта: 10.10.2011 19:23:57
 -- Версия сервера: 5.5.8
 -- Пожалуйста, сохраните резервную копию Вашей схемы перед запуском этого скрипта 
 
@@ -16,14 +16,14 @@ USE smqdoc;
 --
 -- Описание для таблицы doctemplate_fieldtypes
 --
-CREATE TABLE doctemplate_fieldtypes(
+CREATE TABLE doctemplate_fieldtypes (
   Id INT(11) NOT NULL AUTO_INCREMENT,
   Name VARCHAR(20) NOT NULL,
   DataBaseType VARCHAR(20) NOT NULL,
   PRIMARY KEY (Id)
 )
 ENGINE = INNODB
-AUTO_INCREMENT = 1
+AUTO_INCREMENT = 4
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
@@ -33,14 +33,14 @@ COLLATE utf8_general_ci;
 --
 -- Описание для таблицы doctemplate_operations
 --
-CREATE TABLE doctemplate_operations(
-  id INT(11) NOT NULL AUTO_INCREMENT,
-  name VARCHAR(256) NOT NULL,
-  code VARCHAR(64) NOT NULL,
-  PRIMARY KEY (id)
+CREATE TABLE doctemplate_operations (
+  Id INT(11) NOT NULL AUTO_INCREMENT,
+  Name VARCHAR(256) NOT NULL,
+  Code VARCHAR(64) NOT NULL,
+  PRIMARY KEY (Id)
 )
 ENGINE = INNODB
-AUTO_INCREMENT = 1
+AUTO_INCREMENT = 4
 CHARACTER SET utf8
 COLLATE utf8_general_ci
 COMMENT = 'Операции для вычислимых полей';
@@ -51,13 +51,13 @@ COMMENT = 'Операции для вычислимых полей';
 --
 -- Описание для таблицы doctemplates
 --
-CREATE TABLE doctemplates(
-  id INT(11) NOT NULL AUTO_INCREMENT,
-  name VARCHAR(256) NOT NULL COMMENT 'имя шаблона',
-  PRIMARY KEY (id)
+CREATE TABLE doctemplates (
+  Id INT(11) NOT NULL AUTO_INCREMENT,
+  Name VARCHAR(256) NOT NULL COMMENT 'имя шаблона',
+  PRIMARY KEY (Id)
 )
 ENGINE = INNODB
-AUTO_INCREMENT = 1
+AUTO_INCREMENT = 63
 CHARACTER SET utf8
 COLLATE utf8_general_ci
 COMMENT = 'Шаблоны документов';
@@ -68,7 +68,7 @@ COMMENT = 'Шаблоны документов';
 --
 -- Описание для таблицы eventlog
 --
-CREATE TABLE eventlog(
+CREATE TABLE eventlog (
   id INT(11) NOT NULL AUTO_INCREMENT,
   EventCode VARCHAR(1024) DEFAULT NULL,
   EventTime DATETIME NOT NULL,
@@ -76,8 +76,7 @@ CREATE TABLE eventlog(
   PRIMARY KEY (id)
 )
 ENGINE = INNODB
-AUTO_INCREMENT = 15
-AVG_ROW_LENGTH = 1170
+AUTO_INCREMENT = 18
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
@@ -109,7 +108,7 @@ COLLATE utf8_general_ci;
 --
 -- Описание для таблицы doctemplate_fields
 --
-CREATE TABLE doctemplate_fields(
+CREATE TABLE doctemplate_fields (
   Id INT(11) NOT NULL AUTO_INCREMENT,
   Name VARCHAR(20) NOT NULL,
   IsCalculated TINYINT(1) NOT NULL,
@@ -118,16 +117,20 @@ CREATE TABLE doctemplate_fields(
   MinVal INT(11) DEFAULT NULL,
   MaxVal INT(11) DEFAULT NULL,
   IdOperation INT(11) NOT NULL,
+  IdDoctemplate INT(11) NOT NULL,
   PRIMARY KEY (Id),
+  INDEX IdDoctemplate (IdDoctemplate),
   INDEX IdFieldType (IdFieldType),
   INDEX IdOperation (IdOperation),
   CONSTRAINT doctemplate_fields_ibfk_1 FOREIGN KEY (IdFieldType)
-  REFERENCES doctemplate_fieldtypes (Id) ON DELETE CASCADE ON UPDATE CASCADE,
+    REFERENCES doctemplate_fieldtypes(Id) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT doctemplate_fields_ibfk_2 FOREIGN KEY (IdOperation)
-  REFERENCES doctemplate_operations (id) ON DELETE CASCADE ON UPDATE CASCADE
+    REFERENCES doctemplate_operations(Id) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT FK_doctemplate_fields_doctemplates_id FOREIGN KEY (IdDoctemplate)
+    REFERENCES doctemplates(id) ON DELETE RESTRICT ON UPDATE RESTRICT
 )
 ENGINE = INNODB
-AUTO_INCREMENT = 1
+AUTO_INCREMENT = 107
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 

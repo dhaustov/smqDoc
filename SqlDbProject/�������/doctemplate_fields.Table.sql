@@ -20,9 +20,8 @@ CREATE TABLE doctemplate_fields (
   CONSTRAINT doctemplate_fields_ibfk_2 FOREIGN KEY (IdOperation)
     REFERENCES doctemplate_operations(Id) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT FK_doctemplate_fields_doctemplates_id FOREIGN KEY (IdDoctemplate)
-    REFERENCES doctemplates(id) ON DELETE RESTRICT ON UPDATE RESTRICT
+    REFERENCES doctemplates(Id) ON DELETE CASCADE ON UPDATE CASCADE
 )
 ENGINE = INNODB
-AUTO_INCREMENT = 107
 CHARACTER SET utf8
 COLLATE utf8_general_ci;

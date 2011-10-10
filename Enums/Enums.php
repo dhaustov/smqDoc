@@ -23,4 +23,10 @@ class DbRecordStatus
     const DELETED = 0;
     const ACTIVE = 1;    
 }
+
+class EnUserGroupDocStatus
+{
+    const DELETED = 0;
+    const EDITED = 1;
+}
 ?>

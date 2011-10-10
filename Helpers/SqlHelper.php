@@ -55,9 +55,7 @@ class SqlHelper {
             }
             else
             {
-                $retVal = $sqlCon->affected_rows;
-                echo "retval updated rows:".$retVal." for query $query<br />";
-                
+                $retVal = $sqlCon->affected_rows;                                
             }
             
         $sqlCon->close();

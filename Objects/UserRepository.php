@@ -71,7 +71,7 @@ class UserRepository implements IObjectRepository
     { 
         /* @var $user UserAccount */
         $user = $obj;
-        $query = "update user_accounts set status = ".UserStatus::DELETED." where id =". intval($user->id);
+        $query = "update user_accounts set status = ".DbRecordStatus::DELETED." where id =". intval($user->id);
         $rowNum = SqlHelper::ExecDeleteQuery($query);
                 
         if (!$rowNum)
@@ -99,9 +99,9 @@ class UserRepository implements IObjectRepository
             $user->password = $obj['password'];
             $user->status = $obj['status'];
             $user->name = $obj['name'];
-            $user->surName = $obj['surName'];
-            $user->middleName = $obj['middleName'];
-            $user->lastAccess = $obj['lastAccess'];            
+            $user->surName = $obj['surname'];
+            $user->middleName = $obj['middlename'];
+            $user->lastAccess = $obj['lastaccess'];            
             
             return $user;
         }
@@ -161,20 +161,23 @@ class UserRepository implements IObjectRepository
             $query.=" where status = $status";
         $res = SqlHelper::ExecSelectCollectionQuery($query);
         $i=0;
-        foreach($res as $row)
+        if($res)
         {
-            $user = new UserAccount(                        
-                        $row['login'],
-                        $row['password'],
-                        $row['status'],
-                        $row['name'],
-                        $row['surname'],
-                        $row['middlename'],
-                        $row['id'],
-                        $row['lastaccess']
-                    );
-            $retArr[$i] = $user;
-            $i++;
+            foreach($res as $row)
+            {
+                $user = new UserAccount(                        
+                            $row['login'],
+                            $row['password'],                        
+                            $row['name'],
+                            $row['surname'],
+                            $row['middlename'],
+                            $row['status'],
+                            $row['id'],
+                            $row['lastaccess']
+                        );
+                $retArr[$i] = $user;
+                $i++;
+            }
         }
         if($retArr)
             return $retArr;

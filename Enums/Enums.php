@@ -14,14 +14,13 @@ class EnLogEventType {
 }
 
 /**
- * User account statuses
+ *  statuses in DB
  *
  * @author Dmitry G. Haustov
  */
-class UserStatus 
+class DbRecordStatus 
 {
     const DELETED = 0;
-    const ACTIVE = 1;
-    const ADMIN = 2;
+    const ACTIVE = 1;    
 }
 ?>

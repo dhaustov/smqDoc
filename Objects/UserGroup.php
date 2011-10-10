@@ -23,7 +23,10 @@ class UserGroup {
         $this->idParentGroup = $_idParentGroup;
         $this->masterUserAccountRole = $_masterUserAccountRole;
         $this->id = $_id;       
-        $this->status = $_status;
+        if($_status === null)
+            $this->status = DbRecordStatus::ACTIVE;
+        else
+            $this->status = $_status;
     }
     
     public function AddRelatedDocTemplates($docs)

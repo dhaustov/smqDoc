@@ -5,10 +5,10 @@
   <Provider Guid="59f90733-4d68-4fdf-82a7-f0fcbf5460aa" />
   <Include>
     <Folder Name="Представления" />
-    <Folder Name="Процедуры" />
     <Folder Name="События" />
     <Folder Name="Триггеры" />
     <Folder Name="Функции" />
+    <File RelPath="Процедуры" Link=".\Процедуры\deleteAll.Procedure.sql" />
     <File RelPath="Таблицы" Link=".\Таблицы\docstorage.Table.sql" />
     <File RelPath="Таблицы" Link=".\Таблицы\docstorage_fields.Table.sql" />
     <File RelPath="Таблицы" Link=".\Таблицы\docstorage_history.Table.sql" />
@@ -40,6 +40,7 @@
         <File RelPath="Таблицы" Name="docstorage_fields.Table.sql" BuildAction="Build" />
         <File RelPath="Таблицы" Name="docstorage_history.Table.sql" BuildAction="Build" />
         <File RelPath="" Name="PostDeployment.sql" BuildAction="Build" />
+        <File RelPath="Процедуры" Name="deleteAll.Procedure.sql" BuildAction="Build" />
       </Build>
     </Configuration>
   </Configurations>

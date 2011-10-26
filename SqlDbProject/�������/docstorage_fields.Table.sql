@@ -2,18 +2,18 @@
 -- Описание для таблицы docstorage_fields
 --
 CREATE TABLE docstorage_fields (
-  Id INT(11) NOT NULL AUTO_INCREMENT,
-  IdDocumentStorage INT(11) NOT NULL,
-  IdDocTemplateField INT(11) NOT NULL,
+  id INT(11) NOT NULL AUTO_INCREMENT,
+  idDocumentStorage INT(11) NOT NULL,
+  idDocTemplateField INT(11) NOT NULL,
   StringValue VARCHAR(512) DEFAULT NULL,
   IntValue INT(11) DEFAULT NULL,
   BoolValue TINYINT(1) DEFAULT NULL,
-  PRIMARY KEY (Id),
-  INDEX idDocTemplateField (IdDocTemplateField),
-  INDEX idDocumentStorage (IdDocumentStorage),
-  CONSTRAINT docstorage_fields_ibfk_1 FOREIGN KEY (IdDocumentStorage)
+  PRIMARY KEY (id),
+  INDEX idDocTemplateField (idDocTemplateField),
+  INDEX idDocumentStorage (idDocumentStorage),
+  CONSTRAINT docstorage_fields_ibfk_1 FOREIGN KEY (idDocumentStorage)
     REFERENCES docstorage(id) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT docstorage_fields_ibfk_2 FOREIGN KEY (IdDocTemplateField)
+  CONSTRAINT docstorage_fields_ibfk_2 FOREIGN KEY (idDocTemplateField)
     REFERENCES doctemplate_fields(Id) ON DELETE CASCADE ON UPDATE CASCADE
 )
 ENGINE = INNODB

@@ -106,7 +106,10 @@ class UserRepository implements IObjectRepository
             return $user;
         }
         else 
+        {
+             $this->error = "Пользователь не найден";
             return false;
+        }
         
     }
     
@@ -149,7 +152,10 @@ class UserRepository implements IObjectRepository
             return $user;
         }
         else 
+        {
+            $this->error = "Пользователь не найден";
             return false;
+        }
         
     }
     

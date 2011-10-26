@@ -70,7 +70,7 @@ class UserGroupDocRepository implements IObjectRepository
         return false;
     }
     
-    function Delete($obj,$uId)
+    function Delete($obj,$uId = null)
     {
          /* @var $duserGroupDoc UserGroupDoc */
         $userGroupDoc = $obj;

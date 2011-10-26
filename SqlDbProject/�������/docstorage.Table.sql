@@ -2,19 +2,19 @@
 -- Описание для таблицы docstorage
 --
 CREATE TABLE docstorage (
-  Id INT(11) NOT NULL AUTO_INCREMENT,
-  IdAuthor INT(11) NOT NULL,
-  IdGroup INT(11) NOT NULL,
-  IdGroupDocs INT(11) NOT NULL,
-  Status INT(11) NOT NULL,
+  id INT(11) NOT NULL AUTO_INCREMENT,
+  idAuthor INT(11) NOT NULL,
+  idGroup INT(11) NOT NULL,
+  idGroupDocs INT(11) NOT NULL,
+  status INT(11) NOT NULL,
   DateCreated DATETIME NOT NULL,
   LastChangedDate DATETIME DEFAULT NULL,
-  PRIMARY KEY (Id),
-  INDEX idAuthor (IdAuthor),
-  INDEX idGroupDocs (IdGroupDocs),
-  CONSTRAINT docstorage_ibfk_1 FOREIGN KEY (IdAuthor)
+  PRIMARY KEY (id),
+  INDEX idAuthor (idAuthor),
+  INDEX idGroupDocs (idGroupDocs),
+  CONSTRAINT docstorage_ibfk_1 FOREIGN KEY (idAuthor)
     REFERENCES user_accounts(Id) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT docstorage_ibfk_2 FOREIGN KEY (IdGroupDocs)
+  CONSTRAINT docstorage_ibfk_2 FOREIGN KEY (idGroupDocs)
     REFERENCES user_groups(Id) ON DELETE CASCADE ON UPDATE CASCADE
 )
 ENGINE = INNODB

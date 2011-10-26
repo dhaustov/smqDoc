@@ -2,16 +2,16 @@
 -- Описание для таблицы docstorage_history
 --
 CREATE TABLE docstorage_history (
-  Id INT(11) NOT NULL AUTO_INCREMENT,
-  IdDocument INT(11) NOT NULL,
-  IdUser INT(11) NOT NULL,
+  id INT(11) NOT NULL AUTO_INCREMENT,
+  idDocument INT(11) NOT NULL,
+  idUser INT(11) NOT NULL,
   NewStatus INT(11) NOT NULL,
-  PRIMARY KEY (Id),
-  INDEX idDocument (IdDocument),
-  INDEX idUser (IdUser),
-  CONSTRAINT docstorage_history_ibfk_1 FOREIGN KEY (IdDocument)
+  PRIMARY KEY (id),
+  INDEX idDocument (idDocument),
+  INDEX idUser (idUser),
+  CONSTRAINT docstorage_history_ibfk_1 FOREIGN KEY (idDocument)
     REFERENCES docstorage(id) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT docstorage_history_ibfk_2 FOREIGN KEY (IdUser)
+  CONSTRAINT docstorage_history_ibfk_2 FOREIGN KEY (idUser)
     REFERENCES user_accounts(Id) ON DELETE CASCADE ON UPDATE CASCADE
 )
 ENGINE = INNODB

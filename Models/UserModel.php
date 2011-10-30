@@ -1,38 +1,23 @@
 <?php
 
 /**
- * Description of testModel
+ * User Account model
  *
  * @author Dmitry
  */
 class UserModel implements IModel
-{
-    /*Действия, которые может выполнять модель*/
-    /*
-    var $allowedActions = array(
-        Actions::CREATE,
-        Actions::EDIT,
-        Actions::DELETE,
-        Actions::SAVE,
-        Actions::SHOW,
-        Actions::SHOWLIST
-    );
-    */
-        
+{      
     /* @var $currentCommand UserCommand */
-    var $currentCommand; 
+    private $currentCommand; 
     /* @var $user UserAccount */
-    var $user;
+    private $user;
     /* @var $repository UserRepository */
-    var $repository;
-    var $error;
+    private $repository;
+    private $error;
     
-    public function __construct($_user = null)
+    public function __construct()
     {
-        $this->user = $_user;
         
-        if($this->user)
-            $this->repository = new UserRepository;
     }
     public function PerformAction($_command)
     {        
@@ -42,7 +27,7 @@ class UserModel implements IModel
         $res = false;
         switch($this->currentCommand->action)
         {            
-            case Actions::CREATE : //????
+            case Actions::CREATE :
                 return new UserAccount;
                 break;
             case Actions::DELETE :
@@ -87,12 +72,7 @@ class UserModel implements IModel
             return false;        
         }
     }
-    /*
-    public function GetAllowedActions()
-    {
-        return $this->allowedActions;
-    }
-    */
+    
     public function GetError()
     {
         return $this->error;

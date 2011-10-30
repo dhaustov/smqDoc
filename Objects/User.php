@@ -6,14 +6,14 @@
  * @author Dmitry G. Haustov
  */
 class UserAccount {
-    var $id;
-    var $login;
-    var $password;
-    var $status;    
-    var $name;
-    var $surName;
-    var $middleName;
-    var $lastAccess;
+    public $id;
+    public $login;
+    public $password;
+    public $status;    
+    public $name;
+    public $surName;
+    public $middleName;
+    public $lastAccess;
             
     function __construct($_login = null, $_password = null, 
                                 $_name = null, $_surName = null, 

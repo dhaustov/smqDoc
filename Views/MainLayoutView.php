@@ -13,12 +13,12 @@ class MainLayoutView implements IView
     const TPL_FOOTER = "/templates/MainLayout/footer.php";
     
     /* content for layout parts */
-    var $title;
-    var $header;
-    var $menu;
-    var $footer;
+    public $title;
+    public $header;
+    public $menu;
+    public $footer;
     
-    var $tpl_content;
+    private $tpl_content;
     
     public function __construct($_tplContent = null)
     {

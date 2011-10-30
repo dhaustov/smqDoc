@@ -7,14 +7,14 @@
  */
 class UserGroupDocTemplates 
 {
-    var $id;
-    var $name;
-    var $idUserGroups;
-    var $startDate;
-    var $endDate;    
-    var $idDocTemplate;
-    var $status;
-    var $docTemplateType; //??
+    public $id;
+    public $name;
+    public $idUserGroups;
+    public $startDate;
+    public $endDate;    
+    public $idDocTemplate;
+    public $status;
+    public $docTemplateType; 
     
     function __construct($_idUserGroups, $_idDocTemplate, $_name=null, 
                          $_startDate  = null, $_endDate = null, $_status = null,

@@ -6,14 +6,14 @@
  * @author Dmitry G. Haustov
  */
 class UserGroup {
-    var $id;
-    var $name;
-    var $idParentGroup;
-    var $idMasterUserAccount;
-    var $masterUserAccountRole;
-    var $status;
+    public $id;
+    public $name;
+    public $idParentGroup;
+    public $idMasterUserAccount;
+    public $masterUserAccountRole;
+    public $status;
     
-    var $relatedDocumentTemplates;
+    private $relatedDocumentTemplates;
     
     function __construct( $_idMasterUserAccount, $_name = null, $_masterUserAccountRole = null, 
                           $_idParentGroup = null, $_status = null, $_id = null) 

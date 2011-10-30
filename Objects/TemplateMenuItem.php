@@ -6,9 +6,9 @@
  */
 class TemplateMenuItem
 {
-    var $url;
-    var $text;
-    var $active;
+    public $url;
+    public $text;
+    public $active;
     
     public function __construct($_text, $_url, $_actve = null)
     {

@@ -2,15 +2,10 @@
 
 interface IObjectRepository
 {
-    function Save($obj);
-    
-    function Delete($obj);
-    
-    
-    function GetByID($id);
-    
-    
-    function CheckForExists($obj);
+    public function Save($obj);    
+    public function Delete($obj);        
+    public function GetByID($id);        
+    public function CheckForExists($obj);
     
 }
 

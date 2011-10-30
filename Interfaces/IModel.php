@@ -5,9 +5,8 @@
  */
 interface IModel
 {
-    function PerformAction($action);
-    //function GetAllowedActions();
-    function GetError();
+    public function PerformAction($action);    
+    public function GetError();
 }
 
 ?>

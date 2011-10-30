@@ -6,9 +6,10 @@
  * @author Павел
  */
 class DocTemplate {
-    var $id;
-    var $name;
-    var $fieldsList;
+    public $id;
+    public $name;
+    public $fieldsList;
+    
     public function __construct($_name=null,$_id=null,$_fieldsList=null) {
         $this->id = $_id;
         $this->name = $_name;

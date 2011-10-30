@@ -1,13 +1,13 @@
 <?php
 /**
- * Description of CommandUser
+ * Commands for users
  *
  * @author Dmitry
  */
 class UserCommand
 {
     /*разрешённые действия*/
-    var $allowedActions = array(
+    public $allowedActions = array(
         Actions::CREATE,
         Actions::EDIT,
         Actions::DELETE,
@@ -17,13 +17,13 @@ class UserCommand
     );
     
     /* full REQUEST Command string */
-    var $command;  
+    private $command;  
     
     /* Parsed command params*/
-    var $action; 
-    var $pageSize; 
-    var $pageNum;
-    var $id;
+    public $action; 
+    public $pageSize; 
+    public $pageNum;
+    public $id;
     
     public function __construct($_command)
     {
@@ -35,7 +35,7 @@ class UserCommand
                 $this->action = $action;
         }
         
-        if(!$this->action) //default action ??
+        if(!$this->action) 
             $this->action = Actions::SHOWLIST;
                
         if(isset($this->command['pagesize']))
@@ -50,8 +50,7 @@ class UserCommand
     
     public function IsValid()
     {
-        if($this->action) return true;
-        
+        if($this->action) return true;        
         return false;
     }
    

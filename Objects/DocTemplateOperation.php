@@ -5,9 +5,10 @@
  * @author Павел
  */
 class DocTemplateOperation {
-    var $id;
-    var $name;
-    var $code;
+    public $id;
+    public $name;
+    public $code;
+    
     public function __construct($_name=null,$_code=null,$_id=null) {
         $this->id = $_id;
         $this->name = $_name;

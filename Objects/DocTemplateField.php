@@ -5,16 +5,16 @@
  * @author Павел
  */
 class DocTemplateField {
-    var $id;
-    var $name;
-    var $isCalculated;
+    public $id;
+    public $name;
+    public $isCalculated;
     /* @var $fieldType DocTemplateFieldType */
-    var $fieldType;
-    var $isRestricted;
-    var $minVal;
-    var $maxVal;
+    public $fieldType;
+    public $isRestricted;
+    public $minVal;
+    public $maxVal;
     /* @var $operation DocTemplateOperation */
-    var $operation;
+    public $operation;
     
     public function __construct($_name=null,$_isCalculated=null,$_fieldType=null,
             $_isRestricted=null,$_minVal=null,$_maxVal=null,$_operation=null,$_id=null) {

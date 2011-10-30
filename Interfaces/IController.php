@@ -5,10 +5,9 @@
  */
 interface IController
 {
-    function RunModel();    
-    function ShowResult();
-    //function ParseCommand();
-    function GetError();
+    public function RunModel();    
+    public function ShowResult();    
+    public function GetError();
 }
 
 ?>

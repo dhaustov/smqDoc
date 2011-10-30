@@ -1,14 +1,9 @@
 <?php
 
-/**
- *
- * @author Dmitry
- */
 interface IValidator
-{    
-  
-    function Validate($obj);    
-    function GetError();
+{      
+    public function Validate($obj);    
+    public function GetError();
 }
 
 ?>

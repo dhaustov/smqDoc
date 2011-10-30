@@ -7,7 +7,7 @@
  */
 class TemplateFooterItem
 {
-    var $text;
+    public $text;
     
     public function __construct($_text = null)
     {

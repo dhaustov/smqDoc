@@ -6,12 +6,13 @@
  * @author Павел
  */
 class UserGroupDocField {
-    var $id;
+    public $id;
     /* @var $docTemplateField DocTemplateField */
-    var $docTemplateField;
-    var $stringValue;
-    var $intValue;
-    var $boolValue;
+    public $docTemplateField;
+    public $stringValue;
+    public $intValue;
+    public $boolValue;
+    
     public function __construct($_id=null,$_docTemplateField=null,$_stringValue=null,$_intValue=null,$_boolValue=null)
     {
         $this->id = $_id;

@@ -8,17 +8,18 @@
  */
 class UserGroupDoc
 {
-    var $id;
+    public $id;
     /* @var $author User*/
-    var $author;
+    public $author;
     /* @var $group UserGroup*/
-    var $group;
+    public $group;
     /* @var $groupDocTempl UserGroupDocTemplates*/
-    var $groupDocTempl;
-    var $status;
-    var $dateCreated;
-    var $lastChangedDate;
-    var $fieldsList ;
+    public $groupDocTempl;
+    public $status;
+    public $dateCreated;
+    public $lastChangedDate;
+    public $fieldsList ;
+    
     public function __construct($_id=null,$_author=null,$_groupDoc=null,$_status=null,
             $_dateCreated=null,$_lastChangedDate=null,$_fieldsList) {
         $this->id = $_id;

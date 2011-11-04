@@ -9,7 +9,7 @@ CREATE TABLE doctemplate_fields (
   IsRestricted TINYINT(1) NOT NULL,
   MinVal INT(11) DEFAULT NULL,
   MaxVal INT(11) DEFAULT NULL,
-  IdOperation INT(11) NOT NULL,
+  IdOperation INT(11) DEFAULT NULL,
   IdDoctemplate INT(11) NOT NULL,
   PRIMARY KEY (Id),
   INDEX IdDoctemplate (IdDoctemplate),
@@ -17,8 +17,6 @@ CREATE TABLE doctemplate_fields (
   INDEX IdOperation (IdOperation),
   CONSTRAINT doctemplate_fields_ibfk_1 FOREIGN KEY (IdFieldType)
     REFERENCES doctemplate_fieldtypes(Id) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT doctemplate_fields_ibfk_2 FOREIGN KEY (IdOperation)
-    REFERENCES doctemplate_operations(Id) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT FK_doctemplate_fields_doctemplates_id FOREIGN KEY (IdDoctemplate)
     REFERENCES doctemplates(Id) ON DELETE RESTRICT ON UPDATE RESTRICT
 )

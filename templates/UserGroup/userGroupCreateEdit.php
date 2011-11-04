@@ -1,3 +1,34 @@
+<script type="text/javascript">
+    function AddNewTemplate()
+    {
+        var lst = document.getElementById("lstAllTemplates");
+        var hdnCnt = document.getElementById("hdnNewTempCount");
+        var hdnLastID = document.getElementById("hdnNewTempLastID");
+        var divNewTemp = document.getElementById("divNewTemplates");
+        
+        var newID = +hdnLastID.value + 1;
+        var newCnt = +hdnCnt.value + 1;
+            
+        var elem = document.createElement("input");
+        elem.setAttribute("type", "hidden");
+        elem.setAttribute("value", lst.value);
+        elem.setAttribute("name", "hdnNewTemplate" + newID.toString());
+        elem.setAttribute("id", "hdnNewTemplate" + newID.toString());
+                
+        var text = document.createElement("span");
+        text.innerHTML = lst[lst.selectedIndex].innerHTML;
+        text.setAttribute("style", "color: blue");
+        
+        divNewTemp.appendChild(document.createElement("br"));
+        divNewTemp.appendChild(elem);
+        divNewTemp.appendChild(text);
+        
+        hdnLastID.value = newID;
+        hdnCnt.value = newCnt;
+        
+        //alert("new value: " + elem.value + " Last ID: " + hdnLastID.value + " new count: " +hdnCnt.value );
+    }
+</script>
 <div id="main">
 <h2>Создание новой группы:</h2>
 <form name="frmNewUser" method="POST" action="<?php echo $frmAction; ?>" />
@@ -79,10 +110,50 @@
                 </select>
             </td>
         </tr>
+        <?php if($res->id > 0) : ?>
+            <tr>
+                <td>
+                    Шаблоны документов:
+                </td>                    
+                <td>
+                    <div id="divNewTemplates" style="border: 0px;" >
+                        <?php if($lstDocTemplatesExists) 
+                                foreach($lstDocTemplatesExists as $t) : 
+                                    echo $t->name." <br />";
+                                endforeach; 
+                            ?>
+                    </div>
+                </td>
+            </tr>  
+        <?php endif; ?>
+        
+        <?php if($res->id > 0) : ?>
+            <tr>
+                <td>
+                    Добавить шаблон документа:
+                </td>
+                <td>
+                    <select name="lstAllTemplates" id="lstAllTemplates">
+                      <?php 
+                            if($lstDocTemplatesAll) 
+                                foreach($lstDocTemplatesAll as $t) 
+                                {
+                                    echo "<option value='".$t->id."'>".$t->name."</option>";
+                                }
+                      ?>
+                    </select>
+                    <input type="button" id="btnAdd" onclick ="AddNewTemplate()" value="Добавить" />
+                    <input type="hidden" id="hdnNewTempCount" name="hdnNewTempCount" value="0" />
+                    <input type="hidden" id="hdnNewTempLastID" name="hdnNewTempLastID" value="0" />
+                </td>
+            </tr>            
+        <?php endif; ?>
+            
     </table>
     <input type="hidden" name="hdnGid" value="<?php echo $res->id; ?>" />
     <span class="error"><?php echo $error; ?></span>
     <input type="submit" value="Сохранить" />
 </form>    
 </div>
+
 

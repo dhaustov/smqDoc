@@ -61,11 +61,16 @@ class UserGroupController implements IController
         {            
             $this->view->userAccounts = $this->model->GetUserList();
             $this->view->otherGroups = $this->model->GetOtherGroupsList();
+           
+            $this->view->lstDocTemplatesExists = $this->model->GetDocTemplatesExistsList();
+            $this->view->lstDocTemplatesAll = $this->model->GetDocTemplatesAllList();
         }
         
         if( $this->result &&
             $this->command->action == Actions::SHOW )
         {
+            $this->view->lstDocTemplatesExists = $this->model->GetDocTemplatesExistsList();
+            
             if($this->result->idMasterUserAccount > 0)
                 $this->view->masterUser = $this->model->GetMasterUser($this->result->idMasterUserAccount);
             

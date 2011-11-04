@@ -28,7 +28,9 @@
                 <?php include_once MainLayoutView::TPL_MENU; ?>
             </div>
             <div id="content" class="content">
-                <?php $this->childView->ShowPage(); /*include_once $this->tpl_content;*/ ?>
+                <?php                     
+                    $this->childView->ShowPage(); 
+                ?>
             </div>
             <div id="footer" class="footer">
                 <?php include_once MainLayoutView::TPL_FOOTER; ?>

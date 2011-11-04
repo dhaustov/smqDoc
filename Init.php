@@ -1,10 +1,11 @@
 <?php
-
+session_start();
 //Helpers
 require_once 'Config.php';
 require_once 'Helpers/SqlHelper.php';
 require_once 'Helpers/ToolsHelper.php';
 require_once 'Helpers/NotificationHelper.php';
+require_once 'Helpers/LoginHelper.php';
 
 //Interfaces
 require_once 'Interfaces/IObjectRepository.php';

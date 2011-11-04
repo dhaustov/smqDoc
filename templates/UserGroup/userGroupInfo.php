@@ -42,6 +42,20 @@
                 <?php echo $res->status == DbRecordStatus::ACTIVE ? "Активный" : "Неактивный";  ?>                
             </td>
         </tr>
+        <tr>
+            <td>
+                Шаблоны документов:
+            </td>                    
+            <td>
+                <div id="divNewTemplates" style="border: 0px;" >
+                    <?php if($lstDocTemplatesExists) 
+                            foreach($lstDocTemplatesExists as $t) : 
+                                echo $t->name." <br />";
+                            endforeach; 
+                        ?>
+                </div>
+            </td>
+       </tr>  
     </table>
     <span class="error"><?php echo $error; ?></span>
 

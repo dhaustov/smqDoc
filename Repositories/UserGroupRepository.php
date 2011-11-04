@@ -17,6 +17,7 @@ class UserGroupRepository implements IObjectRepository
         
         if( $usrGroup->id > 0 ) //Updating Existing UserGroup
         {
+                $tr = SqlHelper::StartTransaction();
                 $query = "update user_groups set                                                             
                               name = '".ToolsHelper::CleanInputString($usrGroup->name)."',                             
                               idParentGroup = '".ToolsHelper::CleanInputString($usrGroup->idParentGroup)."', 
@@ -27,11 +28,44 @@ class UserGroupRepository implements IObjectRepository
                 
                 $numRows = SqlHelper::ExecUpdateQuery($query);
                                 
+                //обновлем темплейты
+                $rep = new DocTemplateRepository();
+                $lst = $rep->GetListByGroupID($usrGroup->id);
+                $lstNewTemplates = $usrGroup->GetRelatedDocTemplates();
+//                if($lst)
+//                {
+//                    foreach ($lst as $t)
+//                    {
+//                        if(!$lstNewTemplates || !in_array($t->id,$lstNewTemplates ))
+//                        {
+//                            $delQuery = "delete from usergroups_doctemplates where idGroup = '".$usrGroup->id."' and idDoctemplate = '".$t->id."'";
+//                            $res = SqlHelper::ExecDeleteQuery($delQuery);
+//                        }
+//                    }                                        
+//                }
+                
+                if($lstNewTemplates)
+                {
+                    foreach ($lstNewTemplates as $t)
+                    {
+                        if(!$lst || !in_array($t ,$lst))
+                        {
+                            $insQuery = "insert into usergroups_doctemplates (idGroup,idDoctemplate) values ('".$usrGroup->id."','$t') ";
+                            $res = SqlHelper::ExecInsertQuery($insQuery);
+                        }
+                    }
+                }
+                
                 if(!$numRows)
                 {
+                    SqlHelper::RollbackTransaction($tr);
                     $this->error = "При обновлении группы пользователей произошла ошибка!";
                     NotificationHelper::LogCritical("Error in class: '".__CLASS__."' method: '".__METHOD__."' query: '$query'");
                     return false;
+                }
+                else
+                {
+                    SqlHelper::CommitTransaction($tr);                    
                 }
                 return $usrGroup->id;
         }
@@ -53,6 +87,16 @@ class UserGroupRepository implements IObjectRepository
 
             $newid = SqlHelper::ExecInsertQuery($query);
 
+            /*
+            //добавляем темплейты
+            $lstNewTemplates = $usrGroup->GetRelatedDocTemplates();
+            foreach ($lstNewTemplates as $t)
+            {                        
+                $insQuery = "insert into usergroups_doctemplates (idGroup,idDoctemplate) values ('".$usrGroup->id."','$t') ";
+                $res = SqlHelper::ExecInsertQuery($insQuery);                     
+            }
+              */
+            
             if(!$newid)
             {
                 $this->error = "При сохранении пользовательской группы возникла ошибка!";

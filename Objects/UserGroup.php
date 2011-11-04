@@ -11,7 +11,7 @@ class UserGroup {
     public $idParentGroup;
     public $idMasterUserAccount;
     public $masterUserAccountRole;
-    public $status;
+    public $status;    
     
     private $relatedDocumentTemplates;
     

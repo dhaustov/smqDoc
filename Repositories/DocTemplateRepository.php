@@ -454,6 +454,23 @@ class DocTemplateRepository implements IObjectRepository
 //        }
     }
     
+   public function GetListByGroupID($id)
+   {
+       $res = Array();
+       $query = "select idDocTemplate  from userGroups_docTemplates where idGroup= '$id' ";
+       $lst = SqlHelper::ExecSelectCollectionQuery($query);
+       if($lst)
+       {
+           foreach($lst as $tid)
+           {
+               $res[] = $this->GetByID($tid["idDocTemplate"]);
+           }
+       }
+       if(count($res) > 0)
+           return $res;
+       else
+           return false;
+   }
    public function GetList($pageSize = 1, $pageNum = 1, $status = null)
     {
         $retArr = false;

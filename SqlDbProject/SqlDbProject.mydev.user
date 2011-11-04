@@ -3,8 +3,22 @@
 <!-- Modifying this generated file will probably render it invalid -->
 <Options Version="3.0">
   <Documents>
+    <Document Moniker="Table:smqdoc.doctemplate_fieldtypes(localhost)" ActiveView="Design" Factory="{3586cc08-aeb7-47f4-a38f-1700741266f6}">
+      <Persist>
+        <Pinned>True</Pinned>
+      </Persist>
+    </Document>
     <Document Moniker=".\Таблицы\doctemplates.Table.sql" ActiveView="Code" Factory="{3586cc08-aeb7-47f4-a38f-1700741266f6}" />
-    <Document Moniker=".\Таблицы\docstorage.Table.sql" ActiveView="Code" Factory="{3586cc08-aeb7-47f4-a38f-1700741266f6}" />
+    <Document Moniker="Table:smqdoc.doctemplates(localhost)" ActiveView="Design" Factory="{3586cc08-aeb7-47f4-a38f-1700741266f6}">
+      <Persist>
+        <Pinned>True</Pinned>
+      </Persist>
+    </Document>
+    <Document Moniker="Table:smqdoc.usergroups_doctemplates(localhost)" ActiveView="Design" Factory="{3586cc08-aeb7-47f4-a38f-1700741266f6}">
+      <Persist>
+        <Pinned>True</Pinned>
+      </Persist>
+    </Document>
   </Documents>
   <Services>
     <Service GUID="{811fba21-97c2-44b6-8c1c-eae1f1315f2d}">

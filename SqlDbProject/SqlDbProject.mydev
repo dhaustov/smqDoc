@@ -20,6 +20,7 @@
     <File RelPath="Таблицы" Link=".\Таблицы\groups_docs.Table.sql" />
     <File RelPath="Таблицы" Link=".\Таблицы\user_accounts.Table.sql" />
     <File RelPath="Таблицы" Link=".\Таблицы\user_groups.Table.sql" />
+    <File RelPath="Таблицы" Link=".\Таблицы\usergroups_doctemplates.Table.sql" />
     <File RelPath="" Link=".\PostDeployment.sql" />
     <File RelPath="" Link=".\PreDeployment.sql" />
   </Include>
@@ -41,6 +42,7 @@
         <File RelPath="Таблицы" Name="docstorage_history.Table.sql" BuildAction="Build" />
         <File RelPath="" Name="PostDeployment.sql" BuildAction="Build" />
         <File RelPath="Процедуры" Name="deleteAll.Procedure.sql" BuildAction="Build" />
+        <File RelPath="Таблицы" Name="usergroups_doctemplates.Table.sql" BuildAction="Build" />
       </Build>
     </Configuration>
   </Configurations>

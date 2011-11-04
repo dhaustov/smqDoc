@@ -91,6 +91,8 @@ class SqlHelper {
             else
             {
                 $retVal = $sqlCon->affected_rows;
+                
+                if($retVal == 0) $retVal =1;
                 //echo "retval updated rows:".$retVal." for query $query<br />";
                 
             }

@@ -26,6 +26,9 @@ class UserGroupView  implements IView
  
     public $lstGroupMasterUsers;
     public $lstGroupParents;
+    
+    public $lstDocTemplatesAll;    
+    public $lstDocTemplatesExists;
            
     public $currentTemplate;
     
@@ -74,7 +77,7 @@ class UserGroupView  implements IView
                 }
                 else
                 {   
-                    $this->currentTemplate = UserGroupView::TPL_SHOW;                    
+                    $this->currentTemplate = UserGroupView::TPL_SHOW;                     
                 }
                 break;
             
@@ -110,7 +113,9 @@ class UserGroupView  implements IView
         $totalItems = $this->totalItems;
         $lstGroupMasterUsers  = $this->lstGroupMasterUsers;
         $lstGroupParents = $this->lstGroupParents;
-                
+        $lstDocTemplatesAll = $this->lstDocTemplatesAll;
+        $lstDocTemplatesExists = $this->lstDocTemplatesExists;
+        
         include_once $this->currentTemplate;    
     }
     

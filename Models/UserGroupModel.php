@@ -35,6 +35,21 @@ class UserGroupModel implements IModel
             case Actions::SAVE :              
                 $validator = new UserGroupValidator();
                 
+                //Собираем теплейты    
+                $fields = Array();                
+                $cntFields = $_POST['hdnNewTempCount']; //общее количество полей на форме
+                $i=0; 
+                $cnt = 1; //счётчик для id
+                while($i<$cntFields)
+                {
+                    if($_POST['hdnNewTemplate'.$cnt])
+                    {    
+                        $fields[] = $_POST['hdnNewTemplate'.$cnt];                        
+                        $i++;
+                    }                        
+                    $cnt++;
+                }
+                
                 $tmpGroup = new UserGroup( $_POST["selIdMasterUser"],
                                            $_POST["lblName"],
                                            $_POST["lblMasterUserRole"],
@@ -42,6 +57,8 @@ class UserGroupModel implements IModel
                                            $_POST["selStatus"],
                                            $_POST["hdnGid"]
                                          );
+                
+                $tmpGroup->AddRelatedDocTemplates($fields);
                 if(!$validator->IsValid($tmpGroup)) //валидируем
                 {
                     $this->error = $validator->GetError();
@@ -112,10 +129,26 @@ class UserGroupModel implements IModel
         return $this->repository->GetListItemsCount();
     }
     
+    public function GetDocTemplatesExistsList()
+    {
+        if($this->group->id > 0)
+        {
+            $rep = new DocTemplateRepository();
+            return $rep->GetListByGroupID($this->group->id);
+        }
+        return false;
+    }
+    
+    public function GetDocTemplatesAllList()
+    {
+        $rep = new DocTemplateRepository();
+        return $rep->GetList();
+    }
+    
     public function GetError()
     {
         return $this->error;
-    }
+    }        
 }
 
 ?>

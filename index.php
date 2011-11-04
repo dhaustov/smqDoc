@@ -7,6 +7,11 @@
     <body>-->
         <?php
            require_once 'Init.php';
+           //if(!LoginHelper::GetCurrentUserId())
+           //{               
+           //    include_once 'Login.php';
+           //}
+           //else
            include_once 'dt.php';
         ?>
 <!--        <a href="./dt.php" title="Дмитрий">Дмитрий</a><br>

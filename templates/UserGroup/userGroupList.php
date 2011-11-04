@@ -1,23 +1,29 @@
 <div id="main">
-    <h2>Список пользователей:</h2>
-    <form name="frmUserList" method="POST" action="<?php echo $frmAction; ?>" />
+    <h2>Список групп пользователей:</h2>
+    <form name="frmUserGroupList" method="POST"  action="<?php echo $frmAction; ?>" />
     <table style="border: 1px solid black;">
         <th>
-            Логин
+            Наименование группы
         </th>
         <th>
-            ФИО
+            Глава группы
+        </th>
+        <th>
+            Родительская группа
         </th>
         <th>
             Операции
         </th>
-        <?php if($res) foreach ($res as $user) : ?>
+        <?php   $i=0;
+                if($res) foreach ($res as $group) : ?>
             <tr>
-                <td><?php echo "<a href=\"index.php?module=".Modules::USERS."&action=".Actions::SHOW."&id=".$user->id."\">".$user->login."</a>"; ?></td>
-                <td><?php echo $user->surName." ".$user->name." ".$user->middleName;?></td>
-                <td><?php echo "<a href=\"index.php?module=".Modules::USERS."&action=".Actions::EDIT."&id=".$user->id."\">Редактировать</a>"; ?></td>
+                <td><?php echo "<a href=\"index.php?module=".Modules::USERGROUPS."&action=".Actions::SHOW."&id=".$group->id."\">".$group->name."</a>"; ?></td>
+                <td><?php if(isset($lstGroupMasterUsers[$i])) echo $lstGroupMasterUsers[$i]->surName." ".$lstGroupMasterUsers[$i]->name." ".$lstGroupMasterUsers[$i]->middleName;?></td>
+                <td><?php if(isset($lstGroupParents[$i])) echo $lstGroupParents[$i]->name; ?></td>
+                <td><?php echo "<a href=\"index.php?module=".Modules::USERGROUPS."&action=".Actions::EDIT."&id=".$group->id."\">Редактировать</a>"; ?></td>
             </tr>
-        <?php endforeach; ?>
+        <?php   $i++;
+                endforeach; ?>
     </table>
     <div id="paging">
         Размер страницы:        
@@ -32,7 +38,7 @@
         <?php if(isset($_REQUEST["pageSize"]) && $_REQUEST["pageSize"] > 0 ) : ?>
             Страницы: 
                 <?php 
-                   for ($i=0;$i<= /*$_REQUEST["totalElements"]*/ $totalItems/$_REQUEST["pageSize"];$i++)
+                   for ($i=0;$i<=$totalItems/$_REQUEST["pageSize"];$i++)
                    {
                         //TODO: добавить атрибут css класс для активной ссылки в $active
                         if( ( isset($_REQUEST["pageNum"]) && $_REQUEST["pageNum"] == $i ) ||
@@ -42,14 +48,14 @@
                         else
                             $active = " style='color:blue;' ";
                         
-                        echo "<a href='index.php?module=".Modules::USERS.
+                        echo "<a href='index.php?module=".Modules::USERGROUPS.
                              "&action=".Actions::SHOWLIST.
                              "&pageNum=".$i.
                              "&pageSize=".$_REQUEST['pageSize']."' $active > ".($i+1)." </a>";
-//                        "&totalElements=".$_REQUEST['totalElements']."
                    }
                 ?>
         <?php endif; ?>
     </div>
 </form>
 </div>
+

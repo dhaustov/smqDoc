@@ -10,11 +10,12 @@ class ToolsHelper {
         header("Content-Location: ".$page);
         header("Location: ".$page);
     }
-    public static function RedirectToErrorPage()
-    {
-        header("Request-URI: ErrorPage.php");
-        header("Content-Location: ErrorPage.php");
-        header("Location: ErrorPage.php");
+    
+    public static function RedirectToErrorPage($error = "")
+    {          
+        header("Request-URI: templates/ErrorPage.php");
+        header("Content-Location: templates/ErrorPage.php");
+        header("Location: templates/ErrorPage.php");         
     }
     
     public static function CleanInputString($input /*, $sql=false*/) 

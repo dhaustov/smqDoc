@@ -1,4 +1,5 @@
-Возникла ошибка:
+Возникла внутренняя ошибка системы: <br />
 <?php
-echo $error;
+    if(isset($error))
+        echo $error;
 ?>

@@ -16,7 +16,7 @@ class Config {
     private $smtp_from='smqDoc server';
     private $email_admin='';
     private $email_developer='';
-    private $errorlog_file='C:\wamp\smqDocLog.txt';
+    private $errorlog_file='C:\appserv\smqDocLog.txt';
     private function __construct() 
     {
         //echo 'Я конструктор<br>';

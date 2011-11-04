@@ -1,6 +1,6 @@
 ﻿-- Скрипт сгенерирован Devart dbForge Studio for MySQL, Версия 5.0.50.1
 -- Домашняя страница продукта: http://www.devart.com/ru/dbforge/mysql/studio
--- Дата скрипта: 10.10.2011 19:23:57
+-- Дата скрипта: 30.10.2011 22:34:58
 -- Версия сервера: 5.5.8
 -- Пожалуйста, сохраните резервную копию Вашей схемы перед запуском этого скрипта 
 
@@ -76,7 +76,6 @@ CREATE TABLE eventlog (
   PRIMARY KEY (id)
 )
 ENGINE = INNODB
-AUTO_INCREMENT = 18
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
@@ -127,10 +126,9 @@ CREATE TABLE doctemplate_fields (
   CONSTRAINT doctemplate_fields_ibfk_2 FOREIGN KEY (IdOperation)
     REFERENCES doctemplate_operations(Id) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT FK_doctemplate_fields_doctemplates_id FOREIGN KEY (IdDoctemplate)
-    REFERENCES doctemplates(id) ON DELETE RESTRICT ON UPDATE RESTRICT
+    REFERENCES doctemplates(Id) ON DELETE RESTRICT ON UPDATE RESTRICT
 )
 ENGINE = INNODB
-AUTO_INCREMENT = 107
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
@@ -140,22 +138,20 @@ COLLATE utf8_general_ci;
 --
 -- Описание для таблицы user_groups
 --
-CREATE TABLE user_groups(
+CREATE TABLE user_groups (
   Id INT(11) NOT NULL AUTO_INCREMENT,
   Name VARCHAR(50) NOT NULL,
   IdParentGroup INT(11) DEFAULT NULL,
   IdMasterUserAccount INT(11) NOT NULL,
   MasterUserAccountRole VARCHAR(50) NOT NULL,
+  status TINYINT(4) DEFAULT 1,
   PRIMARY KEY (Id),
   INDEX IdMasterUserAccount (IdMasterUserAccount),
   INDEX IdParentGroup (IdParentGroup),
-  CONSTRAINT user_groups_ibfk_1 FOREIGN KEY (IdParentGroup)
-  REFERENCES user_groups (Id) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT user_groups_ibfk_2 FOREIGN KEY (IdMasterUserAccount)
-  REFERENCES user_accounts (Id) ON DELETE CASCADE ON UPDATE CASCADE
+    REFERENCES user_accounts(Id) ON DELETE CASCADE ON UPDATE CASCADE
 )
 ENGINE = INNODB
-AUTO_INCREMENT = 1
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
@@ -165,7 +161,7 @@ COLLATE utf8_general_ci;
 --
 -- Описание для таблицы docstorage
 --
-CREATE TABLE docstorage(
+CREATE TABLE docstorage (
   id INT(11) NOT NULL AUTO_INCREMENT,
   idAuthor INT(11) NOT NULL,
   idGroup INT(11) NOT NULL,
@@ -177,12 +173,11 @@ CREATE TABLE docstorage(
   INDEX idAuthor (idAuthor),
   INDEX idGroupDocs (idGroupDocs),
   CONSTRAINT docstorage_ibfk_1 FOREIGN KEY (idAuthor)
-  REFERENCES user_accounts (Id) ON DELETE CASCADE ON UPDATE CASCADE,
+    REFERENCES user_accounts(Id) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT docstorage_ibfk_2 FOREIGN KEY (idGroupDocs)
-  REFERENCES user_groups (Id) ON DELETE CASCADE ON UPDATE CASCADE
+    REFERENCES user_groups(Id) ON DELETE CASCADE ON UPDATE CASCADE
 )
 ENGINE = INNODB
-AUTO_INCREMENT = 1
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
@@ -192,19 +187,20 @@ COLLATE utf8_general_ci;
 --
 -- Описание для таблицы groups_docs
 --
-CREATE TABLE groups_docs(
+CREATE TABLE groups_docs (
   id INT(11) NOT NULL AUTO_INCREMENT,
   idUserGroups INT(11) NOT NULL,
   Name VARCHAR(256) NOT NULL,
   StartDate DATE DEFAULT NULL,
   EndDate DATE DEFAULT NULL,
+  status TINYINT(4) DEFAULT 1 COMMENT 'Статус связи',
+  idDocTemplate INT(11) NOT NULL COMMENT 'Шаблон документа, привязываемый к группе',
   PRIMARY KEY (id),
   INDEX idUserGroups (idUserGroups),
   CONSTRAINT groups_docs_ibfk_1 FOREIGN KEY (idUserGroups)
-  REFERENCES user_groups (Id) ON DELETE CASCADE ON UPDATE CASCADE
+    REFERENCES user_groups(Id) ON DELETE CASCADE ON UPDATE CASCADE
 )
 ENGINE = INNODB
-AUTO_INCREMENT = 1
 CHARACTER SET utf8
 COLLATE utf8_general_ci
 COMMENT = 'Таблица назначений документов';
@@ -215,7 +211,7 @@ COMMENT = 'Таблица назначений документов';
 --
 -- Описание для таблицы docstorage_fields
 --
-CREATE TABLE docstorage_fields(
+CREATE TABLE docstorage_fields (
   id INT(11) NOT NULL AUTO_INCREMENT,
   idDocumentStorage INT(11) NOT NULL,
   idDocTemplateField INT(11) NOT NULL,
@@ -226,12 +222,11 @@ CREATE TABLE docstorage_fields(
   INDEX idDocTemplateField (idDocTemplateField),
   INDEX idDocumentStorage (idDocumentStorage),
   CONSTRAINT docstorage_fields_ibfk_1 FOREIGN KEY (idDocumentStorage)
-  REFERENCES docstorage (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    REFERENCES docstorage(id) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT docstorage_fields_ibfk_2 FOREIGN KEY (idDocTemplateField)
-  REFERENCES doctemplate_fields (Id) ON DELETE CASCADE ON UPDATE CASCADE
+    REFERENCES doctemplate_fields(Id) ON DELETE CASCADE ON UPDATE CASCADE
 )
 ENGINE = INNODB
-AUTO_INCREMENT = 1
 CHARACTER SET utf8
 COLLATE utf8_general_ci
 COMMENT = 'Таблица значений полей документов';
@@ -242,7 +237,7 @@ COMMENT = 'Таблица значений полей документов';
 --
 -- Описание для таблицы docstorage_history
 --
-CREATE TABLE docstorage_history(
+CREATE TABLE docstorage_history (
   id INT(11) NOT NULL AUTO_INCREMENT,
   idDocument INT(11) NOT NULL,
   idUser INT(11) NOT NULL,
@@ -251,12 +246,11 @@ CREATE TABLE docstorage_history(
   INDEX idDocument (idDocument),
   INDEX idUser (idUser),
   CONSTRAINT docstorage_history_ibfk_1 FOREIGN KEY (idDocument)
-  REFERENCES docstorage (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    REFERENCES docstorage(id) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT docstorage_history_ibfk_2 FOREIGN KEY (idUser)
-  REFERENCES user_accounts (Id) ON DELETE CASCADE ON UPDATE CASCADE
+    REFERENCES user_accounts(Id) ON DELETE CASCADE ON UPDATE CASCADE
 )
 ENGINE = INNODB
-AUTO_INCREMENT = 1
 CHARACTER SET utf8
 COLLATE utf8_general_ci
 COMMENT = 'История изменения статусов документов';
@@ -265,4 +259,35 @@ COMMENT = 'История изменения статусов документо
 
 -- ..\PostDeployment.sql
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+INSERT INTO doctemplate_fieldtypes 
+  VALUES 
+  (1, 'String', 'stringValue'), 
+  (2, 'Int', 'intValue'), 
+  (3, 'Bool', 'boolValue');
+INSERT INTO doctemplate_operations 
+  VALUES 
+  (1, 'Summ', '{a}+{b}'), 
+  (2, 'Mult', '{a}*{b}'), 
+  (3, 'Razn', '{a}-{b}');
+
+
+
+-- ..\Процедуры\deleteAll.Procedure.sql
+DELIMITER $$
+
+CREATE PROCEDURE deleteAll()
+BEGIN
+  DELETE
+FROM
+  groups_docs;
+
+  DELETE
+FROM
+  user_groups;
+
+  DELETE
+FROM
+  user_accounts;
+END
+$$
 

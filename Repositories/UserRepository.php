@@ -159,12 +159,22 @@ class UserRepository implements IObjectRepository
         
     }
     
-    public function GetList($status = null)
-    {
+    public function GetList($pageSize = 1, $pageNum = 1, $status = null)
+    {        
+//        $cntQuery = "select count(*) from user_accounts ";
+//            if($status)
+//                $cntQuery.=" where status = $status";
+//            $cnt = SqlHelper::ExecSelectValueQuery($cntQuery);
+            
+        //если pageSize = 1 - выводим всех
         $retArr = false;
         $query = "select id,login,password,status,name,surname,middlename,lastaccess from user_accounts ";
         if($status)
             $query.=" where status = $status";
+        
+        if($pageSize > 1)        
+            $query.=" limit ".((int)$pageNum * (int)$pageSize).",".$pageSize;                
+                                
         $res = SqlHelper::ExecSelectCollectionQuery($query);
         $i=0;
         if($res)
@@ -185,6 +195,7 @@ class UserRepository implements IObjectRepository
                 $i++;
             }
         }
+        
         if($retArr)
             return $retArr;
         else
@@ -192,6 +203,19 @@ class UserRepository implements IObjectRepository
             $this->error = "Пользователей не найдено";
             return false;
         }        
+    }
+        
+        public function GetListItemsCount($status = null)
+    {
+        $query = "select count(*)
+                  from user_accounts ";
+        if($status)
+            $query.="  where status = $status";        
+        $res = SqlHelper::ExecSelectValueQuery($query);
+        
+        if($res)
+            return $res;
+        else return 0;
     }
     
     public function GetError()

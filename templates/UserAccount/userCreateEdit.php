@@ -1,6 +1,6 @@
 <div id="main">
 <h2>Создание нового пользователя:</h2>
-<form name="frmNewUser" method="POST" action="<?php echo $formAction; ?>" />
+<form name="frmNewUser" method="POST" action="<?php echo $frmAction; ?>" />
     <table>
         <tr>
             <td>  

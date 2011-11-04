@@ -13,14 +13,14 @@ class SqlHelper {
             if($mysqli->connect_errno>0)
             {
                 NotificationHelper::LogCriticalSqlConnection("Connection to Sql server Error: ".$mysqli->connect_error);
-                ToolsHelper::RedirectToErrorPage();
+                ToolsHelper::RedirectToErrorPage("Error connect to DB server");
                 return false;
             }
             $mysqli->set_charset("utf8");
             if($mysqli->errno>0)
             {
                 NotificationHelper::LogCritical("Error setting charset Error: ".$sqlCon->error);
-                ToolsHelper::RedirectToErrorPage();
+                ToolsHelper::RedirectToErrorPage("Error setting charset");
                 return false;
             }
             return $mysqli;
@@ -63,7 +63,7 @@ class SqlHelper {
         if($sqlCon->errno>0)
             {
                 NotificationHelper::LogCritical("Error executing query: ".$query." Error: ".$sqlCon->error);
-                ToolsHelper::RedirectToErrorPage();
+                ToolsHelper::RedirectToErrorPage("Error executing insert query");
             }
             else
             {
@@ -86,7 +86,7 @@ class SqlHelper {
         if($sqlCon->errno > 0)
             {
                 NotificationHelper::LogCritical("Error executing query: ".$query." Error: ".$sqlCon->error);
-                ToolsHelper::RedirectToErrorPage();
+                ToolsHelper::RedirectToErrorPage("Error executing update query");
             }
             else
             {
@@ -117,7 +117,7 @@ class SqlHelper {
         if($sqlCon->errno>0)
             {
                 NotificationHelper::LogCritical("Error executing query: ".$query." Error: ".$sqlCon->error);
-                ToolsHelper::RedirectToErrorPage();
+                ToolsHelper::RedirectToErrorPage("Error executing select value query");
             }
             else
             {
@@ -142,7 +142,7 @@ class SqlHelper {
         if($sqlCon->errno>0)
             {
                 NotificationHelper::LogCritical("Error executing query: ".$query." Error: ".$sqlCon->error);
-                ToolsHelper::RedirectToErrorPage();
+                ToolsHelper::RedirectToErrorPage("Error executing select row query");
             }
             else
             {
@@ -168,7 +168,7 @@ class SqlHelper {
         if($sqlCon->errno>0)
             {
                 NotificationHelper::LogCritical("Error executing query: ".$query." Error: ".$sqlCon->error);
-                ToolsHelper::RedirectToErrorPage();
+                ToolsHelper::RedirectToErrorPage("Error executing select collection query");
             }
             else
             {

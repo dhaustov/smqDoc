@@ -2,29 +2,9 @@
 <!-- Devart (www.devart.com), the Project Options File -->
 <!-- Modifying this generated file will probably render it invalid -->
 <Options Version="3.0">
-  <Documents>
-    <Document Moniker="Table:smqdoc.groups_docs(localhost)" ActiveView="Design" Factory="{3586cc08-aeb7-47f4-a38f-1700741266f6}">
-      <Persist>
-        <Pinned>True</Pinned>
-      </Persist>
-    </Document>
-    <Document Moniker="Table:smqdoc.docstorage(localhost)" ActiveView="Design" Factory="{3586cc08-aeb7-47f4-a38f-1700741266f6}">
-      <Persist>
-        <Pinned>True</Pinned>
-      </Persist>
-    </Document>
-    <Document Moniker="C:\Users\Dmitry\Documents\dbForge Studio for MySQL\smqdoc(localhost - 3306) vs SqlDbProject (2).scomp" ActiveView="Compare" Factory="{90071d12-8d60-4d1a-a8f3-19d8e0ff4fa4}">
-      <Persist>
-        <Stub>True</Stub>
-      </Persist>
-    </Document>
-    <Document Moniker=".\По умолчанию\SqlDbProject.sql" ActiveView="Code" Factory="{3586cc08-aeb7-47f4-a38f-1700741266f6}" />
-  </Documents>
+  <Documents />
   <Services>
     <Service GUID="{811fba21-97c2-44b6-8c1c-eae1f1315f2d}">
-      <Persist />
-    </Service>
-    <Service GUID="{c7b76517-6978-4a0b-8d38-57b7f7223edb}">
       <Persist />
     </Service>
     <Service GUID="{e86507ae-fc27-47e0-925b-3c3e655520d4}">

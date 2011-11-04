@@ -11,6 +11,7 @@ require_once 'Interfaces/IObjectRepository.php';
 require_once 'Interfaces/IValidator.php';
 require_once 'Interfaces/IModel.php';
 require_once 'Interfaces/IView.php';
+require_once 'Interfaces/IMasterPageView.php';
 require_once 'Interfaces/IController.php';
 
 //Objects
@@ -39,5 +40,12 @@ require_once 'Enums/Modules.php';
 
 //commands
 require_once 'Commands/UserCommand.php';
+require_once 'Commands/UserGroupCommand.php';
+require_once 'Commands/DocTemplateCommand.php';
+
+//Validators
+require_once 'Validators/UserValidator.php';
+require_once 'Validators/UserGroupValidator.php';
+require_once 'Validators/DocTemplateValidator.php';
 
 ?>

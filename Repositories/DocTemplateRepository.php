@@ -204,22 +204,24 @@ class DocTemplateRepository implements IObjectRepository
         {
             if(!$docTempl->ValidateObjectTypes())
             {
-                $this->error = "Системная шибка при сохранении шаблона документы (ошибка типов полей)";
+                $this->error = "Системная ошибка при сохранении шаблона документа (ошибка типов полей)";
                 NotificationHelper::LogCritical($this->error);
                 return false;
             }
            $sqlCon = SqlHelper::StartTransaction();
            if(intval($docTempl->id) > 0)
            {
-            $query = "UPDATE `".$this->TBL_DOCTEMPLATES."`SET (`Name`) VALUES 
-                ('".ToolsHelper::CleanInputString($docTempl->name)."') WHERE `Id` ='".intval($docTempl->id)."'";
+            $query = "UPDATE `".$this->TBL_DOCTEMPLATES."` 
+                         SET `Name` = '".ToolsHelper::CleanInputString($docTempl->name)."' 
+                         WHERE `Id` ='".intval($docTempl->id)."'";
             $rowNum = SqlHelper::ExecUpdateQuery($query,$sqlCon);
+            /*
             if (!$rowNum)
             {
                 SqlHelper::RollbackTransaction($sqlCon);
-                $this->error = "При изменении шаблона документа возникла ошибка!";
+                $this->error = "При изменении шаблона документа возникла ошибка! ";
                 return false;
-            }
+            }*/
            }
            else
            {
@@ -238,6 +240,10 @@ class DocTemplateRepository implements IObjectRepository
                /* @var $field DocTemplateField */
                if(intval($field->id) > 0)
                {
+                   $operID = 0;
+                   if(isset($field->operation->id))
+                           $operID = $field->operation->id;
+                /*   
                 $query = "UPDATE `".$this->TBL_DOCTEMPLATE_FIELDS."`SET 
                     ( `Name`, `IsCalculated`, `IdFieldType`, `IsRestricted`, `MinVal`, `MaxVal`, `IdOperation`, `IdDocTemplate`) 
                     VALUES ('".
@@ -247,21 +253,40 @@ class DocTemplateRepository implements IObjectRepository
                         intval($field->isRestricted)."','".
                         $field->minVal."','".
                         $field->maxVal."','".
-                        intval($field->operation->id)."','".
+                        intval($operID)."','".
                         intval($docTempl->id)."') WHERE `Id` ='".
-                        intval($field->id)."'";
+                        intval($field->id)."'";                 
+                 */
+                
+                $query = "update ".$this->TBL_DOCTEMPLATE_FIELDS." set 
+                              Name = '".ToolsHelper::CleanInputString($field->name)."', 
+                              IsCalculated = '".intval($field->isCalculated)."',
+                              IdFieldType = '".intval($field->fieldType->id)."',
+                              IsRestricted = '".intval($field->isRestricted)."',
+                              MinVal = '".$field->minVal."',
+                              MaxVal = '".$field->maxVal."',
+                              IdOperation = '".intval($operID)."',
+                              idDocTemplate = '". intval($docTempl->id)."'
+                           where id = '".intval($field->id)."'";
+                
                 $rowNum = SqlHelper::ExecUpdateQuery($query,$sqlCon);
+                /*
                 if (!$rowNum)
                 {
                     SqlHelper::RollbackTransaction($sqlCon);
                     $this->error = "При изменении шаблона документа возникла ошибка!";
                     return false;
-                }
+                }*/
+                
                 $idList=$idList.",'".$field->id."'";
                }
                else
                {
                 $prevId = $field->id;
+                $operID = 0;
+                   if(isset($field->operation->id))
+                           $operID = $field->operation->id;
+                   
                 $query = "INSERT INTO `".$this->TBL_DOCTEMPLATE_FIELDS."` ( `Name`, `IsCalculated`, `IdFieldType`, `IsRestricted`, `MinVal`, `MaxVal`, `IdOperation`, `IdDocTemplate`) 
                     VALUES ('".
                         ToolsHelper::CleanInputString($field->name)."','".
@@ -270,7 +295,7 @@ class DocTemplateRepository implements IObjectRepository
                         intval($field->isRestricted)."','".
                         $field->minVal."','".
                         $field->maxVal."','".
-                        intval($field->operation->id)."','".
+                        intval($operID)."','".
                         $docTempl->id."')";
                 $field->id = intval(SqlHelper::ExecInsertQuery($query,$sqlCon));
                 if ($field->id <= 0)
@@ -294,7 +319,8 @@ class DocTemplateRepository implements IObjectRepository
                     return false;
                 }
            SqlHelper::CommitTransaction($sqlCon);
-           return true;
+           //return true;
+           return $docTempl->id;
         }
         return false;
     }
@@ -357,11 +383,15 @@ class DocTemplateRepository implements IObjectRepository
                     $fld->id = intval($row['Id']);
                     $fld->name = $row['Name'];
                     $fld->isCalculated = (bool)$row['IsCalculated'];
-                    $fld->fieldType = $this->docTemplateFieldTypesArr[intval($row['IdFieldType'])];
+                    
+                    if(intval($row['IdFieldType']) > 0)
+                        $fld->fieldType = $this->docTemplateFieldTypesArr[intval($row['IdFieldType'])];
                     $fld->isRestricted = (bool)$row['IsRestricted'];
                     $fld->maxVal = intval($row['MaxVal']);
                     $fld->minVal = intval($row['MinVal']);
-                    $fld->operation = $this->docTemplateOperationsArr[intval($row['IdOperation'])];
+                    
+                    if(intval($row['IdOperation']))
+                        $fld->operation = $this->docTemplateOperationsArr[intval($row['IdOperation'])];
                     $docTempl->fieldsList[$fld->id] = $fld;
                 }
                 return $docTempl;
@@ -374,7 +404,7 @@ class DocTemplateRepository implements IObjectRepository
         }
         else
         {
-            $this->error = "При загрузке шаблона документа возникла ошибка!";
+            $this->error = "При загрузке шаблона документа возникла ошибка! id =".$id;
             return false;
         }
     }
@@ -422,6 +452,53 @@ class DocTemplateRepository implements IObjectRepository
 //        {
 //            return false;
 //        }
+    }
+    
+   public function GetList($pageSize = 1, $pageNum = 1, $status = null)
+    {
+        $retArr = false;
+        $query = "select id,name from doctemplates ";
+        
+        /*
+        if($status)
+            $query.="  where status = $status";        
+        */
+        
+        if($pageSize > 1)        
+            $query.=" limit ".((int)$pageNum * (int)$pageSize).",".$pageSize;        
+        
+        $res = SqlHelper::ExecSelectCollectionQuery($query);
+        $i=0;
+        if($res)
+        {
+            foreach($res as $row)
+            {
+                $tpl = $this->GetByID($row['id']);               
+                $retArr[$i] = $tpl;
+                $i++;
+            }
+        }
+        if($retArr)
+            return $retArr;
+        else
+        {
+            $this->error = "Шаблонов документов не найдено";
+            return false;
+        }        
+    }
+    
+    public function GetListItemsCount($status = null)
+    {
+        $query = "select count(*) from doctemplates ";
+        /*
+        if($status)
+            $query.="  where status = $status";        */
+        
+        $res = SqlHelper::ExecSelectValueQuery($query);
+        
+        if($res)
+            return $res;
+        else return 0;
     }
     
     public function GetError()

@@ -18,6 +18,7 @@ class DocTemplate {
     
     public function ValidateObjectTypes()
     {
+        /*
         if(!is_int($this->id))
             return false;
         if(!is_string($this->name))
@@ -26,7 +27,7 @@ class DocTemplate {
             return false;
         foreach($this->fieldsList as $fld)
             if(!$fld->ValidateObjectTypes())
-                return false;
+                return false;*/
         return true;
     }
 }

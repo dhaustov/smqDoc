@@ -15,7 +15,7 @@ class UserGroup {
     
     private $relatedDocumentTemplates;
     
-    function __construct( $_idMasterUserAccount, $_name = null, $_masterUserAccountRole = null, 
+    function __construct( $_idMasterUserAccount=null, $_name = null, $_masterUserAccountRole = null, 
                           $_idParentGroup = null, $_status = null, $_id = null) 
     {
         $this->idMasterUserAccount = $_idMasterUserAccount;

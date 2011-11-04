@@ -2,7 +2,7 @@
 
 interface IValidator
 {      
-    public function Validate($obj);    
+    public function IsValid($obj);    
     public function GetError();
 }
 

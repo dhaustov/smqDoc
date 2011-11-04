@@ -5,7 +5,8 @@
  *
  * @author Dmitry
  */
-class UserGroupRepository {
+class UserGroupRepository implements IObjectRepository
+{
     /*
      * IObjectRepository Methods
      */    
@@ -99,7 +100,10 @@ class UserGroupRepository {
             return $usrGroup;
         }
         else 
+        {
+            $this->error = "Группа не найдена";
             return false;
+        }
         
     }
             
@@ -121,6 +125,59 @@ class UserGroupRepository {
     /*
      * Additional Methods
      */      
+    
+    public function GetList($pageSize = 1, $pageNum = 1, $status = null)
+    {
+        $retArr = false;
+        $query = "select id,name,idParentGroup,idMasterUserAccount,masterUserAccountRole,status
+                  from user_groups ";
+                                
+        if($status)
+            $query.="  where status = $status";        
+        
+        if($pageSize > 1)        
+            $query.=" limit ".((int)$pageNum * (int)$pageSize).",".$pageSize;        
+        
+        $res = SqlHelper::ExecSelectCollectionQuery($query);
+        $i=0;
+        if($res)
+        {
+            foreach($res as $row)
+            {
+                $usrGroup = new UserGroup(                        
+                            $row['idMasterUserAccount'],
+                            $row['name'],
+                            $row['masterUserAccountRole'],
+                            $row['idParentGroup'],
+                            $row['status'],
+                            $row['id']
+                        );
+                $retArr[$i] = $usrGroup;
+                $i++;
+            }
+        }
+        if($retArr)
+            return $retArr;
+        else
+        {
+            $this->error = "Групп пользователей не найдено";
+            return false;
+        }        
+    }
+    
+    public function GetListItemsCount($status = null)
+    {
+        $query = "select count(*)
+                  from user_groups ";
+        if($status)
+            $query.="  where status = $status";        
+        $res = SqlHelper::ExecSelectValueQuery($query);
+        
+        if($res)
+            return $res;
+        else return 0;
+    }
+    
     public function GetListByMasterID($masterUserAccountId, $status = null)
     {
         $retArr = false;
@@ -139,7 +196,8 @@ class UserGroupRepository {
                             $row['name'],
                             $row['masterUserAccountRole'],
                             $row['idParentGroup'],
-                            $row['status']                        
+                            $row['status'],
+                            $row['id']
                         );
                 $retArr[$i] = $usrGroup;
                 $i++;

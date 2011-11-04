@@ -1,21 +1,13 @@
 <div id="main">
-    <h2>Список пользователей:</h2>
+    <h2>Список шаблонов документов:</h2>
     <form name="frmUserList" method="POST" action="<?php echo $frmAction; ?>" />
     <table style="border: 1px solid black;">
         <th>
-            Логин
-        </th>
-        <th>
-            ФИО
-        </th>
-        <th>
-            Операции
-        </th>
-        <?php if($res) foreach ($res as $user) : ?>
+            Наименование шаблона
+        </th>        
+        <?php if($res) foreach ($res as $template) : ?>
             <tr>
-                <td><?php echo "<a href=\"index.php?module=".Modules::USERS."&action=".Actions::SHOW."&id=".$user->id."\">".$user->login."</a>"; ?></td>
-                <td><?php echo $user->surName." ".$user->name." ".$user->middleName;?></td>
-                <td><?php echo "<a href=\"index.php?module=".Modules::USERS."&action=".Actions::EDIT."&id=".$user->id."\">Редактировать</a>"; ?></td>
+                <td><?php echo "<a href=\"index.php?module=".Modules::DOCTEMPLATES."&action=".Actions::SHOW."&id=".$template->id."\">".$template->name."</a>"; ?></td>                
             </tr>
         <?php endforeach; ?>
     </table>
@@ -32,7 +24,7 @@
         <?php if(isset($_REQUEST["pageSize"]) && $_REQUEST["pageSize"] > 0 ) : ?>
             Страницы: 
                 <?php 
-                   for ($i=0;$i<= /*$_REQUEST["totalElements"]*/ $totalItems/$_REQUEST["pageSize"];$i++)
+                   for ($i=0;$i<= $totalItems/$_REQUEST["pageSize"];$i++)
                    {
                         //TODO: добавить атрибут css класс для активной ссылки в $active
                         if( ( isset($_REQUEST["pageNum"]) && $_REQUEST["pageNum"] == $i ) ||
@@ -42,14 +34,14 @@
                         else
                             $active = " style='color:blue;' ";
                         
-                        echo "<a href='index.php?module=".Modules::USERS.
+                        echo "<a href='index.php?module=".Modules::DOCTEMPLATES.
                              "&action=".Actions::SHOWLIST.
                              "&pageNum=".$i.
                              "&pageSize=".$_REQUEST['pageSize']."' $active > ".($i+1)." </a>";
-//                        "&totalElements=".$_REQUEST['totalElements']."
                    }
                 ?>
         <?php endif; ?>
     </div>
 </form>
 </div>
+

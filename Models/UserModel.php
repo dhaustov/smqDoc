@@ -17,13 +17,12 @@ class UserModel implements IModel
     
     public function __construct()
     {
-        
+        $this->repository = new UserRepository;
     }
     public function PerformAction($_command)
     {        
         $this->currentCommand = $_command;
-        $this->repository = new UserRepository;
-        
+                
         $res = false;
         switch($this->currentCommand->action)
         {            
@@ -33,16 +32,23 @@ class UserModel implements IModel
             case Actions::DELETE :
                 $res = $this->repository->Delete($this->user);                                                                               
                 break;
-            case Actions::SAVE :                
-                //где то тут ещё должны быть валидация...
-                $tmpUser = new UserAccount(  
-                                             $_POST["lblLogin"],
+            case Actions::SAVE :              
+                $validator = new UserValidator();
+                
+                $tmpUser = new UserAccount(  $_POST["lblLogin"],
                                              $_POST["lblPassword"],
                                              $_POST["lblName"],                     
                                              $_POST["lblSurname"],                                             
                                              $_POST["lblMiddlename"],
                                              $_POST["status"],
                                              $_POST["hdnUid"]);
+                
+                if(!$validator->IsValid($tmpUser, $_POST["lblRetypePassword"])) //валидируем
+                {
+                    $this->error = $validator->GetError();
+                    return false;
+                }
+                                
                 $this->user = $tmpUser;                
                 $uid = $this->repository->Save($this->user);
                 
@@ -57,7 +63,14 @@ class UserModel implements IModel
                     $res = $this->user;
                 break;
             case Actions::SHOWLIST :
-                $res = $this->repository->GetList();
+                $pageSize = 0;
+                $pageNum = 0;
+                if(isset($_REQUEST["pageSize"]))
+                    $pageSize = (int)$_REQUEST["pageSize"];
+                if(isset($_REQUEST["pageNum"]))
+                    $pageNum = (int)$_REQUEST["pageNum"];
+                
+                $res = $this->repository->GetList($pageSize,$pageNum);
                 break;                
             default:
                 //этого не может быть!
@@ -71,6 +84,11 @@ class UserModel implements IModel
             $this->error = $this->repository->GetError();
             return false;        
         }
+    }
+    
+    public function GetListItemsCount()
+    {
+        return $this->repository->GetListItemsCount();
     }
     
     public function GetError()

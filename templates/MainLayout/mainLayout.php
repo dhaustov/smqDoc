@@ -13,6 +13,9 @@
                 margin-left: 0px;
                 border : 1px solid black;
                 margin-right: 30px;
+                -webkit-border-radius: 0 10px 0 10px;
+                -moz-border-radius: 0 10px 0 10px;
+                border-radius: 0 10px 0 10px;
             }
             div.content {                
                 margin-left: 150px;                
@@ -34,7 +37,7 @@
                 <?php include_once MainLayoutView::TPL_MENU; ?>
                 <form action="Index.php" method="post">
                     <input type="hidden" name="logout" value="1"></input>
-                    <input type="submit" name="okbutton" value="Выход"></input>
+                    <center><input type="submit" name="okbutton" value="Выход"></input></center>
                 </form>
             </div>
             <div id="content" class="content">

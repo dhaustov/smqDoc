@@ -4,10 +4,14 @@
     <table style="border: 1px solid black;">
         <th>
             Наименование шаблона
-        </th>        
+        </th>    
+        <th>
+            Количество полей
+        </th>   
         <?php if($res) foreach ($res as $template) : ?>
             <tr>
                 <td><?php echo "<a href=\"index.php?module=".Modules::DOCTEMPLATES."&action=".Actions::SHOW."&id=".$template->id."\">".$template->name."</a>"; ?></td>                
+                <td><?php  echo count($template->fieldsList)?></td>
             </tr>
         <?php endforeach; ?>
     </table>

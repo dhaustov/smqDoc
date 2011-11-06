@@ -49,4 +49,22 @@ require_once 'Validators/UserValidator.php';
 require_once 'Validators/UserGroupValidator.php';
 require_once 'Validators/DocTemplateValidator.php';
 
+//MVC
+require_once '/Views/MainLayoutView.php';
+
+require_once '/Models/UserModel.php';
+require_once '/Views/UserView.php';
+require_once '/Controllers/UserController.php';
+
+require_once '/Models/UserGroupModel.php';
+require_once '/Views/UserGroupView.php';
+require_once '/Controllers/UserGroupController.php';
+
+require_once '/Models/DocTemplateModel.php';
+require_once '/Views/DocTemplateView.php';
+require_once '/Controllers/DocTemplateController.php';
+
+require_once '/Models/DashboardModel.php';
+require_once '/Views/DashboardView.php';
+require_once '/Controllers/DashboardController.php';
 ?>

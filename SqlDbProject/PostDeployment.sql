@@ -1,4 +1,4 @@
-/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+
 INSERT INTO doctemplate_fieldtypes 
   VALUES 
   (1, 'String', 'stringValue'), 

@@ -6,13 +6,39 @@
     </head>
     <body>-->
         <?php
-           require_once 'Init.php';
-           //if(!LoginHelper::GetCurrentUserId())
-           //{               
-           //    include_once 'Login.php';
-           //}
-           //else
-           include_once 'dt.php';
+               require_once 'Init.php';              
+               include_once 'Login.php';
+               
+               if(LoginHelper::GetCurrentUserId())   
+               {
+               //include_once 'dt.php';
+                if(!isset($_REQUEST['module']))
+                  $_REQUEST['module'] = Modules::DASHBOARD;  
+                switch($_REQUEST['module'])
+                {
+                    case Modules::USERS :
+                        $uc = new UserController($_REQUEST);
+                        $uc->RunModel();
+                        $uc->ShowResult();
+                        break;
+                    case Modules::USERGROUPS :
+                        $ugc = new UserGroupController($_REQUEST);
+                        $ugc->RunModel();
+                        $ugc->ShowResult();
+                        break;
+                    case Modules::DOCTEMPLATES :
+                        $dtc = new DocTemplateController($_REQUEST);
+                        $dtc->RunModel();
+                        $dtc->ShowResult();
+                        break;
+                    default:
+                        $dashc = new DashboardController($_REQUEST);
+                        $dashc->RunModel();
+                        $dashc->ShowResult();
+                        break;
+                }
+               }
+           
         ?>
 <!--        <a href="./dt.php" title="Дмитрий">Дмитрий</a><br>
         <a href="./pavelTest.php" title="Павел">Павел</a>

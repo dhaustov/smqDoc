@@ -6,16 +6,13 @@
 class ToolsHelper {
     public static function RedirectTo($page)
     {
-        header("Request-URI: ".$page);
-        header("Content-Location: ".$page);
-        header("Location: ".$page);
+        echo '<script type="text/javascript"> window.location = "http://'.$_SERVER['SERVER_NAME'].$page.'" </script>';
     }
     
     public static function RedirectToErrorPage($error = "")
-    {          
-        header("Request-URI: templates/ErrorPage.php");
-        header("Content-Location: templates/ErrorPage.php");
-        header("Location: templates/ErrorPage.php");         
+    {       
+        $_SESSION['Error'] = $error;
+        echo '<script type="text/javascript"> window.location = "http://'.$_SERVER['SERVER_NAME'].'/smqDoc/templates/errorPage.php" </script>';       
     }
     
     public static function CleanInputString($input /*, $sql=false*/) 

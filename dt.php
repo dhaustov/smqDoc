@@ -19,7 +19,6 @@
     
     /*Testing UserGroup*/
     //include_once "ModuleTests/_testUserGroup.php";
-    
     include_once 'ModuleTests/_testmvc.php';
 ?>
     </body>

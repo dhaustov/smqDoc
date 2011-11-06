@@ -9,4 +9,8 @@
         }        
     ?>    
 </ul>
+<form action="Index.php" method="post">
+                    <input type="hidden" name="logout" value="1"></input>
+                    <input type="submit" name="okbutton" value="Выход"></input>
+                </form>
 

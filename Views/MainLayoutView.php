@@ -11,7 +11,7 @@ class MainLayoutView implements IMasterPageView
     const TPL_HEADER = "/templates/MainLayout/header.php";
     const TPL_MENU = "/templates/MainLayout/menu.php";
     const TPL_FOOTER = "/templates/MainLayout/footer.php";
-    
+    const TPL_HRMENU = "/templates/MainLayout/hrmenu.php";
     /* content for layout parts */
     public $title;
     public $header;

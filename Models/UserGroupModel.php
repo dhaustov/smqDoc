@@ -36,8 +36,11 @@ class UserGroupModel implements IModel
                 $validator = new UserGroupValidator();
                 
                 //Собираем теплейты    
-                $fields = Array();                
-                $cntFields = $_POST['hdnNewTempCount']; //общее количество полей на форме
+                $fields = Array(); 
+                if(isset($_POST['hdnNewTempCount']))
+                    $cntFields = $_POST['hdnNewTempCount']; //общее количество полей на форме
+                else
+                    $cntFields = 0;
                 $i=0; 
                 $cnt = 1; //счётчик для id
                 while($i<$cntFields)
@@ -131,7 +134,7 @@ class UserGroupModel implements IModel
     
     public function GetDocTemplatesExistsList()
     {
-        if($this->group->id > 0)
+        if(isset($this->group)&& $this->group->id > 0)
         {
             $rep = new DocTemplateRepository();
             return $rep->GetListByGroupID($this->group->id);

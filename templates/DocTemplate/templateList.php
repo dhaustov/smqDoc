@@ -8,10 +8,14 @@
         <th>
             Количество полей
         </th>   
+        <th>
+            Операции
+        </th>
         <?php if($res) foreach ($res as $template) : ?>
             <tr>
                 <td><?php echo "<a href=\"index.php?module=".Modules::DOCTEMPLATES."&action=".Actions::SHOW."&id=".$template->id."\">".$template->name."</a>"; ?></td>                
                 <td><?php  echo count($template->fieldsList)?></td>
+                <td><?php echo "<a href=\"index.php?module=".Modules::DOCTEMPLATES."&action=".Actions::EDIT."&id=".$template->id."\">Редактировать</a>"; ?></td>
             </tr>
         <?php endforeach; ?>
     </table>

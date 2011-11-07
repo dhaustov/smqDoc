@@ -40,10 +40,10 @@ class DashboardView implements IView
     
     public function GetMenuItems()
     {                
-        $url = "index.php?module=".Modules::USERS."&action=".Actions::EDIT."id=".LoginHelper::GetCurrentUserId();
+        $url = "index.php?module=".Modules::USERS."&action=".Actions::EDIT."&id=".LoginHelper::GetCurrentUserId();
         $text = "Редактировать <br>мои данные";         
        
-        $url1 = "index.php?module=".Modules::USERS."&action=".Actions::SHOW."id=".LoginHelper::GetCurrentUserId();
+        $url1 = "index.php?module=".Modules::USERS."&action=".Actions::SHOW."&id=".LoginHelper::GetCurrentUserId();
         $text1 = "Показать <br>мои данные";
                 
         $res = Array( new TemplateMenuItem($text1, $url1, true),new TemplateMenuItem($text, $url, true) );

@@ -21,20 +21,20 @@ class UserGroupDocField {
         $this->intValue = $_intValue;
         $this->boolValue = $_boolValue;
     }
-    public function ValidateObjectTypes()
-    {
-        if(!is_int($this->id))
-            return false;
-        if(!is_string($this->stringValue))
-            return false;
-        if(!is_int($this->intValue))
-            return false;
-        if(!is_bool($this->boolValue))
-            return false;
-        if(!is_subclass_of($this->docTemplateField, 'DocTemplateField') || !$this->docTemplateField->ValidateObjectTypes())
-                return false;
-        return true;
-    }
+//    public function ValidateObjectTypes()
+//    {
+//        if(!is_int($this->id))
+//            return false;
+//        if(!is_string($this->stringValue))
+//            return false;
+//        if(!is_int($this->intValue))
+//            return false;
+//        if(!is_bool($this->boolValue))
+//            return false;
+//        if(!is_subclass_of($this->docTemplateField, 'DocTemplateField') || !$this->docTemplateField->ValidateObjectTypes())
+//                return false;
+//        return true;
+//    }
 }
 
 ?>

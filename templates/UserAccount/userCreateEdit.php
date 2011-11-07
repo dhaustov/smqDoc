@@ -1,5 +1,9 @@
 <div id="main">
-<h2>Создание нового пользователя:</h2>
+    <?php if (!$res->id) :?>
+    <h2>Создание нового пользователя</h2>
+    <?php else :?>
+    <h2>Редактировать пользователя</h2>
+    <?php endif;?>
 <form name="frmNewUser" method="POST" action="<?php echo $frmAction; ?>" />
     <table>
         <tr>

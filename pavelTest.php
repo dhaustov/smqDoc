@@ -50,86 +50,94 @@ $docTpl1F3->maxVal = 200;
 $docTpl1->fieldsList[$docTpl1F3->id] = $docTpl1F3;
 
 $dtpRep->Save($docTpl1);
-echo 'Create 2 DT<br>';
-/* @var $docTpl2 DocTemplate */
-$docTpl2 = new DocTemplate;
-$docTpl2->name = "First doc tpl";
-$docTpl2->fieldsList = array();
-echo 'Create  DT f1<br>';
-/*@var $docTpl2F1 DocTemplateField*/
-$docTpl2F1 = new DocTemplateField;
-$docTpl2F1->id  = -3;
-$docTpl2F1->name = "dt2f1";
-$docTpl2F1->isCalculated = false;
-$docTpl2F1->fieldType = $dtpRep->docTemplateFieldTypesArr[1];
-$docTpl2F1->operation = $dtpRep->docTemplateOperationsArr[1];
-$docTpl2F1->isRestricted = false;
-$docTpl2F1->minVal  = 10;
-$docTpl2F1->maxVal = 20;
-$docTpl2->fieldsList[$docTpl2F1->id] = $docTpl2F1;
-echo 'Create  DT f2<br>';
-/*@var $docTpl2F2 DocTemplateField*/
-$docTpl2F2 = new DocTemplateField;
-$docTpl2F2->id  = -2;
-$docTpl2F2->name = "dt2f2";
-$docTpl2F2->isCalculated = true;
-$docTpl2F2->fieldType = $dtpRep->docTemplateFieldTypesArr[2];
-$docTpl2F2->operation = $dtpRep->docTemplateOperationsArr[1];
-$docTpl2F2->isRestricted = true;
-$docTpl2F2->minVal  = 15;
-$docTpl2F2->maxVal = 70;
-$docTpl2->fieldsList[$docTpl2F2->id] = $docTpl2F2;
-echo 'Create  DT f3<br>';
-/*@var $docTpl2F3 DocTemplateField*/
-$docTpl2F3 = new DocTemplateField;
-$docTpl2F3->id  = -1;
-$docTpl2F3->name = "dt2f3";
-$docTpl2F3->isCalculated = true;
-$docTpl2F3->fieldType = $dtpRep->docTemplateFieldTypesArr[2];
-$docTpl2F3->operation = $dtpRep->docTemplateOperationsArr[1];
-$docTpl2F3->isRestricted = true;
-$docTpl2F3->minVal  = 10;
-$docTpl2F3->maxVal = 200;
-$docTpl2->fieldsList[$docTpl2F3->id] = $docTpl2F3;
 
-if(!$dtpRep->Save($docTpl2))
+//создаем пользователя для теста
+$usr = new UserAccount("login", "pass","Ivan", "Ivanpv", "Iv.");
+$ur = new UserRepository;            
+$id = $ur->Save($usr);
+//создаем гурппу для теста
+$ugr = new UserGroup($id, "Имя группы", "Глава группы", $usr);
+$ugrRep = new UserGroupRepository();
+$ugrRep->Save($ugr);
+/* @var $ugdRep UserGroupDocRepository */
+$ugdRep = new UserGroupDocRepository();
 
-echo "Get 1 DT from DB<br>";
-/* @var $docTpl1N DocTemplate */
-$docTpl1N = $dtpRep->GetByID($docTpl1->id);
-echo "Get 2 DT from DB<br>";
-/* @var $docTpl2N DocTemplate */
-$docTpl2N = $dtpRep->GetByID($docTpl2->id);
+//Создаем документ 1
+$ugDoc1 = new UserGroupDoc();
+$ugDoc1->author = $usr;
+$ugDoc1->dateCreated = null;
+$ugDoc1->group = $ugr;
+$ugDoc1->groupDocTempl = $docTpl1;
+$ugDoc1->status = EnUserGroupDocStatus::EDITED;
+$ugDoc1->lastChangedDate = null;
 
-if($docTpl1 == $docTpl1N)
-{
-    echo "docTp1 CURRECT <br>";
-}
+$ugDoc1F1 = new UserGroupDocField($docTpl1F1,"test",null,null);
+$ugDoc1F2 = new UserGroupDocField($docTpl1F2,null,1,null);
+$ugDoc1F3 = new UserGroupDocField($docTpl1F3,"null",null,null);
+
+$ugDoc1->fieldsList = Array($ugDoc1F1,$ugDoc1F2,$ugDoc1F3);
+
+if($ugdRep->Save($ugDoc1))
+    echo "Документ 1 сохранен id документы $ugDoc1->id<br>";
 else
-{
-    echo "docTp1 WRONG <br>";
-    print_r($docTpl1);
-    echo "<br>";
-    print_r($docTpl1N);
-}
-if($docTpl2 == $docTpl2N )
-{
-    echo "docTp2 CURRECT<br>";
-}
-else
-{
-    echo "docTp2 WRONG <br>";
-    print_r($docTpl2);
-    echo "<br>";
-    print_r($docTpl2N);
-}
-if($docTpl1 == $docTpl2 )
-{
-    echo "TEST FALSE <br>";
-}
-else
-{
-    echo "TEST TRUE <br>";
-}
+    echo "Ошибка сохранения документы ".$ugdRep->GetError()."<br>";
 
+//Создаем документ 2
+$ugDoc2 = new UserGroupDoc();
+$ugDoc2->author = $usr;
+$ugDoc2->dateCreated = null;
+$ugDoc2->group = $ugr;
+$ugDoc2->groupDocTempl = $docTpl1;
+$ugDoc2->status = EnUserGroupDocStatus::DELETED;
+$ugDoc2->lastChangedDate = null;
+
+$ugDoc2F1 = new UserGroupDocField($docTpl1F1,"test2",null,null);
+$ugDoc2F2 = new UserGroupDocField($docTpl1F2,null,1,null);
+$ugDoc2F3 = new UserGroupDocField($docTpl1F3,"null2",null,null);
+
+$ugDoc2->fieldsList = Array($ugDoc2F1,$ugDoc2F2,$ugDoc2F3);
+
+if($ugdRep->Save($ugDoc2))
+    echo "Документ 2 сохранен id документы $ugDoc1->id<br>";
+else
+    echo "Ошибка сохранения документы ".$ugdRep->GetError()."<br>";
+
+$ugDoc1n = $ugrRep->GetById($ugDoc1->id);
+if($ugDoc1n)
+    echo "Копия документа 1 извлечена из базы<br>";
+else 
+    echo "Ошибка извлечения копии документа 1 из базы ".$ugdRep->GetError()."<br>";
+
+$ugDoc2n = $ugrRep->GetById($ugDoc2->id);
+if($ugDoc2n)
+    echo "Копия документа 2 извлечена из базы<br>";
+else 
+    echo "Ошибка извлечения копии документа 2 из базы ".$ugdRep->GetError()."<br>";
+
+if($ugDoc1 == $ugDoc1n)
+    echo "Сравление документа 1 и копии прошло верно<br>";
+else
+    echo "Сравление документа 1 и копии прошло ОШИБОЧНО<br>";
+if($ugDoc2 == $ugDoc2n)
+    echo "Сравление документа 2 и копии прошло верно<br>";
+else
+    echo "Сравление документа 2 и копии прошло ОШИБОЧНО<br>";
+
+if($ugDoc1 == $ugDoc2)
+    echo "Контрольный тест прошел успешно<br>";
+else
+    echo "Контрольный тест прошел ОШИБОЧНО<br>";
+
+if($ugdRep->Delete($ugDoc1))
+    echo "Удаление документа 1 прошло успешно<br>";
+else
+    echo "Удаление документа 1 прошло ОШИБОЧНО".$ugdRep->GetError()."<br>";
+if($ugdRep->Delete($ugDoc2))
+    echo "Удаление документа 2 прошло успешно<br>";
+else
+    echo "Удаление документа 2 прошло ОШИБОЧНО".$ugdRep->GetError()."<br>";
+
+$dtpRep->Delete($$docTpl1);
+$ugrRep->Delete($ugr);
+$ur->Delete($usr);
 ?>

@@ -33,13 +33,13 @@ class DocTemplateRepository implements IObjectRepository
                 $oper->id = intval($row['Id']);
                 $oper->name = $row['Name'];
                 $oper->code = $row['Code'];
-                if($oper->ValidateObjectTypes())
-                    $this->docTemplateOperationsArr[$oper->id] = $oper;
-                else
-                {
-                    $this->error = "Системная шибка при чтении шаблона операций документа (ошибка типов полей)";
-                    NotificationHelper::LogCritical($this->error);
-                }
+                //if($oper->ValidateObjectTypes())
+                $this->docTemplateOperationsArr[$oper->id] = $oper;
+//                else
+//                {
+//                    $this->error = "Системная шибка при чтении шаблона операций документа (ошибка типов полей)";
+//                    NotificationHelper::LogCritical($this->error);
+//                }
             }
         }
         else
@@ -61,13 +61,13 @@ class DocTemplateRepository implements IObjectRepository
                 $tp->id = intval($row['Id']);
                 $tp->name = $row['Name'];
                 $tp->dataBaseType = $row['DataBaseType'];
-                if($tp->ValidateObjectTypes())
-                    $this->docTemplateFieldTypesArr[$tp->id] = $tp;
-                else
-                {
-                    $this->error = "Системная шибка при чтении типой полей шаблона документа (ошибка типов полей)";
-                    NotificationHelper::LogCritical($this->error);
-                }
+                //if($tp->ValidateObjectTypes())
+                 $this->docTemplateFieldTypesArr[$tp->id] = $tp;
+//                else
+//                {
+//                    $this->error = "Системная шибка при чтении типой полей шаблона документа (ошибка типов полей)";
+//                    NotificationHelper::LogCritical($this->error);
+//                }
             }
         }
         else
@@ -202,12 +202,12 @@ class DocTemplateRepository implements IObjectRepository
         
         if($docTempl)
         {
-            if(!$docTempl->ValidateObjectTypes())
-            {
-                $this->error = "Системная ошибка при сохранении шаблона документа (ошибка типов полей)";
-                NotificationHelper::LogCritical($this->error);
-                return false;
-            }
+//            if(!$docTempl->ValidateObjectTypes())
+//            {
+//                $this->error = "Системная ошибка при сохранении шаблона документа (ошибка типов полей)";
+//                NotificationHelper::LogCritical($this->error);
+//                return false;
+//            }
            $sqlCon = SqlHelper::StartTransaction();
            if(intval($docTempl->id) > 0)
            {
@@ -330,14 +330,14 @@ class DocTemplateRepository implements IObjectRepository
         /* @var $docTempl DocTemplate */
         $docTempl = $obj;
         
-        if($docTempl)
+        if($docTempl && intval($docTempl->id) > 0)
         {
-           if(!$docTempl->ValidateObjectTypes())
-            {
-                $this->error = "Системная шибка при удалении шаблона документа (ошибка типов полей)";
-                NotificationHelper::LogCritical($this->error);
-                return false;
-            }
+//           if(!$docTempl->ValidateObjectTypes())
+//            {
+//                $this->error = "Системная шибка при удалении шаблона документа (ошибка типов полей)";
+//                NotificationHelper::LogCritical($this->error);
+//                return false;
+//            }
             $sqlCon = SqlHelper::StartTransaction();
             $query = "DELETE FROM `".$this->TBL_DOCTEMPLATES."` WHERE `Id` ='".intval($docTempl->id)."'";
             $rowNum = SqlHelper::ExecDeleteQuery($query,$sqlCon);
@@ -426,11 +426,11 @@ class DocTemplateRepository implements IObjectRepository
                 $fld->maxVal = intval($row['MaxVal']);
                 $fld->minVal = intval($row['MinVal']);
                 $fld->operation = $this->docTemplateOperationsArr[intval($row['IdOperation'])];
-                if(!$fld->ValidateObjectTypes())
-                {
-                    $this->error = "Системная шибка при чтении поля шаблона документа (ошибка типов полей) Id поля".$id;
-                    NotificationHelper::LogCritical($this->error);
-                }
+//                if(!$fld->ValidateObjectTypes())
+//                {
+//                    $this->error = "Системная шибка при чтении поля шаблона документа (ошибка типов полей) Id поля".$id;
+//                    NotificationHelper::LogCritical($this->error);
+//                }
                 return $fld;
             }
             else

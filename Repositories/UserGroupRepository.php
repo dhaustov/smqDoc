@@ -103,6 +103,7 @@ class UserGroupRepository implements IObjectRepository
                 NotificationHelper::LogCritical("Error in class: '".__CLASS__."' method: '".__METHOD__."' query: '$query'");
                 return false;
             }
+            $obj->id = $newid;
             return $newid;
         }                
     }

@@ -145,7 +145,7 @@ class DocTemplateView implements IView
         $active = $this->command->action == Actions::SHOWLIST ? true : false;
                         
         $url1 = "index.php?module=".Modules::DOCTEMPLATES."&action=".Actions::CREATE;
-        $text1 = "Создать шаблон";
+        $text1 = "Создать<br/> шаблон";
         $active1 = $this->command->action == Actions::CREATE ? true : false;
                 
         $res = Array( new TemplateMenuItem($text, $url, $active),

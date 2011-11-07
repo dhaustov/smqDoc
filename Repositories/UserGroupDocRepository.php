@@ -21,12 +21,12 @@ class UserGroupDocRepository implements IObjectRepository
         $userGroupDoc = $obj;
         if($userGroupDoc)
         {
-            if(!$userGroupDoc->ValidateObjectTypes())
-            {
-                $this->error = "Системная шибка при сохранении  документа (ошибка типов полей)";
-                NotificationHelper::LogCritical($this->error);
-                return false;
-            }
+//            if(!$userGroupDoc->ValidateObjectTypes())
+//            {
+//                $this->error = "Системная шибка при сохранении  документа (ошибка типов полей)";
+//                NotificationHelper::LogCritical($this->error);
+//                return false;
+//            }
             $sqlCon = SqlHelper::StartTransaction();
             if($userGroupDoc->id > 0)
             {
@@ -65,7 +65,7 @@ class UserGroupDocRepository implements IObjectRepository
                 }
             }
            SqlHelper::CommitTransaction($sqlCon);
-           return true;
+           return $userGroupDoc->id;
         }
         return false;
     }
@@ -76,12 +76,12 @@ class UserGroupDocRepository implements IObjectRepository
         $userGroupDoc = $obj;
         if($userGroupDoc)
         {
-            if(!$userGroupDoc->ValidateObjectTypes())
-            {
-                $this->error = "Системная шибка при удалении  документа (ошибка типов полей)";
-                NotificationHelper::LogCritical($this->error);
-                return false;
-            }
+//            if(!$userGroupDoc->ValidateObjectTypes())
+//            {
+//                $this->error = "Системная шибка при удалении  документа (ошибка типов полей)";
+//                NotificationHelper::LogCritical($this->error);
+//                return false;
+//            }
             $sqlCon = SqlHelper::StartTransaction();
             $query = "UPDATE `".$this->TBL_DOCSTARAGE."` SET `Status`='".
                     EnUserGroupDocStatus::DELETED."' WHERE `Id` ='".intval($userGroupDoc->id)."'";

@@ -18,7 +18,7 @@ CREATE TABLE doctemplate_fields (
   CONSTRAINT doctemplate_fields_ibfk_1 FOREIGN KEY (IdFieldType)
     REFERENCES doctemplate_fieldtypes(Id) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT FK_doctemplate_fields_doctemplates_id FOREIGN KEY (IdDoctemplate)
-    REFERENCES doctemplates(Id) ON DELETE RESTRICT ON UPDATE RESTRICT
+    REFERENCES doctemplates(Id) ON DELETE CASCADE ON UPDATE CASCADE
 )
 ENGINE = INNODB
 CHARACTER SET utf8

@@ -190,7 +190,11 @@
             lastNum.value = newVal;
         }
     </script>
-<h2>Создание нового шаблона:</h2>
+    <?php if (!$res->id) :?>
+    <h2>Создание нового шаблона</h2>
+    <?php else :?>
+    <h2>Редактировать шаблона</h2>
+    <?php endif;?>
 <form name="frmNewTemplate" method="POST" action="<?php echo $frmAction; ?>" />
     <table>
         <tr>

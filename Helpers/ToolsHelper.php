@@ -12,7 +12,7 @@ class ToolsHelper {
     public static function RedirectToErrorPage($error = "")
     {       
         $_SESSION['Error'] = $error;
-        echo '<script type="text/javascript"> window.location = "http://'.$_SERVER['SERVER_NAME'].'/smqDoc/templates/errorPage.php" </script>';       
+        echo '<script type="text/javascript"> window.location = "http://'.$_SERVER['SERVER_NAME'].'/smqdoc/templates/errorPage.php" </script>';       
     }
     
     public static function CleanInputString($input /*, $sql=false*/) 

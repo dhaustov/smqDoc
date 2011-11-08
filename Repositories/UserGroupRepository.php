@@ -112,7 +112,7 @@ class UserGroupRepository implements IObjectRepository
     { 
         /* @var $usrGroup UserGroup */
         $usrGroup = $obj;
-        $query = "update user_groups set status = ".UserStatus::DELETED." where id =". intval($usrGroup->id);
+        $query = "update user_groups set status = ".EnUserGroupDocStatus::DELETED." where id =". intval($usrGroup->id);
         $rowNum = SqlHelper::ExecDeleteQuery($query);
                 
         if (!$rowNum)

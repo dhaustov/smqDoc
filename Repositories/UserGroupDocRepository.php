@@ -11,8 +11,8 @@ class UserGroupDocRepository implements IObjectRepository
 {        
     private $error;
     private $TBL_DOCSTARAGE="docstorage";
-    private $TBL_DOCSTARAGE_FIELDS="docstrorage_fields";
-    private $TBL_DOCSTORAGE_HISTORY="docstoragehistory";
+    private $TBL_DOCSTARAGE_FIELDS="docstorage_fields";
+    private $TBL_DOCSTORAGE_HISTORY="docstorage_history";
     
     function Save($obj)
     {
@@ -28,7 +28,7 @@ class UserGroupDocRepository implements IObjectRepository
 //                return false;
 //            }
             $sqlCon = SqlHelper::StartTransaction();
-            if($userGroupDoc->id > 0)
+            if(!$userGroupDoc->id)
             {
                 $query = "INSERT INTO `".$this->TBL_DOCSTARAGE."` (`IdAuthor`, `IdGroup`, 
                     `IdGroupDocs`, `Status`, `DateCreated`, `LastChangedDate`) 
@@ -39,7 +39,9 @@ class UserGroupDocRepository implements IObjectRepository
                     intval($userGroupDoc->status)."',
                     'NOW()','NOW()')";
                 $userGroupDoc->id = SqlHelper::ExecInsertQuery($query, $sqlCon);
-                if($docTempl->id <= 0)
+                
+                //if($docTempl->id <= 0)
+                if( !$userGroupDoc->id)
                 {
                     SqlHelper::RollbackTransaction($sqlCon);
                     $this->error = "При добавлении шаблона документа возникла ошибка!";
@@ -71,7 +73,7 @@ class UserGroupDocRepository implements IObjectRepository
     }
     
     function Delete($obj,$uId = null)
-    {
+    {           
          /* @var $duserGroupDoc UserGroupDoc */
         $userGroupDoc = $obj;
         if($userGroupDoc)

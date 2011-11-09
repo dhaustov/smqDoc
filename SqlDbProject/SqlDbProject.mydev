@@ -26,7 +26,7 @@
   </Include>
   <Configurations Active="По умолчанию">
     <Configuration Name="По умолчанию" CheckReferences="True" IgnoreErrors="False" OutputPath="" Target="" OutputType="SingleFile" KeepOriginalObjects="True" RecreateDatabase="False" RecreateObjects="False" ServerVersion="5.5.8" Database="smqdoc" UseRegions="False" FullPaths="False" Definer="CURRENT_USER" ScriptDelimiter="$$" StorageEngine="INNODB" Collation="utf8_general_ci" ConvertToLowercase="True" DefinerEffect="Keep">
-      <Connection Name="localhost" ConnectionString="User Id=root;Host=localhost;Character Set=utf8" />
+      <Connection Name="smqdoc.localhost" ConnectionString="User Id=root;Host=localhost;Character Set=utf8" />
       <Build>
         <File RelPath="" Name="PreDeployment.sql" BuildAction="Build" />
         <File RelPath="Таблицы" Name="doctemplate_fieldtypes.Table.sql" BuildAction="Build" />

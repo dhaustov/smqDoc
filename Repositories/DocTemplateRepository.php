@@ -411,8 +411,8 @@ class DocTemplateRepository implements IObjectRepository
     
     function GetDocTemplateFieldById($id)
     {
-      $query = "SELECT * FROM `".$this->TBL_DOCTEMPLATE_FIELDS."` WHERE `IdDocTemplate`='".
-                    intval($docTempl->id)."'";
+      $query = "SELECT * FROM `".$this->TBL_DOCTEMPLATE_FIELDS."` WHERE `IdDoctemplate`='".
+                    intval($id)."'";
             $row = SqlHelper::ExecSelectCollectionQuery($query);
             if($row)
             {

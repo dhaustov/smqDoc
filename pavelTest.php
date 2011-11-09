@@ -91,12 +91,6 @@ $ugDoc1->groupDocTempl = $docTpl1;
 $ugDoc1->status = EnUserGroupDocStatus::EDITED;
 $ugDoc1->lastChangedDate = null;
 
-//$ugDoc1F1 = new UserGroupDocField($docTpl1F1,"test",null,null);
-//$ugDoc1F2 = new UserGroupDocField($docTpl1F2,null,1,null);
-//$ugDoc1F3 = new UserGroupDocField($docTpl1F3,"null",null,null);
-//
-//$ugDoc1->fieldsList = Array($ugDoc1F1,$ugDoc1F2,$ugDoc1F3);
-
 if($ugdRep->Save($ugDoc1))
     echo "Документ 1 сохранен id документы $ugDoc1->id<br>";
 else
@@ -108,7 +102,7 @@ $ugDoc2F1 = new UserGroupDocField($docTpl1F1,"test2",null,null);
 $ugDoc2F2 = new UserGroupDocField($docTpl1F2,null,1,null);
 $ugDoc2F3 = new UserGroupDocField($docTpl1F3,"null2",null,null);
 
-//$ugDoc2->fieldsList = Array($ugDoc2F1,$ugDoc2F2,$ugDoc2F3);
+$ugDoc2->fieldsList = Array($ugDoc2F1,$ugDoc2F2,$ugDoc2F3);
 
 
 $ugDoc2 = new UserGroupDoc(Array($ugDoc2F1,$ugDoc2F2,$ugDoc2F3));
@@ -119,24 +113,20 @@ $ugDoc2->groupDocTempl = $docTpl1;
 $ugDoc2->status = EnUserGroupDocStatus::DELETED;
 $ugDoc2->lastChangedDate = null;
 
-//$ugDoc2F1 = new UserGroupDocField($docTpl1F1,"test2",null,null);
-//$ugDoc2F2 = new UserGroupDocField($docTpl1F2,null,1,null);
-//$ugDoc2F3 = new UserGroupDocField($docTpl1F3,"null2",null,null);
-//
-//$ugDoc2->fieldsList = Array($ugDoc2F1,$ugDoc2F2,$ugDoc2F3);
+
 
 if($ugdRep->Save($ugDoc2))
-    echo "Документ 2 сохранен id документы $ugDoc1->id<br>";
+    echo "Документ 2 сохранен id документы $ugDoc2->id<br>";
 else
     echo "Ошибка сохранения документы ".$ugdRep->GetError()."<br>";
 
-$ugDoc1n = $ugrRep->GetById($ugDoc1->id);
+$ugDoc1n = $ugdRep->GetById($ugDoc1->id);
 if($ugDoc1n)
     echo "Копия документа 1 извлечена из базы<br>";
 else 
     echo "Ошибка извлечения копии документа 1 из базы ".$ugdRep->GetError()."<br>";
 
-$ugDoc2n = $ugrRep->GetById($ugDoc2->id);
+$ugDoc2n = $ugdRep->GetById($ugDoc2->id);
 if($ugDoc2n)
     echo "Копия документа 2 извлечена из базы<br>";
 else 
@@ -151,7 +141,7 @@ if($ugDoc2 == $ugDoc2n)
 else
     echo "Сравление документа 2 и копии прошло ОШИБОЧНО<br>";
 
-if($ugDoc1 == $ugDoc2)
+if($ugDoc1 != $ugDoc2)
     echo "Контрольный тест прошел успешно<br>";
 else
     echo "Контрольный тест прошел ОШИБОЧНО<br>";

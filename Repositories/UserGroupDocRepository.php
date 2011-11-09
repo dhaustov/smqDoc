@@ -21,12 +21,6 @@ class UserGroupDocRepository implements IObjectRepository
         $userGroupDoc = $obj;
         if($userGroupDoc)
         {
-//            if(!$userGroupDoc->ValidateObjectTypes())
-//            {
-//                $this->error = "Системная шибка при сохранении  документа (ошибка типов полей)";
-//                NotificationHelper::LogCritical($this->error);
-//                return false;
-//            }
             $sqlCon = SqlHelper::StartTransaction();
             
             //TODO: разобраться, что такое idGroupDocs
@@ -47,12 +41,23 @@ class UserGroupDocRepository implements IObjectRepository
                     'NOW()','NOW()')";
                 $userGroupDoc->id = SqlHelper::ExecInsertQuery($query, $sqlCon);
                 
-                //if($docTempl->id <= 0)
                 if( !$userGroupDoc->id)
                 {
                     SqlHelper::RollbackTransaction($sqlCon);
                     $this->error = "При добавлении шаблона документа возникла ошибка!";
                     return false;
+                }
+                foreach($userGroupDoc->fieldsList as $val)
+                {
+                $query = "INSERT INTO `".$this->TBL_DOCSTARAGE_FIELDS."` (`idDocumentStorage`, `idDocTemplateField`, 
+                    `StringValue`, `IntValue`, `BoolValue`) 
+                VALUES ('".
+                    intval($userGroupDoc->id)."','".
+                    intval($val->docTemplateField->id)."','".
+                    $val->stringValue."','".
+                    $val->intValue."','".
+                    $val->boolValue."')";
+                $val->id = SqlHelper::ExecInsertQuery($query, $sqlCon);
                 }
             }
             else
@@ -74,6 +79,7 @@ class UserGroupDocRepository implements IObjectRepository
                     return false;
                 }
             }
+            
            SqlHelper::CommitTransaction($sqlCon);
            return $userGroupDoc->id;
         }
@@ -151,8 +157,8 @@ class UserGroupDocRepository implements IObjectRepository
                 {
                     /* @var $fld UserGroupDocField */
                     $fld = new UserGroupDocField;
-                    $fld->id = intval($row['Id']);
-                    $fld->docTemplateField = $docTemplRep->GetDocTemplateFieldById($row['IdDocTemplateField']);
+                    $fld->id = intval($row['id']);
+                    $fld->docTemplateField = $docTemplRep->GetDocTemplateFieldById($row['idDocTemplateField']);
                     $fld->stringValue = $row['StringValue'];
                     $fld->intValue = $row['IntValue'];
                     $fld->boolValue = $row['BoolValue'];

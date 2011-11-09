@@ -13,13 +13,26 @@ class UserGroupDocField {
     public $intValue;
     public $boolValue;
     
-    public function __construct($_id=null,$_docTemplateField=null,$_stringValue=null,$_intValue=null,$_boolValue=null)
+    public function __construct($_docTemplateField=null,$_stringValue=null,$_intValue=null,$_boolValue=null,$_id=null)
     {
         $this->id = $_id;
         $this->docTemplateField = $_docTemplateField;
         $this->stringValue = $_stringValue;
         $this->intValue = $_intValue;
         $this->boolValue = $_boolValue;
+    }
+    
+    
+    public function GetValue()
+    {
+        if($this->stringValue != "")
+            return $this->stringValue;
+        if($this->intValue > 0)
+            return $this->intValue;
+        if($this->boolValue)
+            return true;
+        
+        return false;
     }
 //    public function ValidateObjectTypes()
 //    {

@@ -404,8 +404,7 @@ class UserGroupRepository implements IObjectRepository
 
         return false;
     }
-    
-    
+        
     /*Parents and hildren methods*/
     public function GetParentUserGroup($obj)
     {
@@ -437,30 +436,21 @@ class UserGroupRepository implements IObjectRepository
             
         return $resArr;
     }
-    
-    public function GetUserGroupDocTemplatesFromParentGroup($childGroup)
+       
+     public function GetUserGroupDocTemplatesFromParentGroup($childGroup)
     {
          $res = false;
-        /* @var $childGroup UserGroup */
-         $query = "select id,name,idUserGroups,idDocTemplate,startDate,endDate,status 
-                  from groups_docs where idUserGroups = ".$childGroup->idParentGroup;
-         
+         $query = "select id,idDocTemplate
+                  from usergroups_doctemplates where idGroup = ".$childGroup->idParentGroup;
+         //echo "query = ".$query;
          $templates = SqlHelper::ExecSelectCollectionQuery($query);
          if($templates )
          {
              $i = 0;
+             $rep = new DocTemplateRepository;
              foreach ($templates as $obj)
-             {
-                 /* @var usrGTD UserGroupDocTemplates */             
-                 $usrGTD = new UserGroupDocTemplates(
-                        $obj["idUserGroups"],
-                        $obj["idDocTemplate"],
-                        $obj["name"],
-                        $obj["startDate"],
-                        $obj["endDate"],
-                        $obj["status"],
-                        $obj["id"]
-                    );
+             {          
+                 $usrGTD = $rep->GetByID($obj['idDocTemplate']);                  
                  $res[$i] = $usrGTD;
                  $i++;
              }
@@ -471,6 +461,40 @@ class UserGroupRepository implements IObjectRepository
                 
     }
     
+    public function GetUserGroupsDocTemplatesID($groupID, $tempID)
+    {
+         $res = false;
+         $query = "select id from usergroups_doctemplates where idGroup = '".$groupID."' and idDocTemplate='".$tempID."'";
+         $res = SqlHelper::ExecSelectValueQuery($query);
+         return $res;
+    }
+    
+    
+     public function GetUserGroupsByMasterID($masterID)
+     {
+        $retArr = false;
+        $query = "select id from user_groups where idMasterUserAccount = ".$masterID;
+                                               
+        $res = SqlHelper::ExecSelectCollectionQuery($query);
+        $i=0;
+        if($res)
+        {
+            foreach($res as $row)
+            {
+                $usrGroup = $this->GetById($row['id']);                
+                $retArr[$i] = $usrGroup;
+                $i++;
+            }
+        }
+        if($retArr)
+            return $retArr;
+        else
+        {
+            $this->error = "Групп пользователей не найдено";
+            return false;
+        }        
+     }
+     
     public function GetError()
     {
         return $this->error;

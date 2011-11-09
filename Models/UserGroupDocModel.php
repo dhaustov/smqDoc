@@ -6,7 +6,7 @@
  */
 class UserGroupDocModel implements IModel
 {
-          /* @var $currentCommand UserGroupDocCommand */
+    /* @var $currentCommand UserGroupDocCommand */
     private $currentCommand; 
     /* @var $doc UserGroupDoc */
     private $doc;
@@ -27,66 +27,68 @@ class UserGroupDocModel implements IModel
         switch($this->currentCommand->action)
         {            
             case Actions::CREATE :
-                $res = new DocTemplate();
+                
+                if(isset($_POST['selTid'])) //если перешли с формы выбора шаблона
+                {
+                    $res = new UserGroupDoc();
+                    
+                    $tplRep = new DocTemplateRepository;
+                    $tpl = $tplRep->GetByID($_POST['selTid']);
+                    if($tpl)
+                    {                        
+                        $res->groupDocTempl = $tpl;
+                        foreach ($tpl->fieldsList as $field)
+                        {
+                            //$_docTemplateField=null,$_stringValue=null,$_intValue=null,$_boolValue=null,$_id=null
+                            $res->fieldsList[] = new UserGroupDocField($field);
+                        }
+                    }
+                    
+                    $ug = LoginHelper::GetCurrentUserGroup();
+                    $res->group = $ug;                    
+                    $res->author = LoginHelper::GetCurrentUser();                    
+                    
+                    $this->res = $res;                    
+                }
                 break;
             case Actions::DELETE :
-                $res = $this->repository->Delete($this->template);                                                                               
+                $res = $this->repository->Delete($this->doc);                                                  
                 break;
-            case Actions::SAVE :              
-                $validator = new DocTemplateValidator();
+            case Actions::SAVE : 
                 
-                //собираем с формы поля
-                $fields = Array();                
-                $cntFields = $_POST['totalFieldsCount']; //общее количество полей на форме
-                $i=0; 
-                $cnt = 1; //счётчик для id
-                while($i<$cntFields)
-                {
-                    if($_POST['lblName'.$cnt])
-                    {                        
-                        $calc =  isset($_POST['chkIsCalculated'.$cnt]) ? true : false;
-                        $restr = isset($_POST['chkIsRestricted'.$cnt]) ? true : false;
-                        $min = isset($_POST['lblMinValue'.$cnt]) ? $_POST['lblMinValue'.$cnt] : null;
-                        $max = isset($_POST['lblMaxValue'.$cnt]) ? $_POST['lblMaxValue'.$cnt] : null;
-                        $id = isset($_POST['hdnId'.$cnt]) ? $_POST['hdnId'.$cnt] : null;
-                        $ft = isset($_POST['selFieldType'.$cnt]) ? $_POST['selFieldType'.$cnt] : null;
-                        $ot = isset($_POST['selOper'.$cnt]) ? $_POST['selOper'.$cnt] : null;   
-
-                        //TODO: неправильно это как то...
-                        $fieldType = new DocTemplateFieldType(null,null,$ft);                        
-                        $operType = new DocTemplateOperation(null,null,$ot);
-
-                        $field = new DocTemplateField($_POST['lblName'.$cnt],$calc,$fieldType,$restr,$min,$max,$operType,$id);
-
-                        $fields[] = $field;
+                $tid = $_POST['hdnTid'];
+                
+                $doc = new UserGroupDoc();
+                    
+                $tplRep = new DocTemplateRepository;
+                $tpl = $tplRep->GetByID($tid);
+                if($tpl)
+                {                                   
+                    $doc->groupDocTempl = $tpl;
+                    $i=0;
+                    foreach ($tpl->fieldsList as $field)
+                    {
+                        //TODO: пока пишется только строка
+                        $doc->fieldsList[] = new UserGroupDocField($field, $_POST["txtVal$i"]);                        
                         $i++;
-                    }                        
-                    $cnt++;
+                    }
                 }
-                                
-                $tmpTpl = new DocTemplate( $_POST['lblName'],
-                                           $_POST['hdnTid'],
-                                           $fields
-                                         );
                 
+                $ug = LoginHelper::GetCurrentUserGroup();
+                $doc->group = $ug;                    
+                $doc->author = LoginHelper::GetCurrentUser();                    
                 
-                if(!$validator->IsValid($tmpTpl)) //валидируем
-                {
-                    $this->error = $validator->GetError();
-                    return false;
-                }
-                $this->template = $tmpTpl;                
-                $tid = $this->repository->Save($this->template);
+                $dID = $this->repository->Save($doc);
                 
-                if($tid)                
-                    $res = $this->repository->GetById($tid);                
-                break;
-            
+                if($dID)
+                    $res = $this->repository->GetByID ($dID);                
+
+                break;                
             case Actions::EDIT :
             case Actions::SHOW :
-                $this->template = $this->repository->GetById($this->currentCommand->id);
-                if($this->template)
-                    $res = $this->template;
+                $this->doc = $this->repository->GetById($this->currentCommand->id);
+                if($this->doc)
+                    $res = $this->doc;
                 break;
             case Actions::SHOWLIST :
                 $pageSize = 0;

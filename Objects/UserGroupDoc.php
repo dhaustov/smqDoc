@@ -20,7 +20,7 @@ class UserGroupDoc
     public $lastChangedDate;
     public $fieldsList ;
     
-    public function __construct($_fieldsList,$_id=null,$_author=null,$_groupDoc=null,$_status=null,
+    public function __construct($_fieldsList=null,$_id=null,$_author=null,$_groupDoc=null,$_status=null,
             $_dateCreated=null,$_lastChangedDate=null,$_group = null) {
         $this->id = $_id;
         $this->author = $_author;

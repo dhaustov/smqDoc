@@ -44,11 +44,13 @@ require_once 'Enums/Modules.php';
 //commands
 require_once 'Commands/UserCommand.php';
 require_once 'Commands/UserGroupCommand.php';
+require_once 'Commands/UserGroupDocCommand.php';
 require_once 'Commands/DocTemplateCommand.php';
 
 //Validators
 require_once 'Validators/UserValidator.php';
 require_once 'Validators/UserGroupValidator.php';
+require_once 'Validators/UserGroupDocValidator.php';
 require_once 'Validators/DocTemplateValidator.php';
 
 //MVC
@@ -69,4 +71,8 @@ require_once '/Controllers/DocTemplateController.php';
 require_once '/Models/DashboardModel.php';
 require_once '/Views/DashboardView.php';
 require_once '/Controllers/DashboardController.php';
+
+require_once '/Models/UserGroupDocModel.php';
+require_once '/Views/UserGroupDocView.php';
+require_once '/Controllers/UserGroupDocController.php';
 ?>

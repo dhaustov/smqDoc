@@ -31,6 +31,10 @@
                         $dtc->RunModel();
                         $dtc->ShowResult();
                         break;
+                    case Modules::DOCUMENTS :
+                        $dc = new UserGroupDocController($_REQUEST);
+                        $dc->RunModel();
+                        $dc->ShowResult();
                     default:
                         $dashc = new DashboardController($_REQUEST);
                         $dashc->RunModel();

@@ -442,6 +442,7 @@ class DocTemplateRepository implements IObjectRepository
     
     function CheckForExists($obj)
     {
+        return true;
 //        $query = "SELECT * FROM '".$this->TBL_DOCTEMPLATES."' WHERE 'id'=`".intval($id)."`";
 //        $row = SqlHelper::ExecSelectRowQuery($query);
 //        if($row)
@@ -475,12 +476,7 @@ class DocTemplateRepository implements IObjectRepository
     {
         $retArr = false;
         $query = "select id,name from doctemplates ";
-        
-        /*
-        if($status)
-            $query.="  where status = $status";        
-        */
-        
+                        
         if($pageSize > 1)        
             $query.=" limit ".((int)$pageNum * (int)$pageSize).",".$pageSize;        
         

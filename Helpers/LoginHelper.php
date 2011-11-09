@@ -71,6 +71,16 @@ class LoginHelper {
             return false;
         }
     }
+    public static function GetCurrentUserGroup()
+    {
+        //TODO: ЗАГЛУШКА!!!!!
+        $ugRep = new UserGroupRepository();
+        $lstGroups = $ugRep->GetUserGroupsByMasterID(LoginHelper::GetCurrentUserId());
+        if(count($lstGroups) > 0 )
+            return $lstGroups[0];
+        
+        return false;
+    }
     /**
     * @return UserAccount
     */

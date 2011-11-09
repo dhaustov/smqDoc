@@ -14,6 +14,7 @@ class UserGroup {
     public $status;    
     
     private $relatedDocumentTemplates;
+    public $deletedTemplates;
     
     function __construct( $_idMasterUserAccount=null, $_name = null, $_masterUserAccountRole = null, 
                           $_idParentGroup = null, $_status = null, $_id = null) 
@@ -32,6 +33,11 @@ class UserGroup {
     public function AddRelatedDocTemplates($docs)
     {
         $this->relatedDocumentTemplates = $docs;    
+    }
+    
+    public function DelRelatedDocTemplates($docs)
+    {
+        $this->deletedTemplates = $docs; 
     }
     
     public function GetRelatedDocTemplates()

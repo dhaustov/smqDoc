@@ -16,6 +16,7 @@
                 -webkit-border-radius: 0 10px 0 10px;
                 -moz-border-radius: 0 10px 0 10px;
                 border-radius: 0 10px 0 10px;
+                padding: 10px;
             }
             div.content {                
                 margin-left: 150px;                

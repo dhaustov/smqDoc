@@ -52,7 +52,8 @@ class UserGroupView  implements IView
                                            $_REQUEST["lblName"],
                                            $_REQUEST["lblMasterUserRole"],
                                            $_REQUEST["selIdParentGroup"],
-                                           $_REQUEST["selStatus"]                                    
+                                           $_REQUEST["selStatus"],
+                                           $_REQUEST["hdnGid"]
                                          );
                     $this->currentTemplate = UserGroupView::TPL_CREATEEDIT;
                     $this->frmAction = "index.php?module=".Modules::USERGROUPS."&action=".Actions::SAVE;

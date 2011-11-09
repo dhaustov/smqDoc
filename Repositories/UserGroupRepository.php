@@ -27,22 +27,34 @@ class UserGroupRepository implements IObjectRepository
                           where id =". intval($usrGroup->id);
                 
                 $numRows = SqlHelper::ExecUpdateQuery($query);
-                                
+                      
+                //добавляем и удаляем темплейты                
+                $newTemplates  = $usrGroup->GetRelatedDocTemplates();
+                
+                if($newTemplates)
+                {
+                    foreach($newTemplates as $tplID)
+                    {
+                        $insQuery = "insert into usergroups_doctemplates (idGroup,idDoctemplate) values ('".$usrGroup->id."','$tplID') ";
+                        $res = SqlHelper::ExecInsertQuery($insQuery);
+                    }                
+                }
+                                                
+                $oldTemplates  = $usrGroup->deletedTemplates;
+                if(count($oldTemplates) > 0)
+                {
+                    foreach($oldTemplates as $tplID)
+                    {
+                        $delQuery = "delete from usergroups_doctemplates where idGroup = '".$usrGroup->id."' and idDocTemplate = '$tplID' ";
+                        $res = SqlHelper::ExecDeleteQuery($delQuery);
+                    }
+                }
+                
+                /*
                 //обновлем темплейты
                 $rep = new DocTemplateRepository();
                 $lst = $rep->GetListByGroupID($usrGroup->id);
                 $lstNewTemplates = $usrGroup->GetRelatedDocTemplates();
-//                if($lst)
-//                {
-//                    foreach ($lst as $t)
-//                    {
-//                        if(!$lstNewTemplates || !in_array($t->id,$lstNewTemplates ))
-//                        {
-//                            $delQuery = "delete from usergroups_doctemplates where idGroup = '".$usrGroup->id."' and idDoctemplate = '".$t->id."'";
-//                            $res = SqlHelper::ExecDeleteQuery($delQuery);
-//                        }
-//                    }                                        
-//                }
                 
                 if($lstNewTemplates)
                 {
@@ -55,6 +67,7 @@ class UserGroupRepository implements IObjectRepository
                         }
                     }
                 }
+                */
                 
                 if(!$numRows)
                 {

@@ -35,8 +35,8 @@ class UserGroupModel implements IModel
             case Actions::SAVE :              
                 $validator = new UserGroupValidator();
                 
-                //Собираем теплейты    
-                $fields = Array(); 
+                //Собираем новые темплейты    
+                $newFields = Array(); 
                 if(isset($_POST['hdnNewTempCount']))
                     $cntFields = $_POST['hdnNewTempCount']; //общее количество полей на форме
                 else
@@ -47,10 +47,23 @@ class UserGroupModel implements IModel
                 {
                     if($_POST['hdnNewTemplate'.$cnt])
                     {    
-                        $fields[] = $_POST['hdnNewTemplate'.$cnt];                        
+                        $newFields[] = $_POST['hdnNewTemplate'.$cnt];                        
                         $i++;
                     }                        
                     $cnt++;
+                }
+                
+                //...и старые
+                $delFields = Array();
+                if(isset($_POST['hdnDelTempCount']) && $_POST['hdnDelTempCount'] > 0 )
+                {                                                   
+                    $cntFields = $_POST['hdnDelTempCount']; 
+                    for($i=1; $i<=$cntFields; $i++)
+                    {                        
+                        if(isset($_POST["hdnDelTemp$i"]) && $_POST["hdnDelTemp$i"] > 0)                        
+                            $delFields[] = $_POST["hdnDelTemp$i"];                                                       
+                    }
+                    
                 }
                 
                 $tmpGroup = new UserGroup( $_POST["selIdMasterUser"],
@@ -61,7 +74,9 @@ class UserGroupModel implements IModel
                                            $_POST["hdnGid"]
                                          );
                 
-                $tmpGroup->AddRelatedDocTemplates($fields);
+                $tmpGroup->AddRelatedDocTemplates($newFields);
+                $tmpGroup->DelRelatedDocTemplates($delFields);
+                
                 if(!$validator->IsValid($tmpGroup)) //валидируем
                 {
                     $this->error = $validator->GetError();

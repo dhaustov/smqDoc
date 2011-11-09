@@ -26,7 +26,7 @@
 <ul class="hrMenu">
     <li><a href="index.php">Домашняя</a></li>
     <li><a href="index.php?module=users&action=showlist">Пользователи</a></li>
-    <li><a href="index.php?module=usergroups&action=showlist">Групы</a></li>
+    <li><a href="index.php?module=usergroups&action=showlist">Группы</a></li>
     <li><a href="index.php?module=doctemplates&action=showlist">Шаблоны документов</a></li>
     <li><a href="index.php?module=documents&action=showlist">Документы</a></li>
 </ul>

@@ -16,18 +16,59 @@
         elem.setAttribute("id", "hdnNewTemplate" + newID.toString());
                 
         var text = document.createElement("span");
-        text.innerHTML = lst[lst.selectedIndex].innerHTML;
+        text.innerHTML = lst[lst.selectedIndex].innerHTML + " (<a href='javascript:void(0);' onClick = 'DeleteNewTemplate(\"divTpl"+newID+"\")'>удалить) ";
         text.setAttribute("style", "color: blue");
         
+        var outerDiv = document.createElement("div");
+        outerDiv.setAttribute("id", "divTpl"+newID);
+        outerDiv.appendChild(elem);
+        outerDiv.appendChild(text);
+        
         divNewTemp.appendChild(document.createElement("br"));
-        divNewTemp.appendChild(elem);
-        divNewTemp.appendChild(text);
+        divNewTemp.appendChild(outerDiv);
         
         hdnLastID.value = newID;
         hdnCnt.value = newCnt;
         
         //alert("new value: " + elem.value + " Last ID: " + hdnLastID.value + " new count: " +hdnCnt.value );
     }
+    
+    function DeleteNewTemplate(id)
+    {        
+        if(document.getElementById(id))
+            {
+                var divTemplates = document.getElementById("divNewTemplates");                
+                var child = document.getElementById(id);
+                
+                divTemplates.removeChild(child);
+                return true;
+            }
+        return false;
+    }
+    
+    function DeleteExistingTemplate(idTemplate)
+    {
+        alert(idTemplate);
+        var hdnCount = document.getElementById("hdnDelTempCount");
+        
+        var divTemplates = document.getElementById("divNewTemplates");                
+        var divOldTpl = document.getElementById("divOldTpl"+idTemplate);
+        divTemplates.removeChild(divOldTpl);
+        
+        var newVal= +hdnCount.value + 1;
+        var hdn = document.createElement("input");
+        hdn.setAttribute("type", "hidden");
+        hdn.setAttribute("id", "hdnDelTemp"+newVal.toString());
+        hdn.setAttribute("name", "hdnDelTemp"+newVal.toString());
+        hdn.value = idTemplate;
+        
+        divTemplates.appendChild(hdn);
+        
+        
+        hdnCount.value = newVal;
+        alert(hdnCount.value);
+    }
+    
 </script>
 <div id="main">
 <h2>Создание новой группы:</h2>
@@ -119,7 +160,10 @@
                     <div id="divNewTemplates" style="border: 0px;" >
                         <?php if($lstDocTemplatesExists) 
                                 foreach($lstDocTemplatesExists as $t) : 
-                                    echo $t->name." <br />";
+                                    echo @"<div id=\"divOldTpl".$t->id."\"> 
+                                                ".$t->name." 
+                                                (<a href=\"javascript:void(0);\" onClick=\"DeleteExistingTemplate('".$t->id."')\"  >удалить</a>)
+                                           </div>";
                                 endforeach; 
                             ?>
                     </div>
@@ -127,7 +171,7 @@
             </tr>  
         <?php endif; ?>
         
-        <?php if($res->id > 0) : ?>
+        <?php if($res->id > 0) : ?>          
             <tr>
                 <td>
                     Добавить шаблон документа:
@@ -145,6 +189,8 @@
                     <input type="button" id="btnAdd" onclick ="AddNewTemplate()" value="Добавить" />
                     <input type="hidden" id="hdnNewTempCount" name="hdnNewTempCount" value="0" />
                     <input type="hidden" id="hdnNewTempLastID" name="hdnNewTempLastID" value="0" />
+                    
+                    <input type="hidden" id="hdnDelTempCount" name="hdnDelTempCount" value="0" />
                 </td>
             </tr>            
         <?php endif; ?>

@@ -1,5 +1,5 @@
 <div id="main">
-    <?php if(!isset($_POST['selTid']) && !isset($_POST['hdnTid']) ) : ?>
+    <?php if(!isset($_POST['selTid']) && !isset($_POST['hdnTid'])  && !isset($_GET['id']) ) : ?>
         <form name="frmSelTpl" method="POST" action="<?php echo $frmAction; ?>" />
             <select name="selTid">
                 <?php 

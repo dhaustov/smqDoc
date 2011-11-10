@@ -62,21 +62,41 @@ class UserGroupDocRepository implements IObjectRepository
             }
             else
             {
-                $query = "UPDATE `".$this->TBL_DOCSTARAGE."` SET (`IdAuthor`, `IdGroup`, 
-                    `IdGroupDocs`, `Status`, `DateCreated`, `LastChangedDate`) VALUES ('".
-                    intval($userGroupDoc->author->id)."','".
-                    intval($userGroupDoc->group->id)."','".
-                    //intval($userGroupDoc->groupDocTempl->id)."','".
-                    intval($usergroups_docsID)."','".
-                    intval($userGroupDoc->status)."','".
-                    ToolsHelper::CleanInputString($userGroupDoc->dateCreated)."','
-                    NOW()') WHERE `id`='".$userGroupDoc->id."'";
-                $userGroupDoc->id = SqlHelper::ExecInsertQuery($query, $sqlCon);
-                if($docTempl->id <= 0)
+//                $query = "UPDATE `".$this->TBL_DOCSTARAGE."` SET (`IdAuthor`, `IdGroup`, 
+//                    `IdGroupDocs`, `Status`, `DateCreated`, `LastChangedDate`) VALUES ('".
+//                    intval($userGroupDoc->author->id)."','".
+//                    intval($userGroupDoc->group->id)."','".
+//                    //intval($userGroupDoc->groupDocTempl->id)."','".
+//                    intval($usergroups_docsID)."','".
+//                    intval($userGroupDoc->status)."','".
+//                    ToolsHelper::CleanInputString($userGroupDoc->dateCreated)."','
+//                    NOW()') WHERE `id`='".$userGroupDoc->id."'";
+                $query = "UPDATE `".$this->TBL_DOCSTARAGE."` SET `IdAuthor`=".intval($userGroupDoc->author->id).", 
+                        `IdGroup`=".intval($userGroupDoc->group->id).", 
+                    `IdGroupDocs` =". intval($usergroups_docsID).",
+                     `Status` = ".intval($userGroupDoc->status).", 
+                     `LastChangedDate` = NOW()                  
+                      WHERE `id`='".$userGroupDoc->id."'";
+                $rcount = SqlHelper::ExecUpdateQuery($query, $sqlCon);
+                if($rcount < 1)
                 {
                     SqlHelper::RollbackTransaction($sqlCon);
-                    $this->error = "При добавлении шаблона документа возникла ошибка!";
+                    $this->error = "При добавлении документа возникла ошибка!";
                     return false;
+                }
+                $query = "DELETE FROM docstorage_fields  WHERE idDocumentStorage=".$userGroupDoc->id;
+                $dCount = SqlHelper::ExecDeleteQuery($query, $sqlCon);
+               
+                foreach($userGroupDoc->fieldsList as $val)
+                {
+                $query = "INSERT INTO docstorage_fields (idDocumentStorage,idDocTemplateField,StringValue) VALUES ('".$userGroupDoc->id."','".$val->docTemplateField->id."','".$val->GetValue()."')";
+                $vCount = SqlHelper::ExecUpdateQuery($query, $sqlCon);
+                if($vCount < 1)
+                {
+                    SqlHelper::RollbackTransaction($sqlCon);
+                    $this->error = "При добавлении поля документа возникла ошибка!";
+                    return false;
+                }
                 }
             }
             
@@ -138,6 +158,11 @@ class UserGroupDocRepository implements IObjectRepository
         $row = SqlHelper::ExecSelectRowQuery($query);
         if($row)
         {
+            //костыль!!!!
+            $q = " select idDocTemplate from usergroups_doctemplates where id=".$row['idGroupDocs'];
+            $docTemplID = SqlHelper::ExecSelectValueQuery($q);
+            //                        
+            
             $doc = new UserGroupDoc();
             
             $doc->id = $row['id'];
@@ -146,7 +171,8 @@ class UserGroupDocRepository implements IObjectRepository
             $doc->lastChangedDate = $row['LastChangedDate'];
             $doc->author = $userRep->GetById( intval($row['idAuthor']) );
             $doc->group = $userGroupRep->GetById( intval($row['idGroup']) );
-            $doc->groupDocTempl = $groupDocTemplsRep->GetById( intval($row['idGroupDocs']) );
+            //$doc->groupDocTempl = $groupDocTemplsRep->GetById( intval($row['idGroupDocs']) );
+            $doc->groupDocTempl = $groupDocTemplsRep->GetById( $docTemplID );
             
             $query = "SELECT * FROM `".$this->TBL_DOCSTARAGE_FIELDS."` WHERE `IdDocumentStorage`='".
                     intval($doc->id)."'";
@@ -162,7 +188,7 @@ class UserGroupDocRepository implements IObjectRepository
                     $fld->stringValue = $row['StringValue'];
                     $fld->intValue = $row['IntValue'];
                     $fld->boolValue = $row['BoolValue'];
-                    $docTempl->fieldsList[$fld->id] = $fld;
+                    $doc->fieldsList[] = $fld;
                 }
                 return $doc;
             }

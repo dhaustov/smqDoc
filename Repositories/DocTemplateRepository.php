@@ -225,7 +225,7 @@ class DocTemplateRepository implements IObjectRepository
            }
            else
            {
-            $query = "INSERT INTO `".$this->TBL_DOCTEMPLATES."` (`Name`) VALUES 
+            $query = "INSERT INTO `".$this->TBL_DOCTEMPLATES."`  (name) VALUES 
                 ('".ToolsHelper::CleanInputString($docTempl->name)."')";
             $docTempl->id = intval(SqlHelper::ExecInsertQuery($query,$sqlCon));
             if ($docTempl->id <= 0)

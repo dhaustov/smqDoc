@@ -57,9 +57,10 @@ class UserGroupDocModel implements IModel
             case Actions::SAVE : 
                 
                 $tid = $_POST['hdnTid'];
+                $ndId = $_POST['hdnDocID'];
                 
                 $doc = new UserGroupDoc();
-                    
+                if(intval($ndId) > 0) $doc->id = $ndId; 
                 $tplRep = new DocTemplateRepository;
                 $tpl = $tplRep->GetByID($tid);
                 if($tpl)

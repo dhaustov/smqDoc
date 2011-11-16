@@ -21,11 +21,7 @@ class UserGroupDocRepository implements IObjectRepository
         $userGroupDoc = $obj;
         if($userGroupDoc)
         {
-            $sqlCon = SqlHelper::StartTransaction();
-
-//                $rep = new UserGroupRepository;
-//                $usergroups_docsID = $rep->GetUserGroupsDocTemplatesID($userGroupDoc->group->idParentGroup, $userGroupDoc->groupDocTempl->id);
-                
+            $sqlCon = SqlHelper::StartTransaction();              
                 
             if(!$userGroupDoc->id)
             {                                
@@ -61,15 +57,6 @@ class UserGroupDocRepository implements IObjectRepository
             }
             else
             {
-//                $query = "UPDATE `".$this->TBL_DOCSTARAGE."` SET (`IdAuthor`, `IdGroup`, 
-//                    `IdGroupDocs`, `Status`, `DateCreated`, `LastChangedDate`) VALUES ('".
-//                    intval($userGroupDoc->author->id)."','".
-//                    intval($userGroupDoc->group->id)."','".
-//                    //intval($userGroupDoc->groupDocTempl->id)."','".
-//                    intval($usergroups_docsID)."','".
-//                    intval($userGroupDoc->status)."','".
-//                    ToolsHelper::CleanInputString($userGroupDoc->dateCreated)."','
-//                    NOW()') WHERE `id`='".$userGroupDoc->id."'";
                 $query = "UPDATE `".$this->TBL_DOCSTARAGE."` SET `IdAuthor`=".intval($userGroupDoc->author->id).", 
                         `IdGroup`=".intval($userGroupDoc->group->id).", 
                     `IdGroupDocs` =". intval($usergroups_docsID).",
@@ -111,12 +98,6 @@ class UserGroupDocRepository implements IObjectRepository
         $userGroupDoc = $obj;
         if($userGroupDoc)
         {
-//            if(!$userGroupDoc->ValidateObjectTypes())
-//            {
-//                $this->error = "Системная шибка при удалении  документа (ошибка типов полей)";
-//                NotificationHelper::LogCritical($this->error);
-//                return false;
-//            }
             $sqlCon = SqlHelper::StartTransaction();
             $query = "UPDATE `".$this->TBL_DOCSTARAGE."` SET `Status`='".
                     EnUserGroupDocStatus::DELETED."' WHERE `Id` ='".intval($userGroupDoc->id)."'";
@@ -210,7 +191,7 @@ class UserGroupDocRepository implements IObjectRepository
         //если pageSize = 1 - выводим всех
         $retArr = false;
         //менять на idGroup
-        $query = "select id,idAuthor,idGroup,status,DateCreated,LastChangedDate from docstorage where idAuthor = '".LoginHelper::GetCurrentUserId()."'";
+        $query = "select id,idAuthor,idGroup,status,DateCreated,LastChangedDate from ".$this->TBL_DOCSTARAGE." where idAuthor = '".LoginHelper::GetCurrentUserId()."'";
         if($status)
             $query.=" and status = $status";
         
@@ -242,7 +223,7 @@ class UserGroupDocRepository implements IObjectRepository
     public function GetListItemsCount($status = null)
     {
         $query = "select count(*)
-                  from docstorage where idAuthor = '".LoginHelper::GetCurrentUserId()."'";
+                  from ".$this->TBL_DOCSTARAGE." where idAuthor = '".LoginHelper::GetCurrentUserId()."'";
         if($status)
             $query.="  and status = $status";        
         $res = SqlHelper::ExecSelectValueQuery($query);

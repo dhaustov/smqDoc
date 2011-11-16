@@ -11,13 +11,13 @@
         <th>
             Операции
         </th>
-        <?php if($res) foreach ($res as $template) : ?>
+        <?php if($res) foreach ($res as $template): if($template): ?>
             <tr>
                 <td><?php echo "<a href=\"index.php?module=".Modules::DOCTEMPLATES."&action=".Actions::SHOW."&id=".$template->id."\">".$template->name."</a>"; ?></td>                
-                <td><?php  echo count($template->fieldsList)?></td>
+                <td><?php  echo count($template->lstobjFields)?></td>
                 <td><?php echo "<a href=\"index.php?module=".Modules::DOCTEMPLATES."&action=".Actions::EDIT."&id=".$template->id."\">Редактировать</a>"; ?></td>
             </tr>
-        <?php endforeach; ?>
+        <?php endif; endforeach; ?>
     </table>
     <div id="paging">
         Размер страницы:        

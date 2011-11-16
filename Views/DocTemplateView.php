@@ -19,7 +19,6 @@ class DocTemplateView implements IView
     public $totalItems;    
     public $frmAction;
     public $lstFieldTypes;
-    public $lstOperations;
     
     public $currentTemplate;
     
@@ -54,13 +53,8 @@ class DocTemplateView implements IView
                             $max = isset($_POST['lblMaxValue'.$cnt]) ? $_POST['lblMaxValue'.$cnt] : null;
                             $id = isset($_POST['hdnId'.$cnt]) ? $_POST['hdnId'.$cnt] : null;
                             $ft = isset($_POST['selFieldType'.$cnt]) ? $_POST['selFieldType'.$cnt] : null;
-                            $ot = isset($_POST['selOper'.$cnt]) ? $_POST['selOper'.$cnt] : null;   
                             
-                            //TODO: неправильно это как то...
-                            $fieldType = new DocTemplateFieldType(null,null,$ft);                        
-                            $operType = new DocTemplateOperation(null,null,$ot);
-                            
-                            $field = new DocTemplateField($_POST['lblName'.$cnt],$calc,$fieldType,$restr,$min,$max,$operType,$id);
+                            $field = new DocTemplateField($_POST['lblName'.$cnt],$calc,$fieldType,$restr,$min,$max,$id);
 
                             $fields[] = $field;
                             $i++;
@@ -127,7 +121,6 @@ class DocTemplateView implements IView
         $totalItems = $this->totalItems;
         
         $lstFieldTypes = $this->lstFieldTypes;
-        $lstOperations = $this->lstOperations;
                 
         include_once $this->currentTemplate;    
     }

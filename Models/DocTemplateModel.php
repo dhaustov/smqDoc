@@ -6,7 +6,7 @@
  */
 class DocTemplateModel implements IModel
 {
-          /* @var $currentCommand DocTemplateCommand */
+    /* @var $currentCommand DocTemplateCommand */
     private $currentCommand; 
     /* @var $template DocTemplate */
     private $template;
@@ -49,14 +49,9 @@ class DocTemplateModel implements IModel
                         $min = isset($_POST['lblMinValue'.$cnt]) ? $_POST['lblMinValue'.$cnt] : null;
                         $max = isset($_POST['lblMaxValue'.$cnt]) ? $_POST['lblMaxValue'.$cnt] : null;
                         $id = isset($_POST['hdnId'.$cnt]) ? $_POST['hdnId'.$cnt] : null;
-                        $ft = isset($_POST['selFieldType'.$cnt]) ? $_POST['selFieldType'.$cnt] : null;
-                        $ot = isset($_POST['selOper'.$cnt]) ? $_POST['selOper'.$cnt] : null;   
+                        $ft = isset($_POST['selFieldType'.$cnt]) ? $_POST['selFieldType'.$cnt] : null;                         
 
-                        //TODO: неправильно это как то...
-                        $fieldType = new DocTemplateFieldType(null,null,$ft);                        
-                        $operType = new DocTemplateOperation(null,null,$ot);
-
-                        $field = new DocTemplateField($_POST['lblName'.$cnt],$calc,$fieldType,$restr,$min,$max,$operType,$id);
+                        $field = new DocTemplateField($_POST['lblName'.$cnt],$calc,$ft,$restr,$min,$max,$id);
 
                         $fields[] = $field;
                         $i++;
@@ -76,10 +71,10 @@ class DocTemplateModel implements IModel
                     return false;
                 }
                 $this->template = $tmpTpl;                
-                $tid = $this->repository->Save($this->template);
+                $tres = $this->repository->Save($this->template);
                 
-                if($tid)                
-                    $res = $this->repository->GetById($tid);                
+                if($tres)                
+                    $res = $this->repository->GetById($this->template->id);                
                 break;
             
             case Actions::EDIT :
@@ -114,12 +109,18 @@ class DocTemplateModel implements IModel
     
     public function GetFieldTypesList()
     {
-        return $this->repository->docTemplateFieldTypesArr;
-    }
-    
-    public function GetOperationsList()
-    {
-        return $this->repository->docTemplateOperationsArr;
+        //return $this->repository->docTemplateFieldTypesArr;
+ 
+        $item1['id']= EnDocTemplateFieldTypes::STRING;
+        $item1['name']= "Строка";
+        $item2['id']= EnDocTemplateFieldTypes::INT;
+        $item2['name']= "Целое";
+        $item3['id']= EnDocTemplateFieldTypes::BOOL;
+        $item3['name']= "Двочиное";
+        $retval[] = $item1;
+        $retval[] = $item2;
+        $retval[] = $item3; 
+        return $retval;
     }
         
     public function GetListItemsCount()

@@ -29,20 +29,17 @@
                     Верхняя граница
                 </th>
             </tr>
-        <?php if($res->fieldsList) foreach ($res->fieldsList as $field) : ?>
+        <?php if($res->lstobjFields) foreach ($res->lstobjFields as $field) : ?>
             
             <tr>
                 <td>
                     <?php echo $field->name; ?>
                 </td>
                 <td>
-                    <?php echo $field->fieldType->name; ?>                                
+                    <?php /*echo $field->fieldType->name;*/ ?>                                
                 </td>
-                <td>                                
+                <td style="display:none">                                
                     <?php echo $field->isCalculated ? "Да" : "Нет"; ?>                                
-                </td>
-                <td>
-                    <?php echo isset($field->operation->id) ? $field->operation->name : "---"; ?>                                
                 </td>
                 <td>
                     <?php echo $field->isRestricted ? "Да" : "Нет"; ?>                                

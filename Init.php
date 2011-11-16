@@ -27,8 +27,6 @@ require_once 'Objects/UserGroupDocField.php';
 require_once 'Objects/UserGroupDocTemplates.php';
 require_once 'Objects/DocTemplate.php';
 require_once 'Objects/DocTemplateField.php';
-require_once 'Objects/DocTemplateFieldType.php';
-require_once 'Objects/DocTemplateOperation.php';
 
 //Repositories
 require_once 'Repositories/UserRepository.php';

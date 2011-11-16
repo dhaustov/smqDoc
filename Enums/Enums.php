@@ -12,7 +12,11 @@ class EnLogEventType {
     const CRITICAL = 2;
     
 }
-
+class EnDocTemplateFieldTypes{
+    const STRING = 0;
+    const INT = 1;
+    const BOOL = 3;
+}
 /**
  *  statuses in DB
  *

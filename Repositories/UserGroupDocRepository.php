@@ -22,10 +22,9 @@ class UserGroupDocRepository implements IObjectRepository
         if($userGroupDoc)
         {
             $sqlCon = SqlHelper::StartTransaction();
-            
-            //TODO: разобраться, что такое idGroupDocs
-                $rep = new UserGroupRepository;
-                $usergroups_docsID = $rep->GetUserGroupsDocTemplatesID($userGroupDoc->group->idParentGroup, $userGroupDoc->groupDocTempl->id);
+
+//                $rep = new UserGroupRepository;
+//                $usergroups_docsID = $rep->GetUserGroupsDocTemplatesID($userGroupDoc->group->idParentGroup, $userGroupDoc->groupDocTempl->id);
                 
                 
             if(!$userGroupDoc->id)

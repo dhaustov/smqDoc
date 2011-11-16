@@ -19,11 +19,11 @@
         
         function Calculated(id)
         {
-            var selOper = document.getElementById("selOper" + id);
-            if(selOper.attributes["disabled"])
-                selOper.removeAttribute("disabled");
-            else
-                selOper.setAttribute("disabled", "disabled");
+//            var selOper = document.getElementById("selOper" + id);
+//            if(selOper.attributes["disabled"])
+//                selOper.removeAttribute("disabled");
+//            else
+//                selOper.setAttribute("disabled", "disabled");
         }
         
         function AddNewField()
@@ -96,33 +96,33 @@
             tr3.appendChild(td5);
             tr3.appendChild(td6);
             
-            var tr7 = document.createElement("tr");
-            var td13 = document.createElement("td");
-            td13.innerHTML = "Операция при вычислении:";            
-            var td14 = document.createElement("td");
-            var selType = document.createElement("select");
-            selType.setAttribute("name", "selOper"+newVal);
-            selType.setAttribute("id", "selOper"+newVal);
-            selType.setAttribute("disabled", "disabled");
+//            var tr7 = document.createElement("tr");
+//            var td13 = document.createElement("td");
+//            td13.innerHTML = "Операция при вычислении:";            
+//            var td14 = document.createElement("td");
+//            var selType = document.createElement("select");
+//            selType.setAttribute("name", "selOper"+newVal);
+//            selType.setAttribute("id", "selOper"+newVal);
+//            selType.setAttribute("disabled", "disabled");
+//            
+//            var strIDs = document.getElementById("arrOperationsIndexes").value;
+//            var strValues = document.getElementById("arrOperationsValues").value;
+//            
+//            var arrIDs = String(strIDs).split(",", 100);
+//            var arrValues = String(strValues).split(",", 100);
+//            
+//            for (var i=0; i<arrIDs.length; i++)
+//                {
+//                    var opt = document.createElement("option");
+//                    opt.setAttribute("value", arrIDs[i]);
+//                    opt.innerHTML = arrValues[i];
+//                    selType.appendChild(opt);
+//                }
             
-            var strIDs = document.getElementById("arrOperationsIndexes").value;
-            var strValues = document.getElementById("arrOperationsValues").value;
+            //td14.appendChild(selType);
             
-            var arrIDs = String(strIDs).split(",", 100);
-            var arrValues = String(strValues).split(",", 100);
-            
-            for (var i=0; i<arrIDs.length; i++)
-                {
-                    var opt = document.createElement("option");
-                    opt.setAttribute("value", arrIDs[i]);
-                    opt.innerHTML = arrValues[i];
-                    selType.appendChild(opt);
-                }
-            
-            td14.appendChild(selType);
-            
-            tr7.appendChild(td13);
-            tr7.appendChild(td14);
+            //tr7.appendChild(td13);
+            //tr7.appendChild(td14);
             
             var tr4 = document.createElement("tr");
             var td7 = document.createElement("td");
@@ -175,7 +175,7 @@
             table.appendChild(tr1);
             table.appendChild(tr2);
             table.appendChild(tr3);
-            table.appendChild(tr7);
+            //table.appendChild(tr7);
             table.appendChild(tr4);
             table.appendChild(tr5);
             table.appendChild(tr6);
@@ -207,7 +207,7 @@
         </tr>
         <tr>
             <td colspan="2">
-        <?php if(!$res->fieldsList) : ?>
+        <?php if(!$res->lstobjFields) : ?>
         <!-- Создание нового шаблона - полей нет -->        
             <div id="dFields" name="dFields" >
                 <div id="dF1" name="dF1"> <!--Первый элемент -->
@@ -228,12 +228,12 @@
                                 <select id="selFieldType1" name="selFieldType1">
                                     <?php if($lstFieldTypes) 
                                               foreach($lstFieldTypes as $type)                                               
-                                                    echo "<option value=".$type->id." >".$type->name."</option>";                                               
+                                                    echo "<option value=".$type['id']." >".$type['name']."</option>";                                               
                                     ?>
                                 </select>
                             </td>
                         </tr>
-                        <tr>
+                        <tr style="display:none">
                             <td>
                                 Вычислимое:
                             </td>
@@ -241,20 +241,6 @@
                                 <input type="checkbox" id="chkIsCalculated1" name="chkIsCalculated1" onclick="Calculated(1)" />
                             </td>
                         </tr>
-                        <tr>
-                            <td>
-                                Операция при вычислении:
-                            </td>
-                            <td>
-                                <select id="selOper1" name="selOper1" disabled="disabled">
-                                    <?php if($lstOperations) 
-                                              foreach($lstOperations as $oper)                                               
-                                                    echo "<option value=".$oper->id." >".$oper->name."</option>";                                               
-                                    ?>
-                                </select>
-                            </td>
-                        </tr>
-                        
                         <tr>
                             <td>
                                 Ограниченное:
@@ -286,7 +272,7 @@
         <?php else : ?>
         <!-- Редактирование шаблона - поля есть -->        
              <div id="dFields" name="dFields" >
-                <?php $i=1; foreach ($res->fieldsList as $field) : ?>
+                <?php $i=1; foreach ($res->lstobjFields as $field) : ?>
                  <div id="dF<?php echo $i; ?>" name="dF<?php echo $i; ?>"> 
                     <table>
                         <tr>
@@ -311,16 +297,16 @@
                                               {
                                                 $selected = "";
                                                 if(isset($field->fieldType))
-                                                   if($field->fieldType->id == $type->id)
+                                                   if($field->fieldType == $type['id'])
                                                       $selected = " selected=\"selected\" ";
                                                    
-                                                echo "<option value=".$type->id." $selected >".$type->name."</option>";                                               
+                                                echo "<option value=".$type['id']." $selected >".$type['name']."</option>";                                               
                                               }
                                     ?>
                                 </select>
                             </td>
                         </tr>
-                        <tr>
+                        <tr style="display:none">
                             <td>
                                 Вычислимое:
                             </td>
@@ -335,34 +321,6 @@
                                 />
                             </td>
                         </tr>
-                        <tr>
-                            <td>
-                                Операция при вычислении:
-                            </td>
-                            <td>
-                                <select id="selOper<?php echo $i; ?>" 
-                                        name="selOper<?php echo $i; ?>" 
-                                        <?php 
-                                            if(!isset($field->isCalculated) || 
-                                               ( isset($field->isCalculated) &&  !$field->isCalculated) )
-                                               echo " disabled=\"disabled\" ";
-                                        ?>
-                                        >
-                                    <?php if($lstOperations) 
-                                        foreach($lstOperations as $oper)                                               
-                                        {
-                                           $selected = "";
-                                            if(isset($field->operation))
-                                               if($field->operation->id == $oper->id)
-                                                  $selected = " selected=\"selected\" ";
-
-                                           echo "<option value=".$oper->id." $selected >".$oper->name."</option>";                                               
-                                        }
-                                    ?>
-                                </select>
-                            </td>
-                        </tr>
-                        
                         <tr>
                             <td>
                                 Ограниченное:
@@ -429,17 +387,14 @@
     <input type="hidden" name="hdnTid" value="<?php echo $res->id; ?>" />
     
     <!--для добавления новых полей -->
-    <input type="hidden" name="lastFieldNum" id="lastFieldNum" value='<?php if($res->fieldsList) echo count($res->fieldsList); else echo "1"; ?>' />
-    <input type="hidden" name="totalFieldsCount" id="totalFieldsCount" value='<?php if($res->fieldsList) echo count($res->fieldsList); else echo "1"; ?>' />
+    <input type="hidden" name="lastFieldNum" id="lastFieldNum" value='<?php if($res->lstobjFields) echo count($res->lstobjFields); else echo "1"; ?>' />
+    <input type="hidden" name="totalFieldsCount" id="totalFieldsCount" value='<?php if($res->lstobjFields) echo count($res->lstobjFields); else echo "1"; ?>' />
      
     
     <!-- FIXIT:заменить на нормальный сериализованный массив! -->
-    <input type="hidden" name="arrFieldTypesIndexes" id="arrFieldTypesIndexes" value='<?php $i=0; if($lstFieldTypes) foreach($lstFieldTypes as $item) {  echo $item->id; if($i<count($lstFieldTypes) - 1) echo ","; $i++; } ?>' />
-    <input type="hidden" name="arrFieldTypesValues" id="arrFieldTypesValues" value='<?php $i=0; if($lstFieldTypes) foreach($lstFieldTypes as $item) {  echo $item->name; if($i<count($lstFieldTypes) - 1) echo ","; $i++; } ?>' />
-    
-    <input type="hidden" name="arrOperationsIndexes" id="arrOperationsIndexes" value='<?php $i=0; if($lstOperations) foreach($lstOperations as $item) {  echo $item->id; if($i<count($lstOperations) - 1) echo ","; $i++; } ?>' />
-    <input type="hidden" name="arrOperationsValues" id="arrOperationsValues" value='<?php $i=0; if($lstOperations) foreach($lstOperations as $item) {  echo $item->name; if($i<count($lstOperations) - 1) echo ","; $i++; } ?>' />
-    
+    <input type="hidden" name="arrFieldTypesIndexes" id="arrFieldTypesIndexes" value='<?php $i=0; if($lstFieldTypes) foreach($lstFieldTypes as $item) {  echo $item['id']; if($i<count($lstFieldTypes) - 1) echo ","; $i++; } ?>' />
+    <input type="hidden" name="arrFieldTypesValues" id="arrFieldTypesValues" value='<?php $i=0; if($lstFieldTypes) foreach($lstFieldTypes as $item) {  echo $item['name']; if($i<count($lstFieldTypes) - 1) echo ","; $i++; } ?>' />
+
     <span class="error"><?php echo $error; ?></span>
     <input type="submit" value="Сохранить" />
 </form>    

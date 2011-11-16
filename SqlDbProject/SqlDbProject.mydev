@@ -12,10 +12,8 @@
     <File RelPath="Таблицы" Link=".\Таблицы\docstorage.Table.sql" />
     <File RelPath="Таблицы" Link=".\Таблицы\docstorage_fields.Table.sql" />
     <File RelPath="Таблицы" Link=".\Таблицы\docstorage_history.Table.sql" />
+    <File RelPath="Таблицы" Link=".\Таблицы\doctemplate.Table.sql" />
     <File RelPath="Таблицы" Link=".\Таблицы\doctemplate_fields.Table.sql" />
-    <File RelPath="Таблицы" Link=".\Таблицы\doctemplate_fieldtypes.Table.sql" />
-    <File RelPath="Таблицы" Link=".\Таблицы\doctemplate_operations.Table.sql" />
-    <File RelPath="Таблицы" Link=".\Таблицы\doctemplates.Table.sql" />
     <File RelPath="Таблицы" Link=".\Таблицы\eventlog.Table.sql" />
     <File RelPath="Таблицы" Link=".\Таблицы\groups_docs.Table.sql" />
     <File RelPath="Таблицы" Link=".\Таблицы\user_accounts.Table.sql" />
@@ -25,24 +23,22 @@
     <File RelPath="" Link=".\PreDeployment.sql" />
   </Include>
   <Configurations Active="По умолчанию">
-    <Configuration Name="По умолчанию" CheckReferences="True" IgnoreErrors="False" OutputPath="" Target="" OutputType="SingleFile" KeepOriginalObjects="True" RecreateDatabase="False" RecreateObjects="False" ServerVersion="5.5.8" Database="smqdoc" UseRegions="False" FullPaths="False" Definer="CURRENT_USER" ScriptDelimiter="$$" StorageEngine="INNODB" Collation="utf8_general_ci" ConvertToLowercase="True" DefinerEffect="Keep">
-      <Connection Name="smqdoc.localhost" ConnectionString="User Id=root;Host=localhost;Character Set=utf8" />
+    <Configuration Name="По умолчанию" CheckReferences="True" IgnoreErrors="False" OutputPath=".\По умолчанию" Target="SqlDbProject" OutputType="SingleFile" KeepOriginalObjects="True" RecreateDatabase="False" RecreateObjects="False" ServerVersion="5.5.8" Database="smqdoc" UseRegions="False" FullPaths="False" Definer="CURRENT_USER" ScriptDelimiter="$$" StorageEngine="INNODB" Collation="utf8_general_ci" ConvertToLowercase="True" DefinerEffect="Keep">
+      <Connection Name="smqdoc.localhost" ConnectionString="User Id=root;Host=localhost;Database=smqdoc;Character Set=utf8" />
       <Build>
         <File RelPath="" Name="PreDeployment.sql" BuildAction="Build" />
-        <File RelPath="Таблицы" Name="doctemplate_fieldtypes.Table.sql" BuildAction="Build" />
-        <File RelPath="Таблицы" Name="doctemplate_operations.Table.sql" BuildAction="Build" />
-        <File RelPath="Таблицы" Name="doctemplates.Table.sql" BuildAction="Build" />
         <File RelPath="Таблицы" Name="eventlog.Table.sql" BuildAction="Build" />
-        <File RelPath="Таблицы" Name="user_accounts.Table.sql" BuildAction="Build" />
+        <File RelPath="Таблицы" Name="doctemplate.Table.sql" BuildAction="Build" />
         <File RelPath="Таблицы" Name="doctemplate_fields.Table.sql" BuildAction="Build" />
+        <File RelPath="Таблицы" Name="user_accounts.Table.sql" BuildAction="Build" />
         <File RelPath="Таблицы" Name="user_groups.Table.sql" BuildAction="Build" />
         <File RelPath="Таблицы" Name="docstorage.Table.sql" BuildAction="Build" />
-        <File RelPath="Таблицы" Name="groups_docs.Table.sql" BuildAction="Build" />
         <File RelPath="Таблицы" Name="docstorage_fields.Table.sql" BuildAction="Build" />
-        <File RelPath="Таблицы" Name="docstorage_history.Table.sql" BuildAction="Build" />
-        <File RelPath="" Name="PostDeployment.sql" BuildAction="Build" />
-        <File RelPath="Процедуры" Name="deleteAll.Procedure.sql" BuildAction="Build" />
+        <File RelPath="Таблицы" Name="groups_docs.Table.sql" BuildAction="Build" />
         <File RelPath="Таблицы" Name="usergroups_doctemplates.Table.sql" BuildAction="Build" />
+        <File RelPath="Таблицы" Name="docstorage_history.Table.sql" BuildAction="Build" />
+        <File RelPath="Процедуры" Name="deleteAll.Procedure.sql" BuildAction="Build" />
+        <File RelPath="" Name="PostDeployment.sql" BuildAction="Build" />
       </Build>
     </Configuration>
   </Configurations>

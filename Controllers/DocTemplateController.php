@@ -58,23 +58,8 @@ class DocTemplateController implements IController
             $this->command->action == Actions::EDIT ||
             $this->command->action == Actions::SAVE ) 
         {            
-            $this->view->lstFieldTypes = $this->model->GetFieldTypesList();
-            $this->view->lstOperations = $this->model->GetOperationsList();            
+            $this->view->lstFieldTypes = $this->model->GetFieldTypesList();       
         }
-        
-        /*
-        if( $this->result &&
-            $this->command->action == Actions::SHOW )
-        {
-            if($this->result->idMasterUserAccount > 0)
-                $this->view->masterUser = $this->model->GetMasterUser($this->result->idMasterUserAccount);
-            
-            if($this->result->idParentGroup > 0)
-               $this->view->parentGroup = $this->model->GetParentGroup($this->result->idParentGroup);
-            else
-                $this->view->parentGroup = new UserGroup( null, "---" );
-        }
-        */
         
         if( $this->result &&
             $this->command->action == Actions::SHOWLIST )        

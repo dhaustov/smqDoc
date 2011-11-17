@@ -9,18 +9,18 @@ class UserRepository implements IObjectRepository
 {        
     private $error;
     
+    const TBL_USERACCOUNTS = "useraccounts";
+    
     /*
      * IObjectRepository Methods
-     */
-    
-    public function Save($obj)  
+     */    
+    public function Save($user)  
     { 
         /* @var $user UserAccount */
-        $user = $obj;
         
         if( $user->id > 0 ) //Updating Existing User
         {
-                $query = "update user_accounts set 
+                $query = "update ".UserRepository::TBL_USERACCOUNTS." set 
                               login = '".ToolsHelper::CleanInputString($user->login)."',
                               status = '".ToolsHelper::CleanInputString($user->status)."', 
                               name = '".ToolsHelper::CleanInputString($user->name)."',
@@ -36,7 +36,8 @@ class UserRepository implements IObjectRepository
                     NotificationHelper::LogCritical("Error in class: '".__CLASS__."' method: '".__METHOD__."' query: '$query'");
                     return false;
                 }
-                return $user->id;
+                //return $user->id;
+                return true;
         }
         else //Trying to save new user
         {
@@ -46,7 +47,8 @@ class UserRepository implements IObjectRepository
                 return false;
             }
 
-            $query = "insert into user_accounts (login, password, status, name, surName, middleName) 
+            $query = "insert into ".UserRepository::TBL_USERACCOUNTS." 
+                                  (login, password, status, name, surName, middleName) 
                                   values ( '".ToolsHelper::CleanInputString($user->login)."',
                                            '".ToolsHelper::CleanInputString($user->password)."',
                                            '".ToolsHelper::CleanInputString($user->status)."',
@@ -63,7 +65,9 @@ class UserRepository implements IObjectRepository
                 NotificationHelper::LogCritical("Error in class: '".__CLASS__."' method: '".__METHOD__."' query: '$query'");
                 return false;
             }
-            return $newid;
+            $user->id  = $newid;
+            //return $newid;
+            return true;
         }                
     }
     
@@ -71,7 +75,9 @@ class UserRepository implements IObjectRepository
     { 
         /* @var $user UserAccount */
         $user = $obj;
-        $query = "update user_accounts set status = ".DbRecordStatus::DELETED." where id =". intval($user->id);
+        $query = "update user_accounts 
+                  set status = ".DbRecordStatus::DELETED." 
+                  where id =". intval($user->id);
         $rowNum = SqlHelper::ExecDeleteQuery($query);
                 
         if (!$rowNum)
@@ -88,7 +94,9 @@ class UserRepository implements IObjectRepository
         /* @var $user UserAccount */
         $user = new UserAccount();
         
-        $query = "select id, login,password,status, name,surname,middlename,lastaccess from user_accounts where id = ". intval($id);
+        $query = "select id, login,password,status, name,surname,middlename,lastaccess 
+                  from ".UserRepository::TBL_USERACCOUNTS." 
+                  where id = ". intval($id);
         $obj = SqlHelper::ExecSelectRowQuery($query);
         
         if ($obj)
@@ -118,7 +126,9 @@ class UserRepository implements IObjectRepository
         /* @var $user UserAccount */
         $user = $obj;
         
-        $query = "select id from user_accounts where login = '". ToolsHelper::CleanInputString($user->login)."'";
+        $query = "select id 
+                  from ".UserRepository::TBL_USERACCOUNTS." 
+                  where login = '". ToolsHelper::CleanInputString($user->login)."'";
         $obj = SqlHelper::ExecSelectValueQuery($query);
         
         if ($obj)
@@ -136,7 +146,9 @@ class UserRepository implements IObjectRepository
         /* @var $user UserAccount */
         $user = new UserAccount;
         
-        $query = "select id,login,password,status,name,surName,middleName, lastAccess from user_accounts where login = '". ToolsHelper::CleanInputString($login)."'";
+        $query = "select id,login,password,status,name,surName,middleName, lastAccess 
+                  from ".UserRepository::TBL_USERACCOUNTS." 
+                  where login = '". ToolsHelper::CleanInputString($login)."'";
         $obj = SqlHelper::ExecSelectRowQuery($query);                
         if ($obj)
         {
@@ -160,15 +172,11 @@ class UserRepository implements IObjectRepository
     }
     
     public function GetList($pageSize = 1, $pageNum = 1, $status = null)
-    {        
-//        $cntQuery = "select count(*) from user_accounts ";
-//            if($status)
-//                $cntQuery.=" where status = $status";
-//            $cnt = SqlHelper::ExecSelectValueQuery($cntQuery);
-            
+    {                    
         //если pageSize = 1 - выводим всех
         $retArr = false;
-        $query = "select id,login,password,status,name,surname,middlename,lastaccess from user_accounts ";
+        $query = "select id,login,password,status,name,surname,middlename,lastaccess 
+                  from ".UserRepository::TBL_USERACCOUNTS." ";
         if($status)
             $query.=" where status = $status";
         
@@ -205,10 +213,10 @@ class UserRepository implements IObjectRepository
         }        
     }
         
-        public function GetListItemsCount($status = null)
+    public function GetListItemsCount($status = null)
     {
         $query = "select count(*)
-                  from user_accounts ";
+                  from ".UserRepository::TBL_USERACCOUNTS." ";
         if($status)
             $query.="  where status = $status";        
         $res = SqlHelper::ExecSelectValueQuery($query);

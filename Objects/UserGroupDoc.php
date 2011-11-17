@@ -13,7 +13,7 @@ class UserGroupDoc
     public $author;//изменивший последним документ пользователь
     /* @var $group UserGroup*/
     public $group;//Группа владелец документа
-    /* @var $groupDocTempl UserGroupDocTemplates*/
+    /* @var $groupDocTempl UserGroup_DocTemplates*/
     public $groupDocTempl;//Шаблон дока который сэйвим
     public $status;
     public $dateCreated;

@@ -11,8 +11,8 @@ class UserGroupDocRepository implements IObjectRepository
 {        
     private $error;
     private $TBL_DOCSTARAGE="docstorage";
-    private $TBL_DOCSTARAGE_FIELDS="docstorage_fields";
-    private $TBL_DOCSTORAGE_HISTORY="docstorage_history";
+    private $TBL_DOCSTARAGE_FIELDS="docstoragefields";
+    private $TBL_DOCSTORAGE_HISTORY="docstoragehistory";
     
     function Save($obj)
     {
@@ -184,8 +184,7 @@ class UserGroupDocRepository implements IObjectRepository
             return false;
         }
     }
-    
-      
+          
     public function GetList($pageSize = 1, $pageNum = 1, $status = null)
     {                    
         //если pageSize = 1 - выводим всех

@@ -13,7 +13,12 @@ class UserValidator implements IValidator
     {
         if($user->id > 0)
         {
-            //TODO: добавить валидацию для имеющегося пользователя
+            //TODO: продумать валидацию для имеющегося пользователя
+            if ($passRepeat !="" && $user->password != $passRepeat)
+            {
+                $this->error = "Введённые пароли не совпадают";
+                return false;
+            }
         }
         else //валидация нового
         { 

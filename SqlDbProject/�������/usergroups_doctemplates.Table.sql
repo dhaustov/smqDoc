@@ -1,15 +1,17 @@
 ﻿CREATE TABLE usergroups_doctemplates (
   id INT(11) NOT NULL AUTO_INCREMENT,
-  idGroup INT(11) NOT NULL COMMENT 'id группы пользователей',
-  idDoctemplate INT(11) NOT NULL COMMENT 'id шаблона документа',
+  idUserGroups INT(11) NOT NULL,
+  Name VARCHAR(256) NOT NULL,
+  StartDate DATE DEFAULT NULL,
+  EndDate DATE DEFAULT NULL,
+  status TINYINT(4) DEFAULT 1 COMMENT 'Статус связи',
+  idDocTemplate INT(11) NOT NULL COMMENT 'Шаблон документа, привязываемый к группе',
   PRIMARY KEY (id),
-  INDEX FK_usergroups_doctemplates_doctemplates_Id (idDoctemplate),
-  INDEX FK_usergroups_doctemplates_user_groups_Id (idGroup),
-  CONSTRAINT FK_usergroups_doctemplates_doctemplates_Id FOREIGN KEY (idDoctemplate)
-    REFERENCES doctemplate(Id) ON DELETE RESTRICT ON UPDATE RESTRICT,
-  CONSTRAINT FK_usergroups_doctemplates_user_groups_Id FOREIGN KEY (idGroup)
-    REFERENCES user_groups(Id) ON DELETE RESTRICT ON UPDATE RESTRICT
+  INDEX idUserGroups (idUserGroups),
+  CONSTRAINT usergroups_doctemplates_ibfk_1 FOREIGN KEY (idUserGroups)
+    REFERENCES usergroups(Id) ON DELETE CASCADE ON UPDATE CASCADE
 )
 ENGINE = INNODB
 CHARACTER SET utf8
-COLLATE utf8_general_ci;
+COLLATE utf8_general_ci
+COMMENT = 'Таблица назначений документов';

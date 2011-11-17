@@ -13,9 +13,9 @@ CREATE TABLE docstorage (
   INDEX idAuthor (idAuthor),
   INDEX idGroupDocs (idGroupDocs),
   CONSTRAINT docstorage_ibfk_1 FOREIGN KEY (idAuthor)
-    REFERENCES user_accounts(Id) ON DELETE CASCADE ON UPDATE CASCADE,
+    REFERENCES useraccounts(Id) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT docstorage_ibfk_2 FOREIGN KEY (idGroupDocs)
-    REFERENCES user_groups(Id) ON DELETE CASCADE ON UPDATE CASCADE
+    REFERENCES usergroups(Id) ON DELETE CASCADE ON UPDATE CASCADE
 )
 ENGINE = INNODB
 CHARACTER SET utf8

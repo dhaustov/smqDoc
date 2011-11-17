@@ -12,9 +12,10 @@ class UserGroup {
     public $idMasterUserAccount;
     public $masterUserAccountRole;
     public $status;    
+    /* @var UserGroup_DocTemplates $lstRelatedDocumentTemplates */
     
-    private $relatedDocumentTemplates;
-    public $deletedTemplates;
+    private $lstRelatedDocumentTemplates;
+    //public $deletedTemplates;
     
     function __construct( $_idMasterUserAccount=null, $_name = null, $_masterUserAccountRole = null, 
                           $_idParentGroup = null, $_status = null, $_id = null) 
@@ -32,18 +33,19 @@ class UserGroup {
     
     public function AddRelatedDocTemplates($docs)
     {
-        $this->relatedDocumentTemplates = $docs;    
+        $this->lstRelatedDocumentTemplates = $docs;    
     }
     
+    /*
     public function DelRelatedDocTemplates($docs)
     {
         $this->deletedTemplates = $docs; 
     }
-    
+    */
     public function GetRelatedDocTemplates()
     {
-        if(count($this->relatedDocumentTemplates)>0) 
-            return $this->relatedDocumentTemplates;
+        if(count($this->lstRelatedDocumentTemplates)>0) 
+            return $this->lstRelatedDocumentTemplates;
         else
             return false;
             

@@ -8,10 +8,10 @@ FROM
 
   DELETE
 FROM
-  user_groups;
+  usergroups;
 
   DELETE
 FROM
-  user_accounts;
+  useraccounts;
 END
 $$

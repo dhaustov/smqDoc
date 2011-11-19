@@ -1,7 +1,4 @@
-﻿--
--- Описание для таблицы user_accounts
---
-CREATE TABLE user_accounts(
+﻿CREATE TABLE useraccounts (
   Id INT(11) NOT NULL AUTO_INCREMENT,
   Login VARCHAR(20) NOT NULL,
   `Password` VARCHAR(20) NOT NULL,
@@ -13,6 +10,5 @@ CREATE TABLE user_accounts(
   PRIMARY KEY (Id)
 )
 ENGINE = INNODB
-AUTO_INCREMENT = 1
 CHARACTER SET utf8
 COLLATE utf8_general_ci;

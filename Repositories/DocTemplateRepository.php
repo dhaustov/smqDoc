@@ -9,7 +9,7 @@ class DocTemplateRepository implements IObjectRepository
 {
     private $error="";
     private $TBL_DOCTEMPLATES="doctemplate";
-    private $TBL_DOCTEMPLATE_FIELDS = "doctemplate_fields";
+    private $TBL_DOCTEMPLATE_FIELDS = "doctemplatefields";
     private $TBL_USERGROUPSDOCTEMPLATES = "userGroups_docTemplates";
     
     public function __construct() {

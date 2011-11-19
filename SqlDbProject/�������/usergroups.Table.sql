@@ -1,7 +1,4 @@
-﻿--
--- Описание для таблицы user_groups
---
-CREATE TABLE user_groups (
+﻿CREATE TABLE usergroups (
   Id INT(11) NOT NULL AUTO_INCREMENT,
   Name VARCHAR(50) NOT NULL,
   IdParentGroup INT(11) DEFAULT NULL,
@@ -11,8 +8,8 @@ CREATE TABLE user_groups (
   PRIMARY KEY (Id),
   INDEX IdMasterUserAccount (IdMasterUserAccount),
   INDEX IdParentGroup (IdParentGroup),
-  CONSTRAINT user_groups_ibfk_2 FOREIGN KEY (IdMasterUserAccount)
-    REFERENCES user_accounts(Id) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT usergroups_ibfk_2 FOREIGN KEY (IdMasterUserAccount)
+    REFERENCES useraccounts(Id) ON DELETE CASCADE ON UPDATE CASCADE
 )
 ENGINE = INNODB
 CHARACTER SET utf8

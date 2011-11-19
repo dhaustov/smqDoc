@@ -1,7 +1,4 @@
-﻿--
--- Описание для таблицы docstorage_history
---
-CREATE TABLE docstorage_history (
+﻿CREATE TABLE docstoragehistory (
   id INT(11) NOT NULL AUTO_INCREMENT,
   idDocument INT(11) NOT NULL,
   idUser INT(11) NOT NULL,
@@ -9,10 +6,10 @@ CREATE TABLE docstorage_history (
   PRIMARY KEY (id),
   INDEX idDocument (idDocument),
   INDEX idUser (idUser),
-  CONSTRAINT docstorage_history_ibfk_1 FOREIGN KEY (idDocument)
+  CONSTRAINT docstoragehistory_ibfk_1 FOREIGN KEY (idDocument)
     REFERENCES docstorage(id) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT docstorage_history_ibfk_2 FOREIGN KEY (idUser)
-    REFERENCES user_accounts(Id) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT docstoragehistory_ibfk_2 FOREIGN KEY (idUser)
+    REFERENCES useraccounts(Id) ON DELETE CASCADE ON UPDATE CASCADE
 )
 ENGINE = INNODB
 CHARACTER SET utf8

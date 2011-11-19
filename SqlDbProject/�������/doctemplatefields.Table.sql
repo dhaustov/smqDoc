@@ -1,7 +1,4 @@
-﻿--
--- Описание для таблицы doctemplate_fields
---
-CREATE TABLE doctemplate_fields (
+﻿CREATE TABLE doctemplatefields (
   Id INT(11) NOT NULL AUTO_INCREMENT,
   Name VARCHAR(20) NOT NULL,
   IsCalculated TINYINT(1) NOT NULL,

@@ -33,27 +33,23 @@ class UserModel implements IModel
                 $res = $this->repository->Delete($this->user);                                                                               
                 break;
             case Actions::SAVE :              
-                $validator = new UserValidator();
+                $validator = new UserValidator();                
+                $this->user = new UserAccount(  $_POST["lblLogin"],
+                                                 $_POST["lblPassword"],
+                                                 $_POST["lblName"],                     
+                                                 $_POST["lblSurname"],                                             
+                                                 $_POST["lblMiddlename"],
+                                                 $_POST["status"],
+                                                 $_POST["hdnUid"]);
                 
-                $tmpUser = new UserAccount(  $_POST["lblLogin"],
-                                             $_POST["lblPassword"],
-                                             $_POST["lblName"],                     
-                                             $_POST["lblSurname"],                                             
-                                             $_POST["lblMiddlename"],
-                                             $_POST["status"],
-                                             $_POST["hdnUid"]);
-                
-                if(!$validator->IsValid($tmpUser, $_POST["lblRetypePassword"])) //валидируем
+                if(!$validator->IsValid($this->user, $_POST["lblRetypePassword"])) //валидируем
                 {
                     $this->error = $validator->GetError();
                     return false;
                 }
-                                
-                $this->user = $tmpUser;                
-                $uid = $this->repository->Save($this->user);
                 
-                if($uid)                
-                    $res = $this->repository->GetById($uid);                
+                if($this->repository->Save($this->user));
+                    $res = $this->user;
                 break;
             
             case Actions::EDIT :

@@ -2,7 +2,10 @@
 <!-- Devart (www.devart.com), the Project Options File -->
 <!-- Modifying this generated file will probably render it invalid -->
 <Options Version="3.0">
-  <Documents />
+  <Documents>
+    <Document Moniker=".\SqlDbProject.mydev" ActiveView="Design" Factory="{00000000-0000-0000-0000-000000000000}" />
+    <Document Moniker=".\Процедуры\deleteAll.Procedure.sql" ActiveView="Code" Factory="{3586cc08-aeb7-47f4-a38f-1700741266f6}" Active="True" />
+  </Documents>
   <Services>
     <Service GUID="{e86507ae-fc27-47e0-925b-3c3e655520d4}">
       <Persist>

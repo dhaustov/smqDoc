@@ -24,7 +24,7 @@ require_once 'Objects/User.php';
 require_once 'Objects/UserGroup.php';
 require_once 'Objects/UserGroupDoc.php';
 require_once 'Objects/UserGroupDocField.php';
-require_once 'Objects/UserGroupDocTemplates.php';
+require_once 'Objects/UserGroup_DocTemplates.php';
 require_once 'Objects/DocTemplate.php';
 require_once 'Objects/DocTemplateField.php';
 

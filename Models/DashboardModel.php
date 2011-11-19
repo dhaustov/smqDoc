@@ -14,7 +14,12 @@ class DashboardModel implements IModel
     }
     public function PerformAction($_command)
     {        
-        return true; 
+        $ugRep = new UserGroupRepository();
+        $cugId = LoginHelper::GetCurrentUserGroupId();
+        if($cugId)
+            return $ugRep->GetListByMasterID($cugId); 
+        else
+            return false;
     }
     
     public function GetError()

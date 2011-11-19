@@ -9,8 +9,9 @@ class DashboardView implements IView
     const TPL_SHOW = '/templates/Dashboard/dashboardShow.php';
     
     private $error;
-   
+    private $res;
     private $currentTemplate;
+    public $frmAction;
     
     function __construct()
     { 
@@ -18,16 +19,19 @@ class DashboardView implements IView
          
     public function SetResult($_res=null, $_error = null)
     {
+        $this->res = $_res;
         $this->error = $_error;
         $this->currentTemplate = DashboardView::TPL_SHOW;  
+        $this->frmAction = "index.php?module=".Modules::DASHBOARD."&action=".Actions::SHOW;
     }
     
     
     public function ShowPage()
     {
         //Переменные для вывода в шаблоне
+        $res = $this->res;
         $error = $this->error;
-        
+        $frmAction = $this->frmAction;
         include_once $this->currentTemplate;    
     }
     

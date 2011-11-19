@@ -7,6 +7,7 @@
  */
 class LoginHelper {
     const SES_U_L='sessionUserLogin';
+    const SES_UG_L='sessionUserGroup';
     /**
     * @return UserAccount
     */
@@ -73,12 +74,9 @@ class LoginHelper {
     }
     public static function GetCurrentUserGroup()
     {
-        //TODO: ЗАГЛУШКА!!!!!
         $ugRep = new UserGroupRepository();
-        $lstGroups = $ugRep->GetUserGroupsByMasterID(LoginHelper::GetCurrentUserId());
-        if(count($lstGroups) > 0 )
-            return $lstGroups[0];
-        
+        if(LoginHelper::GetCurrentUserGroupId())
+            return $ugRep->GetById(LoginHelper::GetCurrentUserGroupId());
         return false;
     }
     /**
@@ -104,6 +102,22 @@ class LoginHelper {
         LoginHelper::SetCurrentUser($tmpUser);
         $tmp2User = LoginHelper::GetCurrentUser();
         return (($tmp2User->isGuest == $tmpUser->isGuest ) && ($tmp2User->login == $tmpUser->login ));
+    }
+    
+    public static function GetCurrentUserGroupId()
+    {
+        if(isset($_SESSION[LoginHelper::SES_UG_L]))
+        {
+            return $_SESSION[LoginHelper::SES_UG_L];
+        }
+        else
+        {
+            return false;
+        }
+    }
+    public static function SetCurrentUserGroupId($_userGroupId)
+    {
+         $_SESSION[LoginHelper::SES_UG_L] = $_userGroupId;
     }
 }
 

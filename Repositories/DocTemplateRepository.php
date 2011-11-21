@@ -205,7 +205,7 @@ class DocTemplateRepository implements IObjectRepository
    public function GetListByGroupID($id)
    {
        $res = Array();
-       $query = "select idDocTemplate  from ".$this->TBL_USERGROUPSDOCTEMPLATES." where idGroup= '$id' ";
+       $query = "select idDocTemplate  from ".$this->TBL_USERGROUPSDOCTEMPLATES." where idUserGroups = '$id' ";
        $lst = SqlHelper::ExecSelectCollectionQuery($query);
        if($lst)
        {
@@ -230,7 +230,7 @@ class DocTemplateRepository implements IObjectRepository
         $res = SqlHelper::ExecSelectCollectionQuery($query);
         $i=0;
         if($res)
-        {
+        {            
             foreach($res as $row)
             {
                 $tpl = $this->GetByID($row['id']);               

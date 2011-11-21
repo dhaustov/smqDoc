@@ -16,7 +16,7 @@
         </th>
         <?php   $i=0;
                 if($res) foreach ($res as $group) : ?>
-            <tr>
+            <tr>                
                 <td><?php echo "<a href=\"index.php?module=".Modules::USERGROUPS."&action=".Actions::SHOW."&id=".$group->id."\">".$group->name."</a>"; ?></td>
                 <td><?php if(isset($lstGroupMasterUsers[$i])) echo $lstGroupMasterUsers[$i]->surName." ".$lstGroupMasterUsers[$i]->name." ".$lstGroupMasterUsers[$i]->middleName;?></td>
                 <td><?php if(isset($lstGroupParents[$i])) echo $lstGroupParents[$i]->name; ?></td>

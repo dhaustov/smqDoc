@@ -33,6 +33,7 @@ require_once 'Repositories/UserRepository.php';
 require_once 'Repositories/UserGroupRepository.php';
 require_once 'Repositories/DocTemplateRepository.php';
 require_once 'Repositories/UserGroupDocRepository.php';
+require_once 'Repositories/UserGroup_DocTemplatesRepository.php';
 
 //Enums
 require_once 'Enums/Enums.php';

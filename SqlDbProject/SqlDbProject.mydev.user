@@ -4,7 +4,7 @@
 <Options Version="3.0">
   <Documents>
     <Document Moniker=".\SqlDbProject.mydev" ActiveView="Design" Factory="{00000000-0000-0000-0000-000000000000}" />
-    <Document Moniker=".\Процедуры\deleteAll.Procedure.sql" ActiveView="Code" Factory="{3586cc08-aeb7-47f4-a38f-1700741266f6}" Active="True" />
+    <Document Moniker=".\Процедуры\deleteAll.Procedure.sql" ActiveView="Code" Factory="{3586cc08-aeb7-47f4-a38f-1700741266f6}" />
   </Documents>
   <Services>
     <Service GUID="{811fba21-97c2-44b6-8c1c-eae1f1315f2d}">

@@ -96,12 +96,20 @@ class UserGroupController implements IController
                 if($gr->idMasterUserAccount > 0)
                     $masterUsers[$i] = $urep->GetById($gr->idMasterUserAccount);
                 else 
+                {
                     $masterUsers[$i] = new UserAccount();
+                    $masterUsers[$i]->name = "-";
+                    $masterUsers[$i]->surName = "-";
+                    $masterUsers[$i]->middleName = "-";
+                }
                 
                 if($gr->idParentGroup > 0)
                     $parentGroups[$i] = $grep->GetById($gr->idParentGroup);
                 else
-                    $parentGroups[$i] = new UserGroup(null, "---");      
+                {
+                    $parentGroups[$i] = new UserGroup();      
+                    $parentGroups[$i]->name= "-";                    
+                }
                 
                 $i++;
             }                      

@@ -35,19 +35,13 @@ class UserGroup {
     {
         $this->lstRelatedDocumentTemplates = $docs;    
     }
-    
-    /*
-    public function DelRelatedDocTemplates($docs)
-    {
-        $this->deletedTemplates = $docs; 
-    }
-    */
+        
     public function GetRelatedDocTemplates()
     {
         if(count($this->lstRelatedDocumentTemplates)>0) 
             return $this->lstRelatedDocumentTemplates;
         else
-            return false;
+            return Array();
             
     }
 }

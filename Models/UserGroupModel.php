@@ -19,7 +19,7 @@ class UserGroupModel implements IModel
         $this->repository = new UserGroupRepository();
     }
     
-    public function PerformAction($_command)
+    public function  PerformAction($_command)
     {        
         $this->currentCommand = $_command;
                 
@@ -32,50 +32,58 @@ class UserGroupModel implements IModel
             case Actions::DELETE :
                 $res = $this->repository->Delete($this->group);                                                                               
                 break;
-            case Actions::SAVE :              
+            case Actions::SAVE :   
+                
                 $validator = new UserGroupValidator();
                 
-                //Собираем новые темплейты    
-                $newFields = Array(); 
-                if(isset($_POST['hdnNewTempCount']))
-                    $cntFields = $_POST['hdnNewTempCount']; //общее количество полей на форме
-                else
-                    $cntFields = 0;
-                $i=0; 
-                $cnt = 1; //счётчик для id
-                while($i<$cntFields)
-                {
-                    if($_POST['hdnNewTemplate'.$cnt])
-                    {    
-                        $newFields[] = $_POST['hdnNewTemplate'.$cnt];                        
-                        $i++;
-                    }                        
-                    $cnt++;
-                }
-                
-                //...и старые
-                $delFields = Array();
-                if(isset($_POST['hdnDelTempCount']) && $_POST['hdnDelTempCount'] > 0 )
-                {                                                   
-                    $cntFields = $_POST['hdnDelTempCount']; 
-                    for($i=1; $i<=$cntFields; $i++)
-                    {                        
-                        if(isset($_POST["hdnDelTemp$i"]) && $_POST["hdnDelTemp$i"] > 0)                        
-                            $delFields[] = $_POST["hdnDelTemp$i"];                                                       
-                    }
-                    
-                }
-                
+                /*новая группа*/
+                /* @var $tmpGroup UserGroup  */
                 $tmpGroup = new UserGroup( $_POST["selIdMasterUser"],
-                                           $_POST["lblName"],
-                                           $_POST["lblMasterUserRole"],
-                                           $_POST["selIdParentGroup"],
-                                           $_POST["selStatus"],
-                                           $_POST["hdnGid"]
-                                         );
+                                       $_POST["lblName"],
+                                       $_POST["lblMasterUserRole"],
+                                       $_POST["selIdParentGroup"],
+                                       $_POST["selStatus"],
+                                       $_POST["hdnGid"]
+                                     );                
+                    
+                //Собираем новые темплейты    
+                $newTpls = Array(); 
+                $cntNewFields = 0;
+                $cntOldFields = 0;
                 
-                $tmpGroup->AddRelatedDocTemplates($newFields);
-                $tmpGroup->DelRelatedDocTemplates($delFields);
+                if(isset($_POST['hdnNewTempCount']))
+                    $cntNewFields = $_POST['hdnNewTempCount']; //общее количество полей на форме
+                echo "cntnew".$cntNewFields;
+                
+                $i=1;                 
+                while($i<=$cntNewFields)
+                {
+                    if(isset($_POST['hdnNewTemplate'.$i]))
+                    {    
+                        //$newFields[] = $_POST['hdnNewTemplate'.$cnt];                          
+                        $newTpls[] = new UserGroup_DocTemplates($_POST["hdnGid"], $_POST['hdnNewTemplate'.$i],
+                                                                $_POST['newTemplateName'.$i], $_POST['newTemplateStart'.$i],
+                                                                $_POST['newTemplateEnd'.$i]);                                                                        
+                    }                        
+                    $i++;                  
+                }
+                
+                //Собираем старые темплейты
+                if(isset($_POST['hdnOldTempCount']))
+                    $cntOldFields = $_POST['hdnOldTempCount']; 
+                
+                for($i=1; $i<=$cntOldFields; $i++)
+                {
+                    if(isset($_POST['hdnOldTemplate'.$i]))
+                    {                            
+                        $newTpls[] = new UserGroup_DocTemplates($_POST["hdnGid"], $_POST['hdnOldTemplate'.$i],
+                                                                $_POST['oldTemplateName'.$i], $_POST['oldTemplateStart'.$i],
+                                                                $_POST['oldTemplateEnd'.$i], null,$_POST['hdnOldTemplateID'.$i] );                                                
+                    }                                            
+                }
+                                             
+                if( count($newTpls) > 0 )                                   
+                    $tmpGroup->AddRelatedDocTemplates($newTpls);                                
                 
                 if(!$validator->IsValid($tmpGroup)) //валидируем
                 {
@@ -83,10 +91,8 @@ class UserGroupModel implements IModel
                     return false;
                 }
                 $this->group = $tmpGroup;                
-                $gid = $this->repository->Save($this->group);
-                
-                if($gid)                
-                    $res = $this->repository->GetById($gid);                
+                if($this->repository->Save($this->group))
+                   $res = $this->group;                     
                 break;
             
             case Actions::EDIT :
@@ -111,7 +117,10 @@ class UserGroupModel implements IModel
         }    
         
         if($res)
+        {
+            echo "resName = ".$res->name;
             return $res; 
+        }
         else
         {
             $this->error = $this->repository->GetError();
@@ -151,16 +160,22 @@ class UserGroupModel implements IModel
     {
         if(isset($this->group)&& $this->group->id > 0)
         {
-            $rep = new DocTemplateRepository();
-            return $rep->GetListByGroupID($this->group->id);
+            //$rep = new DocTemplateRepository();
+            //return $rep->GetListByGroupID($this->group->id);
+            $rep = new UserGroup_DocTemplatesRepository();
+            return $rep->GetListByUserGroupId($this->group->id);
+            
         }
         return false;
     }
     
     public function GetDocTemplatesAllList()
     {
-        $rep = new DocTemplateRepository();
-        return $rep->GetList();
+        $rep = new DocTemplateRepository();        
+        $res = $rep->GetList();        
+//         $rep = new UserGroup_DocTemplatesRepository();
+//         $res = $rep->GetList();
+        return $res;
     }
     
     public function GetError()

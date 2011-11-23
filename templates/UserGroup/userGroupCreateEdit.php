@@ -16,25 +16,61 @@
         elem.setAttribute("id", "hdnNewTemplate" + newID.toString());
                 
         var text = document.createElement("span");
-        text.innerHTML = lst[lst.selectedIndex].innerHTML + " (<a href='javascript:void(0);' onClick = 'DeleteNewTemplate(\"divTpl"+newID+"\")'>удалить) ";
+        text.innerHTML = "Тип шаблона: " + lst[lst.selectedIndex].innerHTML + " (<a href='javascript:void(0);' onClick = 'DeleteNewTemplate(\"divTpl"+newID+"\")'>удалить) ";
         text.setAttribute("style", "color: blue");
+        
+        var name = document.createElement("input");
+        name.setAttribute("type", "text");
+        name.setAttribute("name", "newTemplateName" + newID.toString());
+        name.setAttribute("id", "newTemplateName" + newID.toString());
+        var txtName = document.createElement("span");
+        txtName.innerHTML = "Название: ";
+        
+        var sdate = document.createElement("input");
+        sdate.setAttribute("type", "text");
+        sdate.setAttribute("name", "newTemplateStart" + newID.toString());
+        sdate.setAttribute("id", "newTemplateStart" + newID.toString());
+        var txtSDate = document.createElement("span");
+        txtSDate.innerHTML = "Дата начала заполнения (ГГГГ-ММ-ДД): ";
+        
+        var edate = document.createElement("input");
+        edate.setAttribute("type", "text");
+        edate.setAttribute("name", "newTemplateEnd" + newID.toString());
+        edate.setAttribute("id", "newTemplateEnd" + newID.toString());
+        var txtEDate = document.createElement("span");
+        txtEDate.innerHTML = "Дата окончания заполнения (ГГГГ-ММ-ДД): ";
         
         var outerDiv = document.createElement("div");
         outerDiv.setAttribute("id", "divTpl"+newID);
+        outerDiv.setAttribute("style", "border: 1px dotted black; padding: 5px;");
+        
         outerDiv.appendChild(elem);
         outerDiv.appendChild(text);
+        outerDiv.appendChild(document.createElement("br"));
+        outerDiv.appendChild(txtName);
+        outerDiv.appendChild(document.createElement("br"));
+        outerDiv.appendChild(name);
+        outerDiv.appendChild(document.createElement("br"));
+        outerDiv.appendChild(txtSDate);
+        outerDiv.appendChild(document.createElement("br"));
+        outerDiv.appendChild(sdate);
+        outerDiv.appendChild(document.createElement("br"));        
+        outerDiv.appendChild(txtEDate);
+        outerDiv.appendChild(document.createElement("br"));
+        outerDiv.appendChild(edate);
         
-        divNewTemp.appendChild(document.createElement("br"));
         divNewTemp.appendChild(outerDiv);
+        divNewTemp.appendChild(document.createElement("br"));
         
         hdnLastID.value = newID;
-        hdnCnt.value = newCnt;
-        
-        //alert("new value: " + elem.value + " Last ID: " + hdnLastID.value + " new count: " +hdnCnt.value );
+        hdnCnt.value = newCnt;                
     }
     
     function DeleteNewTemplate(id)
-    {        
+    {      
+        if( !confirm("Вы действительно хотите удалить шаблон?") )
+            return false;
+        
         if(document.getElementById(id))
             {
                 var divTemplates = document.getElementById("divNewTemplates");                
@@ -48,25 +84,17 @@
     
     function DeleteExistingTemplate(idTemplate)
     {
-        alert(idTemplate);
-        var hdnCount = document.getElementById("hdnDelTempCount");
+        if( !confirm("Вы действительно хотеите удалить шаблон?") )
+            return false;
         
         var divTemplates = document.getElementById("divNewTemplates");                
         var divOldTpl = document.getElementById("divOldTpl"+idTemplate);
-        divTemplates.removeChild(divOldTpl);
-        
-        var newVal= +hdnCount.value + 1;
-        var hdn = document.createElement("input");
-        hdn.setAttribute("type", "hidden");
-        hdn.setAttribute("id", "hdnDelTemp"+newVal.toString());
-        hdn.setAttribute("name", "hdnDelTemp"+newVal.toString());
-        hdn.value = idTemplate;
-        
-        divTemplates.appendChild(hdn);
-        
-        
-        hdnCount.value = newVal;
-        alert(hdnCount.value);
+        if(divOldTpl)
+        {            
+            divTemplates.removeChild(divOldTpl);            
+            return true;
+        }
+        return false;        
     }
     
 </script>
@@ -150,8 +178,7 @@
                     <option value="<?php echo DbRecordStatus::DELETED; ?>" <?php if($res->status == DbRecordStatus::DELETED) echo "selected=\"selected\""; ?> >Неактивный</option>
                 </select>
             </td>
-        </tr>
-        <?php if($res->id > 0) : ?>
+        </tr>        
             <tr>
                 <td>
                     Шаблоны документов:
@@ -159,19 +186,38 @@
                 <td>
                     <div id="divNewTemplates" style="border: 0px;" >
                         <?php if($lstDocTemplatesExists) 
-                                foreach($lstDocTemplatesExists as $t) : 
-                                    echo @"<div id=\"divOldTpl".$t->id."\"> 
-                                                ".$t->name." 
-                                                (<a href=\"javascript:void(0);\" onClick=\"DeleteExistingTemplate('".$t->id."')\"  >удалить</a>)
-                                           </div>";
-                                endforeach; 
+                              { 
+                                    $i=1;
+                                    foreach($lstDocTemplatesExists as $t) : 
+                                        /* @var $t UserGroup_DocTemplates */
+                                        echo @"<div id=\"divOldTpl$i\" style=\"border: 1px solid black; padding: 5px;\"> 
+                                                    Тип шаблона: ".$t->name." 
+                                                    (<a href=\"javascript:void(0);\" onClick=\"DeleteExistingTemplate('$i')\"  >удалить</a>)
+                                                    <br />
+                                                    Название:
+                                                    <br />
+                                                    <input type=\"text\" name = \"oldTemplateName$i\" value=\"".$t->name."\" />
+                                                    <br />
+                                                    Дата начала заполнения (ГГГГ-ММ-ДД):
+                                                    <br />
+                                                    <input type=\"text\" name = \"oldTemplateStart$i\" value=\"".$t->startDate."\" />
+                                                    <br />
+                                                    Дата окончания заполнения (ГГГГ-ММ-ДД):
+                                                    <br />
+                                                    <input type=\"text\" name = \"oldTemplateEnd$i\" value=\"".$t->endDate."\" />
+
+                                                    <input type=\"hidden\" name = \"hdnOldTemplate$i\" value=\"".$t->idDocTemplate."\" />
+                                                    <input type=\"hidden\" name = \"hdnOldTemplateID$i\" value=\"".$t->id."\" />
+                                               </div>
+                                               <br />";
+                                        $i++;
+                                    endforeach;
+                              }
                             ?>
                     </div>
                 </td>
             </tr>  
-        <?php endif; ?>
-        
-        <?php if($res->id > 0) : ?>          
+ 
             <tr>
                 <td>
                     Добавить шаблон документа:
@@ -180,21 +226,16 @@
                     <select name="lstAllTemplates" id="lstAllTemplates">
                       <?php 
                             if($lstDocTemplatesAll) 
-                                foreach($lstDocTemplatesAll as $t) 
-                                {
-                                    echo "<option value='".$t->id."'>".$t->name."</option>";
-                                }
+                                foreach($lstDocTemplatesAll as $t)                                 
+                                    echo "<option value='".$t->id."'>".$t->name."</option>";                                
                       ?>
                     </select>
                     <input type="button" id="btnAdd" onclick ="AddNewTemplate()" value="Добавить" />
                     <input type="hidden" id="hdnNewTempCount" name="hdnNewTempCount" value="0" />
-                    <input type="hidden" id="hdnNewTempLastID" name="hdnNewTempLastID" value="0" />
-                    
-                    <input type="hidden" id="hdnDelTempCount" name="hdnDelTempCount" value="0" />
+                    <input type="hidden" id="hdnNewTempLastID" name="hdnNewTempLastID" value="0" />                    
+                    <input type="hidden" id="hdnOldTempCount" name="hdnOldTempCount" value="<?php echo count($lstDocTemplatesExists); ?>" />
                 </td>
-            </tr>            
-        <?php endif; ?>
-            
+            </tr>                                
     </table>
     <input type="hidden" name="hdnGid" value="<?php echo $res->id; ?>" />
     <span class="error"><?php echo $error; ?></span>

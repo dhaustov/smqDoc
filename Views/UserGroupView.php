@@ -47,7 +47,7 @@ class UserGroupView  implements IView
             
             case Actions::SAVE :
                 if($this->error != null)
-                {                                                   
+                {                    
                     $this->res =  new UserGroup( $_REQUEST["selIdMasterUser"],
                                            $_REQUEST["lblName"],
                                            $_REQUEST["lblMasterUserRole"],
@@ -55,6 +55,42 @@ class UserGroupView  implements IView
                                            $_REQUEST["selStatus"],
                                            $_REQUEST["hdnGid"]
                                          );
+                    
+                    $newTpls = Array(); 
+                    $cntNewFields = 0;
+                    $cntOldFields = 0;
+                    
+                    if(isset($_POST['hdnNewTempCount']))
+                        $cntNewFields = $_POST['hdnNewTempCount']; //общее количество полей на форме                    
+                    
+                    $i=1;                     
+                    while($i<$cntNewFields)
+                    {
+                        if(isset($_POST['hdnNewTemplate'.$i]))
+                        {                                
+                            $newTpls[] = new UserGroup_DocTemplates($_POST["hdnGid"], $_POST['hdnNewTemplate'.$i],
+                                                                    $_POST['newTemplateName'.$i], $_POST['newTemplateStart'.$i],
+                                                                    $_POST['newTemplateEnd'.$i]);                                                                            
+                        }                                              
+                        $i++;
+                    }
+
+                    //Собираем старые темплейты
+                    if(isset($_POST['hdnOldTempCount']))
+                        $cntOldFields = $_POST['hdnOldTempCount']; 
+
+                    for($i=1; $i<=$cntOldFields; $i++)
+                    {
+                        if(isset($_POST['hdnOldTemplate'.$i]))
+                        {                            
+                            $newTpls[] = new UserGroup_DocTemplates($_POST["hdnGid"], $_POST['hdnOldTemplate'.$i],
+                                                                    $_POST['oldTemplateName'.$i], $_POST['oldTemplateStart'.$i],
+                                                                    $_POST['oldTemplateEnd'.$i], null,$_POST['hdnOldTemplateID'.$i]);                                                
+                        }                                            
+                    }
+                
+                    $this->res->AddRelatedDocTemplates($newTpls);
+                    
                     $this->currentTemplate = UserGroupView::TPL_CREATEEDIT;
                     $this->frmAction = "index.php?module=".Modules::USERGROUPS."&action=".Actions::SAVE;
                 }
@@ -72,14 +108,10 @@ class UserGroupView  implements IView
             break;   
             
             case Actions::SHOW :
-                if($this->error != null)                
-                {           
-                    $this->currentTemplate = UserGroupView::TPL_ERROR;                    
-                }
-                else
-                {   
-                    $this->currentTemplate = UserGroupView::TPL_SHOW;                     
-                }
+                if($this->error != null)                                      
+                    $this->currentTemplate = UserGroupView::TPL_ERROR;                                    
+                else                
+                    $this->currentTemplate = UserGroupView::TPL_SHOW;                                     
                 break;
             
             case Actions::EDIT :   //почти то же, что и create

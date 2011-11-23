@@ -15,64 +15,20 @@ class UserGroupRepository implements IObjectRepository
      */    
     public function Save($obj)  
     { 
-        /* @var $usrGroup UserGroup */
-        $usrGroup = $obj;
+        /* @var $obj UserGroup */
+        $tr = SqlHelper::StartTransaction();
         
-        if( $usrGroup->id > 0 ) //Updating Existing UserGroup
-        {
-                $tr = SqlHelper::StartTransaction();
+        if( $obj->id > 0 ) //Updating Existing UserGroup
+        {                
                 $query = "update ".UserGroupRepository::TBL_USERGROUPS." set                                                             
-                              name = '".ToolsHelper::CleanInputString($usrGroup->name)."',                             
-                              idParentGroup = '".ToolsHelper::CleanInputString($usrGroup->idParentGroup)."', 
-                              idMasterUserAccount = '".ToolsHelper::CleanInputString($usrGroup->idMasterUserAccount)."', 
-                              masterUserAccountRole = '".ToolsHelper::CleanInputString($usrGroup->masterUserAccountRole)."',
-                              status = '".ToolsHelper::CleanInputString($usrGroup->status)."'
-                          where id =". intval($usrGroup->id);
+                              name = '".ToolsHelper::CleanInputString($obj->name)."',                             
+                              idParentGroup = '".ToolsHelper::CleanInputString($obj->idParentGroup)."', 
+                              idMasterUserAccount = '".ToolsHelper::CleanInputString($obj->idMasterUserAccount)."', 
+                              masterUserAccountRole = '".ToolsHelper::CleanInputString($obj->masterUserAccountRole)."',
+                              status = '".ToolsHelper::CleanInputString($obj->status)."'
+                          where id =". intval($obj->id);
                 
                 $numRows = SqlHelper::ExecUpdateQuery($query);
-                      
-                //добавляем и удаляем темплейты                      
-                $newTemplates  = $usrGroup->GetRelatedDocTemplates();
-                
-                
-                //TODO: темплейты объекстами
-                if($newTemplates)
-                {
-                    foreach($newTemplates as $tplID)
-                    {
-                        $insQuery = "insert into usergroups_doctemplates (idGroup,idDoctemplate) values ('".$usrGroup->id."','$tplID') ";
-                        $res = SqlHelper::ExecInsertQuery($insQuery);
-                    }                
-                }
-                                                
-                $oldTemplates  = $usrGroup->deletedTemplates;
-                if(count($oldTemplates) > 0)
-                {
-                    foreach($oldTemplates as $tplID)
-                    {
-                        $delQuery = "delete from usergroups_doctemplates where idGroup = '".$usrGroup->id."' and idDocTemplate = '$tplID' ";
-                        $res = SqlHelper::ExecDeleteQuery($delQuery);
-                    }
-                }
-                
-                /*
-                //обновлем темплейты
-                $rep = new DocTemplateRepository();
-                $lst = $rep->GetListByGroupID($usrGroup->id);
-                $lstNewTemplates = $usrGroup->GetRelatedDocTemplates();
-                
-                if($lstNewTemplates)
-                {
-                    foreach ($lstNewTemplates as $t)
-                    {
-                        if(!$lst || !in_array($t ,$lst))
-                        {
-                            $insQuery = "insert into usergroups_doctemplates (idGroup,idDoctemplate) values ('".$usrGroup->id."','$t') ";
-                            $res = SqlHelper::ExecInsertQuery($insQuery);
-                        }
-                    }
-                }
-                */
                 
                 if(!$numRows)
                 {
@@ -80,66 +36,101 @@ class UserGroupRepository implements IObjectRepository
                     $this->error = "При обновлении группы пользователей произошла ошибка!";
                     NotificationHelper::LogCritical("Error in class: '".__CLASS__."' method: '".__METHOD__."' query: '$query'");
                     return false;
-                }
-                else
-                {
-                    SqlHelper::CommitTransaction($tr);                    
-                }
-                return $usrGroup->id;
+                }         
         }
         else //Trying to save new user group
         {
-            if($this->CheckForExists($usrGroup))
+            if($this->CheckForExists($obj))
             {
                 $this->error = "Такая группа уже существует";
                 return false;
             }
 
             $query = "insert into ".UserGroupRepository::TBL_USERGROUPS." (name, idParentGroup, idMasterUserAccount, masterUserAccountRole, status) 
-                                  values ( '".ToolsHelper::CleanInputString($usrGroup->name)."',
-                                           '".ToolsHelper::CleanInputString($usrGroup->idParentGroup)."',
-                                           '".ToolsHelper::CleanInputString($usrGroup->idMasterUserAccount)."',
-                                           '".ToolsHelper::CleanInputString($usrGroup->masterUserAccountRole)."',
-                                           '".ToolsHelper::CleanInputString($usrGroup->status)."'      
+                                  values ( '".ToolsHelper::CleanInputString($obj->name)."',
+                                           '".ToolsHelper::CleanInputString($obj->idParentGroup)."',
+                                           '".ToolsHelper::CleanInputString($obj->idMasterUserAccount)."',
+                                           '".ToolsHelper::CleanInputString($obj->masterUserAccountRole)."',
+                                           '".ToolsHelper::CleanInputString($obj->status)."'      
                                           )";
 
             $newid = SqlHelper::ExecInsertQuery($query);
-
-            /*
-            //добавляем темплейты
-            $lstNewTemplates = $usrGroup->GetRelatedDocTemplates();
-            foreach ($lstNewTemplates as $t)
-            {                        
-                $insQuery = "insert into usergroups_doctemplates (idGroup,idDoctemplate) values ('".$usrGroup->id."','$t') ";
-                $res = SqlHelper::ExecInsertQuery($insQuery);                     
-            }
-              */
             
             if(!$newid)
             {
+                SqlHelper::RollbackTransaction($tr);
                 $this->error = "При сохранении пользовательской группы возникла ошибка!";
                 NotificationHelper::LogCritical("Error in class: '".__CLASS__."' method: '".__METHOD__."' query: '$query'");
                 return false;
             }
             $obj->id = $newid;
-            return $newid;
-        }                
+        }
+        
+        //Разбираемся со связанными темплейтами
+        $gtRep = new UserGroup_DocTemplatesRepository();
+        $delFilter = "";
+        $innerError = false;
+        $lstTPL = $obj->GetRelatedDocTemplates();
+
+        for($i=0; $i<count($lstTPL); $i++) 
+        {
+            /* @var $lstTPL[$i] $userGroup_DocTemplate */
+            $lstTPL[$i]->idUserGroups = $obj->id; //задаём id группы            
+            $tmpElem = $lstTPL[$i];
+            if($gtRep->Save($tmpElem))
+            {
+                $lstTPL[$i] = $tmpElem;
+                $delFilter .= " ".$lstTPL[$i]->id;
+                if($i!=count($lstTPL)-1)
+                    $delFilter .= ",";
+            }
+            else
+            {
+                SqlHelper::RollbackTransaction($tr);
+                $this->error = $gtRep->GetError();
+                NotificationHelper::LogCritical("Error in class: '".__CLASS__."' method: '".__METHOD__."' saving usergoups_doctemplates ");
+                return false;
+            }                    
+        }
+
+
+            $delQuery = "delete from ".UserGroup_DocTemplatesRepository::TBL_USERGROUPS_DOCTEMPLATES." 
+                         where idUserGroups = ".intval($obj->id);
+
+            if($delFilter!="")
+                 $delQuery .=" and id not in ($delFilter) ";
+            
+             NotificationHelper::LogCritical($delQuery);
+            $rc = SqlHelper::ExecDeleteQuery($delQuery);
+
+            if(!$rc)
+            {
+                SqlHelper::RollbackTransaction($tr);
+                $this->error = "При сохранении шаблонов документов для пользовательской группы возникла ошибка!";
+                NotificationHelper::LogCritical("Error in class: '".__CLASS__."' method: '".__METHOD__."' query: '$delQuery'");
+                return false;
+            }
+
+
+        $obj->AddRelatedDocTemplates($lstTPL);                                
+        SqlHelper::CommitTransaction($tr);    
+        return true;
     }
     
     public function Delete($obj)
     { 
-        /* @var $usrGroup UserGroup */
-        $usrGroup = $obj;
-        $query = "update ".UserGroupRepository::TBL_USERGROUPS." set status = ".EnUserGroupDocStatus::DELETED." where id =". intval($usrGroup->id);
+        /* @var $obj UserGroup */        
+        $query = "update ".UserGroupRepository::TBL_USERGROUPS." set status = ".EnUserGroupDocStatus::DELETED." where id =". intval($obj->id);
         $rowNum = SqlHelper::ExecDeleteQuery($query);
                 
+        $obj->status = EnUserGroupDocStatus::DELETED;
         if (!$rowNum)
         {
             $this->error = "При удалении группы возникла ошибка!";
             NotificationHelper::LogCritical("Error in class: '".__CLASS__."' method: '".__METHOD__."' query: '$query'");
             return false;
         }
-        return $rowNum;
+        return true;
     }
    
     public function GetById($id) 
@@ -152,35 +143,34 @@ class UserGroupRepository implements IObjectRepository
         
         if ($obj)
         {
+            $gtRep = new UserGroup_DocTemplatesRepository();
             $usrGroup = new UserGroup($obj['idMasterUserAccount']);
             
             $usrGroup->id = $obj['id'];            
             $usrGroup->idParentGroup = $obj['idParentGroup'];
             $usrGroup->status = $obj['status'];
             $usrGroup->name = $obj['name'];
-            $usrGroup->masterUserAccountRole = $obj['masterUserAccountRole'];
-                       
+            $usrGroup->masterUserAccountRole = $obj['masterUserAccountRole'];                                   
+            $usrGroup->AddRelatedDocTemplates($gtRep->GetListByUserGroupId($usrGroup->id));
+            
             return $usrGroup;
         }
         else 
         {
             $this->error = "Группа не найдена";
-            return false;
-        }
-        
+            return new UserGroup();
+        }        
     }
             
     public function CheckForExists($obj)
     { 
-        /* @var $usrGroup UserGroup */
-        $usrGroup = $obj;
-        
+        /* @var $obj UserGroup */                
         $query = "select id from ".UserGroupRepository::TBL_USERGROUPS." 
-                  where name='".ToolsHelper::CleanInputString($usrGroup->name)."' 
-                        and idMasterUserAccount = '".ToolsHelper::CleanInputString($usrGroup->idMasterUserAccount)."'";
-        $obj = SqlHelper::ExecSelectValueQuery($query);
+                  where name='".ToolsHelper::CleanInputString($obj->name)."' 
+                        and idMasterUserAccount = '".ToolsHelper::CleanInputString($obj->idMasterUserAccount)."'";
+        $res = SqlHelper::ExecSelectValueQuery($query);
         
-        if ($obj)
+        if ($res)
             return true;
         else 
             return false;        
@@ -188,13 +178,11 @@ class UserGroupRepository implements IObjectRepository
     
     /*
      * Additional Methods
-     */      
-    
+     */          
     public function GetList($pageSize = 1, $pageNum = 1, $status = null)
     {
         $retArr = false;
-        $query = "select id,name,idParentGroup,idMasterUserAccount,masterUserAccountRole,status
-                  from ".UserGroupRepository::TBL_USERGROUPS." ";
+        $query = "select id from ".UserGroupRepository::TBL_USERGROUPS." ";
                                 
         if($status)
             $query.="  where status = $status";        
@@ -202,24 +190,13 @@ class UserGroupRepository implements IObjectRepository
         if($pageSize > 1)        
             $query.=" limit ".((int)$pageNum * (int)$pageSize).",".$pageSize;        
         
-        $res = SqlHelper::ExecSelectCollectionQuery($query);
-        $i=0;
+        $res = SqlHelper::ExecSelectCollectionQuery($query);        
         if($res)
         {
-            foreach($res as $row)
-            {
-                $usrGroup = new UserGroup(                        
-                            $row['idMasterUserAccount'],
-                            $row['name'],
-                            $row['masterUserAccountRole'],
-                            $row['idParentGroup'],
-                            $row['status'],
-                            $row['id']
-                        );
-                $retArr[$i] = $usrGroup;
-                $i++;
-            }
-        }
+            //$retArr = Array();
+            foreach($res as $row)            
+                $retArr[] = $this->GetById($row["id"]);            
+        }                        
         if($retArr)
             return $retArr;
         else
@@ -245,28 +222,16 @@ class UserGroupRepository implements IObjectRepository
     public function GetListByMasterID($masterUserAccountId, $status = null)
     {
         $retArr = false;
-        $query = "select id,name,idParentGroup,idMasterUserAccount,masterUserAccountRole,status
+        $query = "select id
                   from ".UserGroupRepository::TBL_USERGROUPS." 
                   where idMasterUserAccount = ".intval($masterUserAccountId);
         if($status)
             $query.=" and status = $status";
-        $res = SqlHelper::ExecSelectCollectionQuery($query);
-        $i=0;
+        $res = SqlHelper::ExecSelectCollectionQuery($query);        
         if($res)
         {
-            foreach($res as $row)
-            {
-                $usrGroup = new UserGroup(                        
-                            $row['idMasterUserAccount'],
-                            $row['name'],
-                            $row['masterUserAccountRole'],
-                            $row['idParentGroup'],
-                            $row['status'],
-                            $row['id']
-                        );
-                $retArr[$i] = $usrGroup;
-                $i++;
-            }
+            foreach($res as $row)            
+                $retArr[] = $this->GetById($row['id']);                         
         }
         if($retArr)
             return $retArr;
@@ -284,143 +249,142 @@ class UserGroupRepository implements IObjectRepository
     
     
     //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    public function SaveUserGroupDocTemplate($obj)
-    {
-        /* @var $usrGroupDocTemplate UserGroup_DocTemplates */
-        $usrGroupDocTemplate = $obj;
-        if( $usrGroupDocTemplate->id > 0 )
-        {
-            $query = "update usergroups_doctemplates set 
-                            idUserGroups = ".intval($usrGroupDocTemplate->idUserGroups).",
-                            idDocTemplate = ".intval($usrGroupDocTemplate->idDocTemplate).",
-                            name = ".ToolsHelper::CleanInputString($usrGroupDocTemplate->name).",
-                            startDate = ".ToolsHelper::CleanInputString($usrGroupDocTemplate->startDate).",
-                            endDate  = ".ToolsHelper::CleanInputString($usrGroupDocTemplate->endDate)." ,
-                            status = ".intval($userGroupDocTemplate->status)."
-                      where id = ".intval($usr);
-            //==DbRecordStatus::DELETED ? DbRecordStatus::DELETED : DbRecordStatus::ACTIVE.
-             $numRows = SqlHelper::ExecUpdateQuery($query);
-                                
-                if(!$numRows)
-                {
-                    $this->error = "При обновлении шаблонов документов для группы пользователей произошла ошибка!";
-                    NotificationHelper::LogCritical("Error in class: '".__CLASS__."' method: '".__METHOD__."' query: '$query'");                    
-                }
-                return $usrGroupDocTemplate->id;
-        }
-        else
-        {
-            $query = "insert into usergroups_doctemplates (idUserGroups,idDocTemplate,name,startDate,endDate,status)
-                      values (
-                                ".intval($usrGroupDocTemplate->idUserGroups).",
-                                ".intval($usrGroupDocTemplate->idDocTemplate).",
-                                '".ToolsHelper::CleanInputString($usrGroupDocTemplate->name)."',
-                                '".ToolsHelper::CleanInputString($usrGroupDocTemplate->startDate)."',
-                                '".ToolsHelper::CleanInputString($usrGroupDocTemplate->endDate)."',
-                                ".intval($usrGroupDocTemplate->status)."
-                             )";
-            $newid = SqlHelper::ExecInsertQuery($query);
-
-            if(!$newid)
-            {
-                $this->error = "При сохранении шаблона документа для пользовательской группы возникла ошибка!";
-                NotificationHelper::LogCritical("Error in class: '".__CLASS__."' method: '".__METHOD__."' query: '$query'");                
-            }
-            return $newid;
-        }
-        
-        return false;
-    }
-    
-    public function LoadDocTemplatesCollection($obj)
-    {
-        /* @var $usrGroup UserGroup */
-        $usrGroup = $obj;
-        $docTemplatesCollection = false;
-        
-        $query = "select id, name, idUserGroups, idDocTemplate, startDate, endDate, status
-                  from usergroups_doctemplates where idUserGroups = ".intval($usrGroup->id)."
-                  and status = ".DbRecordStatus::ACTIVE;
-        
-        $res = SqlHelper::ExecSelectCollectionQuery($query);
-        $i=0;      
-        //echo "count res - ".count($res)."<br />";
-        if($res)
-        {
-            foreach($res as $row)
-            {
-                /* @var $item User_DocTemplates */
-                $item = new UserGroup_DocTemplates(
-                            $row["idUserGroups"],
-                            $row["idDocTemplate"],
-                            $row["name"],
-                            $row["startDate"],
-                            $row["endDate"],
-                            $row["status"],
-                            $row["id"]
-                        );
-                $docTemplatesCollection[$i] = $item;
-                $i++;
-            }
-        }
-        $usrGroup->AddRelatedDocTemplates($docTemplatesCollection);        
-        return $usrGroup;
-    }
-    
-    public function AddNewDocTemplateToCollection($obj, $templateID, $name=null, $startDate = null, $endDate = null)
-    {
-        /* @var $usrGroups UserGroup */
-        $usrGroups = $obj;   
-        /* @var $usrGroupsDocTemplate UserGroup_DocTemplates */
-        $usrGroupsDocTemplate = new UserGroup_DocTemplates(
-                    $usrGroups->id,
-                    $templateID,
-                    $name,
-                    $startDate,
-                    $endDate
-                );
-        $newID = $this->SaveUserGroupDocTemplate($usrGroupsDocTemplate);
-        //echo "newID: $newID <br />";
-        if($newID > 0)
-        {
-            $usrGroups = $this->LoadDocTemplatesCollection($usrGroups);
-            return $usrGroups;
-            //return true;
-        }        
-        return false;
-    }        
-    
-    public function DeleteDocTemplateFromCollection($obj, $templateID)
-    {
-        /* @var $usrGroups UserGroup */
-        $usrGroups = $obj;   
-        
-        $query = "update usergroups_doctemplates set status = ".DbRecordStatus::DELETED."
-                    where idDocTemplate = ".intval($templateID)." 
-                      and idUserGroups = ".intval($obj->id)." ";
-        
-        $numRows = SqlHelper::ExecUpdateQuery($query);
-                                
-        if(!$numRows)
-        {
-            $this->error = "При обновлении удалении шаблона документов для группы пользователей произошла ошибка!";
-            NotificationHelper::LogCritical("Error in class: '".__CLASS__."' method: '".__METHOD__."' query: '$query'");                    
-        }
-        else
-            {
-                $usrGroups = $this->LoadDocTemplatesCollection($usrGroups);
-                return $usrGroups;
-            }
-
-        return false;
-    }
+//    public function SaveUserGroupDocTemplate($obj)
+//    {
+//        /* @var $usrGroupDocTemplate UserGroup_DocTemplates */
+//        $usrGroupDocTemplate = $obj;
+//        if( $usrGroupDocTemplate->id > 0 )
+//        {
+//            $query = "update usergroups_doctemplates set 
+//                            idUserGroups = ".intval($usrGroupDocTemplate->idUserGroups).",
+//                            idDocTemplate = ".intval($usrGroupDocTemplate->idDocTemplate).",
+//                            name = ".ToolsHelper::CleanInputString($usrGroupDocTemplate->name).",
+//                            startDate = ".ToolsHelper::CleanInputString($usrGroupDocTemplate->startDate).",
+//                            endDate  = ".ToolsHelper::CleanInputString($usrGroupDocTemplate->endDate)." ,
+//                            status = ".intval($userGroupDocTemplate->status)."
+//                      where id = ".intval($usr);
+//            //==DbRecordStatus::DELETED ? DbRecordStatus::DELETED : DbRecordStatus::ACTIVE.
+//             $numRows = SqlHelper::ExecUpdateQuery($query);
+//                                
+//                if(!$numRows)
+//                {
+//                    $this->error = "При обновлении шаблонов документов для группы пользователей произошла ошибка!";
+//                    NotificationHelper::LogCritical("Error in class: '".__CLASS__."' method: '".__METHOD__."' query: '$query'");                    
+//                }
+//                return $usrGroupDocTemplate->id;
+//        }
+//        else
+//        {
+//            $query = "insert into usergroups_doctemplates (idUserGroups,idDocTemplate,name,startDate,endDate,status)
+//                      values (
+//                                ".intval($usrGroupDocTemplate->idUserGroups).",
+//                                ".intval($usrGroupDocTemplate->idDocTemplate).",
+//                                '".ToolsHelper::CleanInputString($usrGroupDocTemplate->name)."',
+//                                '".ToolsHelper::CleanInputString($usrGroupDocTemplate->startDate)."',
+//                                '".ToolsHelper::CleanInputString($usrGroupDocTemplate->endDate)."',
+//                                ".intval($usrGroupDocTemplate->status)."
+//                             )";
+//            $newid = SqlHelper::ExecInsertQuery($query);
+//
+//            if(!$newid)
+//            {
+//                $this->error = "При сохранении шаблона документа для пользовательской группы возникла ошибка!";
+//                NotificationHelper::LogCritical("Error in class: '".__CLASS__."' method: '".__METHOD__."' query: '$query'");                
+//            }
+//            return $newid;
+//        }
+//        
+//        return false;
+//    }
+//    
+//    public function LoadDocTemplatesCollection($obj)
+//    {
+//        /* @var $usrGroup UserGroup */
+//        $usrGroup = $obj;
+//        $docTemplatesCollection = false;
+//        
+//        $query = "select id, name, idUserGroups, idDocTemplate, startDate, endDate, status
+//                  from usergroups_doctemplates where idUserGroups = ".intval($usrGroup->id)."
+//                  and status = ".DbRecordStatus::ACTIVE;
+//        
+//        $res = SqlHelper::ExecSelectCollectionQuery($query);
+//        $i=0;      
+//        //echo "count res - ".count($res)."<br />";
+//        if($res)
+//        {
+//            foreach($res as $row)
+//            {
+//                /* @var $item User_DocTemplates */
+//                $item = new UserGroup_DocTemplates(
+//                            $row["idUserGroups"],
+//                            $row["idDocTemplate"],
+//                            $row["name"],
+//                            $row["startDate"],
+//                            $row["endDate"],
+//                            $row["status"],
+//                            $row["id"]
+//                        );
+//                $docTemplatesCollection[$i] = $item;
+//                $i++;
+//            }
+//        }
+//        $usrGroup->AddRelatedDocTemplates($docTemplatesCollection);        
+//        return $usrGroup;
+//    }
+//    
+//    public function AddNewDocTemplateToCollection($obj, $templateID, $name=null, $startDate = null, $endDate = null)
+//    {
+//        /* @var $usrGroups UserGroup */
+//        $usrGroups = $obj;   
+//        /* @var $usrGroupsDocTemplate UserGroup_DocTemplates */
+//        $usrGroupsDocTemplate = new UserGroup_DocTemplates(
+//                    $usrGroups->id,
+//                    $templateID,
+//                    $name,
+//                    $startDate,
+//                    $endDate
+//                );
+//        $newID = $this->SaveUserGroupDocTemplate($usrGroupsDocTemplate);
+//        //echo "newID: $newID <br />";
+//        if($newID > 0)
+//        {
+//            $usrGroups = $this->LoadDocTemplatesCollection($usrGroups);
+//            return $usrGroups;
+//            //return true;
+//        }        
+//        return false;
+//    }        
+//    
+//    public function DeleteDocTemplateFromCollection($obj, $templateID)
+//    {
+//        /* @var $usrGroups UserGroup */
+//        $usrGroups = $obj;   
+//        
+//        $query = "update usergroups_doctemplates set status = ".DbRecordStatus::DELETED."
+//                    where idDocTemplate = ".intval($templateID)." 
+//                      and idUserGroups = ".intval($obj->id)." ";
+//        
+//        $numRows = SqlHelper::ExecUpdateQuery($query);
+//                                
+//        if(!$numRows)
+//        {
+//            $this->error = "При обновлении удалении шаблона документов для группы пользователей произошла ошибка!";
+//            NotificationHelper::LogCritical("Error in class: '".__CLASS__."' method: '".__METHOD__."' query: '$query'");                    
+//        }
+//        else
+//            {
+//                $usrGroups = $this->LoadDocTemplatesCollection($usrGroups);
+//                return $usrGroups;
+//            }
+//
+//        return false;
+//    }
             
     public function GetUserGroupDocTemplatesFromParentGroup($childGroup)
     {
          $res = false;
          $query = "select id,idDocTemplate
-                  from usergroups_doctemplates where idGroup = ".$childGroup->idParentGroup;
-         //echo "query = ".$query;
+                  from usergroups_doctemplates where idGroup = ".$childGroup->idParentGroup;         
          $templates = SqlHelper::ExecSelectCollectionQuery($query);
          if($templates )
          {
@@ -439,6 +403,7 @@ class UserGroupRepository implements IObjectRepository
                 
     }
     
+    /*
     public function GetUserGroupsDocTemplatesID($groupID, $tempID)
     {
          $res = false;
@@ -446,8 +411,8 @@ class UserGroupRepository implements IObjectRepository
          $res = SqlHelper::ExecSelectValueQuery($query);
          return $res;
     }
+      */
     
-    //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     /*Parents and children methods*/
     public function GetParentUserGroup($obj)
     {
@@ -479,14 +444,12 @@ class UserGroupRepository implements IObjectRepository
             
         return $resArr;
     }
-       
-
-      
+            
      public function GetUserGroupsByMasterID($masterID)
      {
         $retArr = false;
         $query = "select id from ".UserGroupRepository::TBL_USERGROUPS." where idMasterUserAccount = ".$masterID;
-                                               
+
         $res = SqlHelper::ExecSelectCollectionQuery($query);
         $i=0;
         if($res)

@@ -12,7 +12,8 @@ class DashboardController implements IController
     var $model;
     /* @var $view DashboardView */
     var $view;
-    
+    /* @var $command DashboradCommand*/
+    var $command;
     var $result;  
     var $error;
     
@@ -20,13 +21,13 @@ class DashboardController implements IController
     
     public function __construct($_command)
     {        
+        $this->command = new DashboardCommand($_command);
+        $this->model = new DashboardModel();
     }
     
     public function RunModel() 
     {
-        $this->model = new DashboardModel();
-                 
-            $res = $this->model->PerformAction(true);
+            $res = $this->model->PerformAction($this->command);
             
             if($res)
             {                                    

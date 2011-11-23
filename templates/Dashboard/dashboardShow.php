@@ -12,7 +12,7 @@
                     LoginHelper::SetCurrentUserGroupId ($res[0]->id);
                 }
             ?>
-            <br/>Текущая роль <select name=\"currGroupId\">";
+            <br/>Текущая роль <select id="currGroupId" name="currGroupId">;
             <?php
             foreach($res as $group)
             {

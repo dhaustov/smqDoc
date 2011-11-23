@@ -22,7 +22,7 @@ class DashboardView implements IView
         $this->res = $_res;
         $this->error = $_error;
         $this->currentTemplate = DashboardView::TPL_SHOW;  
-        $this->frmAction = "index.php?module=".Modules::DASHBOARD."&action=".Actions::SHOW;
+        $this->frmAction = "index.php?module=".Modules::DASHBOARD."&action=".Actions::SAVE;
     }
     
     

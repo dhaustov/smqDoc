@@ -7,6 +7,8 @@
  */
 class DashboardModel implements IModel
 {      
+    /* @var $currentCommand DashboardCommand */
+    private $currentCommand; 
     private $error;
     
     public function __construct()
@@ -14,12 +16,19 @@ class DashboardModel implements IModel
     }
     public function PerformAction($_command)
     {        
+        $this->currentCommand = $_command;
+        switch($this->currentCommand->action)
+        { 
+        case Actions::SAVE : 
+            $currGroupId = $_POST['currGroupId'];
+            LoginHelper::SetCurrentUserGroupId($currGroupId);
+            break;
+
+        }
+
         $ugRep = new UserGroupRepository();
-        $cugId = LoginHelper::GetCurrentUserGroupId();
-        if($cugId)
-            return $ugRep->GetListByMasterID($cugId); 
-        else
-            return false;
+        return $ugRep->GetListByMasterID(LoginHelper::GetCurrentUserId()); 
+
     }
     
     public function GetError()

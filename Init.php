@@ -44,6 +44,7 @@ require_once 'Commands/UserCommand.php';
 require_once 'Commands/UserGroupCommand.php';
 require_once 'Commands/UserGroupDocCommand.php';
 require_once 'Commands/DocTemplateCommand.php';
+require_once 'Commands/DashboardCommand.php';
 
 //Validators
 require_once 'Validators/UserValidator.php';

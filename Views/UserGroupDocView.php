@@ -47,31 +47,36 @@ class UserGroupDocView implements IView
             
             case Actions::SAVE :
                 if($this->error != null)
-                {   
-                    $tid = $_POST['hdnTid'];
-
-                    $doc = new UserGroupDoc();
-
-                    $tplRep = new DocTemplateRepository;
-                    $tpl = $tplRep->GetByID($tid);
-                    if($tpl)
-                    {                                   
-                        $doc->groupDocTempl = $tpl;
-                        $i=0;
-                        foreach ($tpl->fieldsList as $field)
-                        {
-                            //TODO: пока пишется только строка
-                            $doc->fieldsList[] = new UserGroupDocField($field, $_POST["txtVal$i"]);                        
-                            $i++;
-                        }
-                    }
-
-                    $ug = LoginHelper::GetCurrentUserGroup();
-                    $doc->group = $ug;                    
-                    $doc->author = LoginHelper::GetCurrentUser();   
-                
-                    $this->res = $doc;
+                {                       
+                    $repUGDT = new UserGroup_DocTemplatesRepository();
+                    $ugdt = $repUGDT->GetById($_POST['hdnTid']);
                     
+                    if($ugdt)
+                    {
+                        $res = new UserGroupDoc();                    
+                        $tplRep = new DocTemplateRepository;                        
+                        $tpl = $tplRep->GetByID($ugdt->idDocTemplate);
+                        
+                        if($tpl)
+                        {       
+                            /* @var $doc UserGroupDoc */
+                            $doc->objGroupDocTempl = $ugdt;
+                            $doc->objDocTemplate = $tpl;
+                            $i=0;
+                            foreach ($tpl->lstObjDocField as $field)
+                            {
+                                //TODO: пока пишется только строка
+                                $doc->lstObjDocField[] = new UserGroupDocField($field, $_POST["txtVal$i"]);                        
+                                $i++;
+                            }
+                        }
+
+                        $ug = LoginHelper::GetCurrentUserGroup();
+                        $doc->group = $ug;                    
+                        $doc->author = LoginHelper::GetCurrentUser();   
+
+                        $this->res = $doc;
+                    }
 //                    $this->res =  new UserGroup( $_REQUEST["selIdMasterUser"],
 //                                           $_REQUEST["lblName"],
 //                                           $_REQUEST["lblMasterUserRole"],

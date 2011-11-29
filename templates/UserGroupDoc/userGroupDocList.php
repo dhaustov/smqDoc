@@ -20,8 +20,8 @@
         <?php   $i=0;
                 if($res) foreach ($res as $doc) : ?>
             <tr>
-                <td><?php echo "<a href=\"index.php?module=".Modules::DOCUMENTS."&action=".Actions::SHOW."&id=".$doc->id."\">".$doc->groupDocTempl->name."</a>"; ?></td>
-                <td><?php  echo $doc->author->surName." ".$doc->author->name." ".$doc->author->middleName;?></td>
+                <td><?php echo "<a href=\"index.php?module=".Modules::DOCUMENTS."&action=".Actions::SHOW."&id=".$doc->id."\">".$doc->objGroupDocTempl->name."</a>"; ?></td>
+                <td><?php  echo $doc->author->surName; /* //TODO:проверку на пустые значения echo $doc->author->surName." ".$doc->author->name." ".$doc->author->middleName;*/ ?></td>
                 <td><?php  echo $doc->group->name; ?></td>
                 <td><?php echo $doc->dateCreated; ?></td>
                 <td><?php echo "<a href=\"index.php?module=".Modules::DOCUMENTS."&action=".Actions::EDIT."&id=".$doc->id."\">Редактировать</a>"; ?></td>

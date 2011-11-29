@@ -28,15 +28,15 @@
         <File RelPath="" Name="PreDeployment.sql" BuildAction="Build" />
         <File RelPath="Таблицы" Name="useraccounts.Table.sql" BuildAction="Build" />
         <File RelPath="Таблицы" Name="usergroups.Table.sql" BuildAction="Build" />
-        <File RelPath="Таблицы" Name="eventlog.Table.sql" BuildAction="Build" />
         <File RelPath="Таблицы" Name="doctemplate.Table.sql" BuildAction="Build" />
         <File RelPath="Таблицы" Name="doctemplatefields.Table.sql" BuildAction="Build" />
-        <File RelPath="Таблицы" Name="docstorage.Table.sql" BuildAction="Build" />
         <File RelPath="Таблицы" Name="usergroups_doctemplates.Table.sql" BuildAction="Build" />
-        <File RelPath="Процедуры" Name="deleteAll.Procedure.sql" BuildAction="Build" />
-        <File RelPath="" Name="PostDeployment.sql" BuildAction="Build" />
+        <File RelPath="Таблицы" Name="docstorage.Table.sql" BuildAction="Build" />
         <File RelPath="Таблицы" Name="docstoragefields.Table.sql" BuildAction="Build" />
         <File RelPath="Таблицы" Name="docstoragehistory.Table.sql" BuildAction="Build" />
+        <File RelPath="Таблицы" Name="eventlog.Table.sql" BuildAction="Build" />
+        <File RelPath="Процедуры" Name="deleteAll.Procedure.sql" BuildAction="Build" />
+        <File RelPath="" Name="PostDeployment.sql" BuildAction="Build" />
       </Build>
     </Configuration>
   </Configurations>

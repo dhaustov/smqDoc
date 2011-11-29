@@ -85,8 +85,7 @@ class DocTemplateRepository implements IObjectRepository
                     $this->error = "При добавлении поля шаблона документа возникла ошибка!";
                     return false;
                 }
-                $tmpList[] = $field;
-                //$docTempl->fieldsList[] = $field;
+                $tmpList[] = $field;                
                 $idList=$idList.",'".$field->id."'";
                }
                 
@@ -174,9 +173,9 @@ class DocTemplateRepository implements IObjectRepository
     
     function GetDocTemplateFieldById($id)
     {
-      $query = "SELECT Id, Name, IsCalculated, FieldType, IsRestricted, MaxVal, MinVal FROM `".$this->TBL_DOCTEMPLATE_FIELDS."` WHERE `IdDoctemplate`='".
+      $query = "SELECT Id, Name, IsCalculated, FieldType, IsRestricted, MaxVal, MinVal FROM `".$this->TBL_DOCTEMPLATE_FIELDS."` WHERE id='".
                     intval($id)."'";
-            $row = SqlHelper::ExecSelectCollectionQuery($query);
+            $row = SqlHelper::ExecSelectRowQuery($query);
             if($row)
             {
                 /* @var $fld DocTemplateField */

@@ -80,7 +80,7 @@ class UserGroup_DocTemplatesRepository implements IObjectRepository
           $query = "select id, name, idUserGroups, idDocTemplate, startDate, endDate, status
                   from ".UserGroup_DocTemplatesRepository::TBL_USERGROUPS_DOCTEMPLATES."  where id = ".intval($id)."
                   and status = ".DbRecordStatus::ACTIVE;
-        
+                  
         $res = SqlHelper::ExecSelectRowQuery($query);
         
         if($res)

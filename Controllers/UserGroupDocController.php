@@ -62,8 +62,8 @@ class UserGroupDocController implements IController
             $this->view->totalItems = $this->model->GetListItemsCount();
         }
         
-        if($this->command->action == Actions::CREATE || 
-           $this->command->action == Actions::SAVE
+        if($this->command->action == Actions::CREATE 
+           // ||  $this->command->action == Actions::SAVE 
           )
         {
             $ug = LoginHelper::GetCurrentUserGroup();

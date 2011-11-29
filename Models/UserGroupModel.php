@@ -53,7 +53,7 @@ class UserGroupModel implements IModel
                 
                 if(isset($_POST['hdnNewTempCount']))
                     $cntNewFields = $_POST['hdnNewTempCount']; //общее количество полей на форме
-                echo "cntnew".$cntNewFields;
+                //echo "cntnew".$cntNewFields;
                 
                 $i=1;                 
                 while($i<=$cntNewFields)
@@ -118,7 +118,7 @@ class UserGroupModel implements IModel
         
         if($res)
         {
-            echo "resName = ".$res->name;
+            //echo "resName = ".$res->name;
             return $res; 
         }
         else

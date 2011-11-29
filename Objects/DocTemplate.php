@@ -11,10 +11,10 @@ class DocTemplate {
     /* @var DocTemplateField[] */
     public $lstobjFields;
     
-    public function __construct($_name=null,$_id=null,$_fieldsList=null) {
+    public function __construct($_name=null,$_id=null,$_lstobjFields=null) {
         $this->id = $_id;
         $this->name = $_name;
-        $this->lstobjFields = $_fieldsList;
+        $this->lstobjFields = $_lstobjFields;
     }
     
 }

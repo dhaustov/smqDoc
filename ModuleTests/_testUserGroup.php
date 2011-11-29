@@ -1,46 +1,38 @@
 <?php
-
+    include_once '../Init.php';
+    
     $usr = new UserAccount("login", "pass","Ivan", "Ivanpv", "Iv.");
     $usr1 = new UserAccount("childLogin", "childPass", "Peter", "Petrov", "P"); //второй юзер для дочерок
     
     $ur = new UserRepository;            
     echo "user_login: ".$usr->login."<br />";
     
-    $id = $ur->Save($usr);
-    $cid = $ur->Save($usr1);
+    $ur->Save($usr);
+    $ur->Save($usr1);
     
-    $ugr = new UserGroup($id, "Имя группы", "Глава группы", null);
-    $ugr2 = new UserGroup($id, "Ещё одна группа", "Глава группы", null);
+    $ugr = new UserGroup($usr->id, "Имя группы", "Глава группы", null);
+    $ugr2 = new UserGroup($usr1->id, "Ещё одна группа", "Глава группы", null);
     
     $ugrRep = new UserGroupRepository();
-    $newID = $ugrRep->Save($ugr);    
-    if($newID > 0)
-        {
-            echo "Группа сохранена под id: $newID<br />";
-        }
-    else 
-        {
-            echo "Ошибка сохранения группы: ".$ugrRep->GetError()." <br />";
-        }
+    
+    if($ugrRep->Save($ugr))        
+            echo "Группа сохранена под id: $ugr->id<br />";        
+    else         
+            echo "Ошибка сохранения группы: ".$ugrRep->GetError()." <br />";        
         
-    $newID2 = $ugrRep->Save($ugr2); //сейвим втрую втихую
+    $ugrRep->Save($ugr2); //сейвим втрую втихую
     
     echo "Пробуем получить группу по id... <br />";
         
-    $newGr = $ugrRep->GetById($newID);
-    if($newGr)
-    {
-        echo "Имя полученной: ".$newGr->name."<br />";
-    }
-    else 
-    {
-        echo "Ошибка получения группы: ".$ugrRep->GetError()." <br />";
-    }
-        
-    //htlfrnbhetv
+    $newGr = $ugrRep->GetById($ugr2->id);
+    if($newGr)    
+        echo "Имя полученной: ".$newGr->name."<br />";    
+    else     
+        echo "Ошибка получения группы: ".$ugrRep->GetError()." <br />";    
+            
     $newGr->name = "Имя группы 222";
-    $res = $ugrRep->Save($newGr);
-    if($res)
+    
+    if($ugrRep->Save($newGr))
     {
        echo "Имя отредактированной группы: ".$newGr->name."<br />";
     }
@@ -67,42 +59,39 @@
             echo "Ошибка добавления шаблона: ".$ugrRep->GetError()." <br />";
         
      //добавляем дочерок
-     $cUg = new UserGroup($cid, "Дочерняя группо", "Глаавный по дочерке", $newID);
-     $cugID = $ugrRep->Save($cUg);
-     echo "Создана дочерняя группа для группы $newID. ид дочерней $cugID <br />";
-     //получаем родителяч дочерки:
-     $par = $ugrRep->GetParentUserGroup($cUg);
-     if($par)
+     $cUg = new UserGroup($usr->id, "Дочерняя группо", "Глаавный по дочерке", $newGr->id);
+     if($ugrRep->Save($cUg))
      {
-         echo "Имя родителя: ".$par->name."<br />";
-     }
-     else 
-     {
-        echo "Не нашли родителя!";
-     }
-     
-     //пробуем получить детей по родителю
-     echo "ищем у родителя детей <br />";
-     $childList = $ugrRep->GetChildList($par);
-     if($childList)
-     {
-         foreach($childList as $chld)
-         {
-             echo "Дитё - ".$chld->name."<br />";
-         }                          
-     }
-     else echo "Детей не нашлость <br />";
-     //ищем теплейты для дитя
-     $mainChild = $childList[0];
-     $tpl = $ugrRep->GetUserGroupDocTemplatesFromParentGroup($mainChild);
-     if($tpl)
-     {
-         foreach($tpl as $item)
-         {
-             echo "Шаблон для щаполнения дочеркой - ".$item->name."<br />";
-         }                          
-     }
-     else echo "Шаблонов не нашлость <br />";
+         echo "Создана дочерняя группа для группы $newGr->id. ид дочерней $cUg->id <br />";     
+         //получаем родителяч дочерки:
+         $par = $ugrRep->GetParentUserGroup($cUg);
+         if($par)         
+             echo "Имя родителя: ".$par->name."<br />";         
+         else          
+            echo "Не нашли родителя!";         
 
+         //пробуем получить детей по родителю
+         echo "ищем у родителя детей <br />";
+         $childList = $ugrRep->GetChildList($par);
+         if($childList)
+         {
+             foreach($childList as $chld)
+             {
+                 echo "Дитё - ".$chld->name."<br />";
+             }                          
+         }
+         else echo "Детей не нашлость <br />";
+         //ищем теплейты для дитя
+         $mainChild = $childList[0];
+         $tpl = $ugrRep->GetUserGroupDocTemplatesFromParentGroup($mainChild);
+         if($tpl)
+         {
+             foreach($tpl as $item)
+             {
+                 echo "Шаблон для щаполнения дочеркой - ".$item->name."<br />";
+             }                          
+         }
+         else echo "Шаблонов не нашлость <br />";
+     }
                 
 ?>

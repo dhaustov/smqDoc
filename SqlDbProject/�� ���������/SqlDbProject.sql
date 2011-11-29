@@ -1,6 +1,6 @@
 ﻿-- Скрипт сгенерирован Devart dbForge Studio for MySQL, Версия 5.0.50.1
 -- Домашняя страница продукта: http://www.devart.com/ru/dbforge/mysql/studio
--- Дата скрипта: 17.11.2011 22:58:42
+-- Дата скрипта: 30.11.2011 0:51:26
 -- Версия сервера: 5.5.8
 -- Пожалуйста, сохраните резервную копию Вашей схемы перед запуском этого скрипта 
 
@@ -50,23 +50,6 @@ COLLATE utf8_general_ci;
 
 
 
--- ..\Таблицы\eventlog.Table.sql
---
--- Описание для таблицы eventlog
---
-CREATE TABLE eventlog (
-  id INT(11) NOT NULL AUTO_INCREMENT,
-  EventCode VARCHAR(1024) DEFAULT NULL,
-  EventTime DATETIME NOT NULL,
-  EventType INT(1) NOT NULL,
-  PRIMARY KEY (id)
-)
-ENGINE = INNODB
-CHARACTER SET utf8
-COLLATE utf8_general_ci;
-
-
-
 -- ..\Таблицы\doctemplate.Table.sql
 CREATE TABLE doctemplate (
   Id INT(11) NOT NULL AUTO_INCREMENT,
@@ -102,32 +85,6 @@ COLLATE utf8_general_ci;
 
 
 
--- ..\Таблицы\docstorage.Table.sql
---
--- Описание для таблицы docstorage
---
-CREATE TABLE docstorage (
-  id INT(11) NOT NULL AUTO_INCREMENT,
-  idAuthor INT(11) NOT NULL,
-  idGroup INT(11) NOT NULL,
-  idGroupDocs INT(11) NOT NULL,
-  status INT(11) NOT NULL,
-  DateCreated DATETIME NOT NULL,
-  LastChangedDate DATETIME DEFAULT NULL,
-  PRIMARY KEY (id),
-  INDEX idAuthor (idAuthor),
-  INDEX idGroupDocs (idGroupDocs),
-  CONSTRAINT docstorage_ibfk_1 FOREIGN KEY (idAuthor)
-    REFERENCES useraccounts(Id) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT docstorage_ibfk_2 FOREIGN KEY (idGroupDocs)
-    REFERENCES usergroups(Id) ON DELETE CASCADE ON UPDATE CASCADE
-)
-ENGINE = INNODB
-CHARACTER SET utf8
-COLLATE utf8_general_ci;
-
-
-
 -- ..\Таблицы\usergroups_doctemplates.Table.sql
 CREATE TABLE usergroups_doctemplates (
   id INT(11) NOT NULL AUTO_INCREMENT,
@@ -149,29 +106,29 @@ COMMENT = 'Таблица назначений документов';
 
 
 
--- ..\Процедуры\deleteAll.Procedure.sql
-DELIMITER $$
-
-CREATE PROCEDURE deleteAll()
-BEGIN
-  DELETE
-FROM
-  groups_docs;
-
-  DELETE
-FROM
-  usergroups;
-
-  DELETE
-FROM
-  useraccounts;
-END
-$$
-
-
-
--- ..\PostDeployment.sql
-
+-- ..\Таблицы\docstorage.Table.sql
+--
+-- Описание для таблицы docstorage
+--
+CREATE TABLE docstorage (
+  id INT(11) NOT NULL AUTO_INCREMENT,
+  idAuthor INT(11) NOT NULL,
+  idGroup INT(11) NOT NULL,
+  idUserGroup_DocTemplates INT(11) NOT NULL,
+  status INT(11) NOT NULL,
+  DateCreated DATETIME NOT NULL,
+  LastChangedDate DATETIME DEFAULT NULL,
+  PRIMARY KEY (id),
+  INDEX idAuthor (idAuthor),
+  INDEX idGroupDocs (idUserGroup_DocTemplates),
+  CONSTRAINT docstorage_ibfk_1 FOREIGN KEY (idAuthor)
+    REFERENCES useraccounts(Id) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT docstorage_usergroups_doctemplates FOREIGN KEY (idUserGroup_DocTemplates)
+    REFERENCES usergroups_doctemplates(id) ON DELETE RESTRICT ON UPDATE RESTRICT
+)
+ENGINE = INNODB
+CHARACTER SET utf8
+COLLATE utf8_general_ci;
 
 
 
@@ -216,4 +173,45 @@ ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci
 COMMENT = 'История изменения статусов документов';
+
+
+
+-- ..\Таблицы\eventlog.Table.sql
+--
+-- Описание для таблицы eventlog
+--
+CREATE TABLE eventlog (
+  id INT(11) NOT NULL AUTO_INCREMENT,
+  EventCode VARCHAR(1024) DEFAULT NULL,
+  EventTime DATETIME NOT NULL,
+  EventType INT(1) NOT NULL,
+  PRIMARY KEY (id)
+)
+ENGINE = INNODB
+CHARACTER SET utf8
+COLLATE utf8_general_ci;
+
+
+
+-- ..\Процедуры\deleteAll.Procedure.sql
+DELIMITER $$
+
+CREATE PROCEDURE deleteAll()
+BEGIN
+
+
+  DELETE
+FROM
+  usergroups;
+
+  DELETE
+FROM
+  useraccounts;
+END
+$$
+
+
+
+-- ..\PostDeployment.sql
+
 

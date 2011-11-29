@@ -30,25 +30,33 @@ class UserGroupDocModel implements IModel
                 
                 if(isset($_POST['selTid'])) //если перешли с формы выбора шаблона
                 {
-                    $res = new UserGroupDoc();
+                    //new
+                    $repUGDT = new UserGroup_DocTemplatesRepository();
+                    $ugdt = $repUGDT->GetById($_POST['selTid']);
                     
-                    $tplRep = new DocTemplateRepository;
-                    $tpl = $tplRep->GetByID($_POST['selTid']);
-                    if($tpl)
-                    {                        
-                        $res->groupDocTempl = $tpl;
-                        foreach ($tpl->fieldsList as $field)
-                        {
-                            //$_docTemplateField=null,$_stringValue=null,$_intValue=null,$_boolValue=null,$_id=null
-                            $res->fieldsList[] = new UserGroupDocField($field);
+                    if($ugdt)
+                    {
+                        $res = new UserGroupDoc();                    
+                        $tplRep = new DocTemplateRepository;
+                        //$tpl = $tplRep->GetByID($_POST['selTid']);
+                        $tpl = $tplRep->GetByID($ugdt->idDocTemplate);
+                        if($tpl)
+                        {                                     
+                            $res->objGroupDocTempl = $ugdt;
+                            $res->objDocTemplate = $tpl;
+                            
+                            foreach ($tpl->lstobjFields as $field)
+                            {                                
+                                $res->lstObjDocField[] = new UserGroupDocField($field);
+                            }
                         }
+
+                        $ug = LoginHelper::GetCurrentUserGroup();
+                        $res->group = $ug;                    
+                        $res->author = LoginHelper::GetCurrentUser();                    
+
+                        $this->res = $res;                    
                     }
-                    
-                    $ug = LoginHelper::GetCurrentUserGroup();
-                    $res->group = $ug;                    
-                    $res->author = LoginHelper::GetCurrentUser();                    
-                    
-                    $this->res = $res;                    
                 }
                 break;
             case Actions::DELETE :
@@ -56,21 +64,30 @@ class UserGroupDocModel implements IModel
                 break;
             case Actions::SAVE : 
                 
-                $tid = $_POST['hdnTid'];
+                $ugdtId = $_POST['hdnTid'];
                 $ndId = $_POST['hdnDocID'];
                 
                 $doc = new UserGroupDoc();
                 if(intval($ndId) > 0) $doc->id = $ndId; 
+                
+                $ugdtRep = new UserGroup_DocTemplatesRepository;
+                /* @var $ugdt UserGroup_DocTemplates */
+                $ugdt = $ugdtRep->GetById($ugdtId);
+                
                 $tplRep = new DocTemplateRepository;
-                $tpl = $tplRep->GetByID($tid);
+                /* @var $tpl DocTemplate */
+                $tpl = $tplRep->GetByID($ugdt->idDocTemplate);
+                
                 if($tpl)
-                {                                   
-                    $doc->groupDocTempl = $tpl;
+                {                         
+                    $doc->objGroupDocTempl = $ugdt;
+                    $doc->objDocTemplate = $tpl;
+                    
                     $i=0;
-                    foreach ($tpl->fieldsList as $field)
+                    foreach ($tpl->lstobjFields as $field)
                     {
                         //TODO: пока пишется только строка
-                        $doc->fieldsList[] = new UserGroupDocField($field, $_POST["txtVal$i"]);                        
+                        $doc->lstObjDocField[] = new UserGroupDocField($field, $_POST["txtVal$i"]);                        
                         $i++;
                     }
                 }

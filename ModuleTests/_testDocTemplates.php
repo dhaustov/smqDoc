@@ -12,7 +12,7 @@ echo 'Create 1 DT<br>';
 /* @var $docTpl1 DocTemplate */
 $docTpl1 = new DocTemplate;
 $docTpl1->name = "ываываы ыв аыв а";
-$docTpl1->fieldsList = array();
+$docTpl1->lstobjFields = array();
 echo 'Create  DT f1<br>';
 /*@var $docTpl1F1 DocTemplateField*/
 $docTpl1F1 = new DocTemplateField;
@@ -24,7 +24,7 @@ $docTpl1F1->operation = $dtpRep->docTemplateOperationsArr[1];
 $docTpl1F1->isRestricted = false;
 $docTpl1F1->minVal  = 10;
 $docTpl1F1->maxVal = 20;
-$docTpl1->fieldsList[$docTpl1F1->id] = $docTpl1F1;
+$docTpl1->lstobjFields[$docTpl1F1->id] = $docTpl1F1;
 echo 'Create  DT f2<br>';
 /*@var $docTpl1F2 DocTemplateField*/
 $docTpl1F2 = new DocTemplateField;
@@ -36,7 +36,7 @@ $docTpl1F2->operation = $dtpRep->docTemplateOperationsArr[1];
 $docTpl1F2->isRestricted = true;
 $docTpl1F2->minVal  = 15;
 $docTpl1F2->maxVal = 70;
-$docTpl1->fieldsList[$docTpl1F2->id] = $docTpl1F2;
+$docTpl1->lstobjFields[$docTpl1F2->id] = $docTpl1F2;
 echo 'Create  DT f3<br>';
 /*@var $docTpl1F3 DocTemplateField*/
 $docTpl1F3 = new DocTemplateField;
@@ -48,14 +48,14 @@ $docTpl1F3->operation = $dtpRep->docTemplateOperationsArr[1];
 $docTpl1F3->isRestricted = true;
 $docTpl1F3->minVal  = 10;
 $docTpl1F3->maxVal = 200;
-$docTpl1->fieldsList[$docTpl1F3->id] = $docTpl1F3;
+$docTpl1->lstobjFields[$docTpl1F3->id] = $docTpl1F3;
 
 $dtpRep->Save($docTpl1);
 echo 'Create 2 DT<br>';
 /* @var $docTpl2 DocTemplate */
 $docTpl2 = new DocTemplate;
 $docTpl2->name = "First doc tpl";
-$docTpl2->fieldsList = array();
+$docTpl2->lstobjFields = array();
 echo 'Create  DT f1<br>';
 /*@var $docTpl2F1 DocTemplateField*/
 $docTpl2F1 = new DocTemplateField;
@@ -67,7 +67,7 @@ $docTpl2F1->operation = $dtpRep->docTemplateOperationsArr[1];
 $docTpl2F1->isRestricted = false;
 $docTpl2F1->minVal  = 10;
 $docTpl2F1->maxVal = 20;
-$docTpl2->fieldsList[$docTpl2F1->id] = $docTpl2F1;
+$docTpl2->lstobjFields[$docTpl2F1->id] = $docTpl2F1;
 echo 'Create  DT f2<br>';
 /*@var $docTpl2F2 DocTemplateField*/
 $docTpl2F2 = new DocTemplateField;
@@ -79,7 +79,7 @@ $docTpl2F2->operation = $dtpRep->docTemplateOperationsArr[1];
 $docTpl2F2->isRestricted = true;
 $docTpl2F2->minVal  = 15;
 $docTpl2F2->maxVal = 70;
-$docTpl2->fieldsList[$docTpl2F2->id] = $docTpl2F2;
+$docTpl2->lstobjFields[$docTpl2F2->id] = $docTpl2F2;
 echo 'Create  DT f3<br>';
 /*@var $docTpl2F3 DocTemplateField*/
 $docTpl2F3 = new DocTemplateField;
@@ -91,7 +91,7 @@ $docTpl2F3->operation = $dtpRep->docTemplateOperationsArr[1];
 $docTpl2F3->isRestricted = true;
 $docTpl2F3->minVal  = 10;
 $docTpl2F3->maxVal = 200;
-$docTpl2->fieldsList[$docTpl2F3->id] = $docTpl2F3;
+$docTpl2->lstobjFields[$docTpl2F3->id] = $docTpl2F3;
 
 if(!$dtpRep->Save($docTpl2))
 

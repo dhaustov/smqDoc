@@ -3,8 +3,12 @@
         <form name="frmSelTpl" method="POST" action="<?php echo $frmAction; ?>" />
             <select name="selTid">
                 <?php 
+                    
                     foreach ($allowedTemplates as $tpl)                    
+                    {
+                        /* @var  $tpl UserGroup_DocTemplates */
                        echo "<option value=\"".$tpl->id."\"> ".$tpl->name." </option>";                                            
+                    }
                 ?>
             </select>
             <input type="submit" name="btnSbm" value="Создать" />
@@ -21,11 +25,16 @@
                <table>                                  
                 <?php
                  $i=0;
-                 foreach($res->groupDocTempl->fieldsList as $field)
+                 //foreach($res->objGroupDocTempl->fieldsList as $field)
+                 //foreach($res->objGroupDocTempl->lstobjFields as $field)
+                 /* @var $res UserGroupDoc */
+                 // lstObjDocField
+                 //echo "count:".count($res->objDocTemplate->lstobjFields);
+                 foreach($res->objDocTemplate->lstobjFields as $field)
                  {
                      echo "<tr>";
                      echo "<td>".$field->name.":</td>";
-                     echo "<td><input type=\"text\" id=\"txtVal$i\" name=\"txtVal$i\" value=\"".$res->fieldsList[$i]->GetValue()."\" /> </td> ";
+                     echo "<td><input type=\"text\" id=\"txtVal$i\" name=\"txtVal$i\" value=\"".$res->lstObjDocField[$i]->GetValue()."\" /> </td> ";
                      echo "</tr>";
                      $i++;
                  }                 
@@ -34,7 +43,7 @@
                 <span class="error"><?php echo $error; ?></span>
                 <input type="submit" value="Сохранить" />
                
-                <input type="hidden" name="hdnTid" value="<?php echo $res->groupDocTempl->id; ?>" />
+                <input type="hidden" name="hdnTid" value="<?php echo $res->objGroupDocTempl->id; ?>" />
                 <input type="hidden" name="hdnDocID" value="<?php echo $res->id; ?>" />
            </form>        
            

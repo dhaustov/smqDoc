@@ -10,6 +10,7 @@ class UserGroupRepository implements IObjectRepository
     private $error;
     
     const TBL_USERGROUPS = "usergroups";
+    const TBL_USERGROUPS_DOCTEMPLATES = "usergroups_doctemplates";
     /*
      * IObjectRepository Methods
      */    
@@ -383,19 +384,22 @@ class UserGroupRepository implements IObjectRepository
     public function GetUserGroupDocTemplatesFromParentGroup($childGroup)
     {
          $res = false;
-         $query = "select id,idDocTemplate
-                  from usergroups_doctemplates where idGroup = ".$childGroup->idParentGroup;         
+           $query = "select id,idDocTemplate
+                  from ".UserGroupRepository::TBL_USERGROUPS_DOCTEMPLATES." where idUserGroups = ".$childGroup->idParentGroup;         
+
+         //TODO: в авторизации пропадает дочерняя группа!
+         //NotificationHelper::LogCritical("idParent".$childGroup->idParentGroup);
          $templates = SqlHelper::ExecSelectCollectionQuery($query);
          if($templates )
          {
              $i = 0;
-             $rep = new DocTemplateRepository;
+             $rep = new UserGroup_DocTemplatesRepository;
              foreach ($templates as $obj)
              {          
-                 $usrGTD = $rep->GetByID($obj['idDocTemplate']);                  
-                 $res[$i] = $usrGTD;
-                 $i++;
-             }
+                $usrGTD = $rep->GetByID($obj['id']);                                   
+                $res[$i] = $usrGTD;
+                $i++;
+            }
              return $res;
          }
          else

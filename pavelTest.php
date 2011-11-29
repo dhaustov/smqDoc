@@ -87,7 +87,7 @@ $ugDoc1 = new UserGroupDoc(Array($ugDoc1F1,$ugDoc1F2,$ugDoc1F3));
 $ugDoc1->author = $usr;
 $ugDoc1->dateCreated = null;
 $ugDoc1->group = $ugr;
-$ugDoc1->groupDocTempl = $docTpl1;
+$ugDoc1->objGroupDocTempl = $docTpl1;
 $ugDoc1->status = EnUserGroupDocStatus::EDITED;
 $ugDoc1->lastChangedDate = null;
 
@@ -109,7 +109,7 @@ $ugDoc2 = new UserGroupDoc(Array($ugDoc2F1,$ugDoc2F2,$ugDoc2F3));
 $ugDoc2->author = $usr;
 $ugDoc2->dateCreated = null;
 $ugDoc2->group = $ugr;
-$ugDoc2->groupDocTempl = $docTpl1;
+$ugDoc2->objGroupDocTempl = $docTpl1;
 $ugDoc2->status = EnUserGroupDocStatus::DELETED;
 $ugDoc2->lastChangedDate = null;
 

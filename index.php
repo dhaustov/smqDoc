@@ -35,6 +35,7 @@
                         $dc = new UserGroupDocController($_REQUEST);
                         $dc->RunModel();
                         $dc->ShowResult();
+                        break;
                     default:
                         $dashc = new DashboardController($_REQUEST);
                         $dashc->RunModel();

@@ -105,13 +105,13 @@ class LoginHelper {
     }
     
     public static function GetCurrentUserGroupId()
-    {
+    {                
         if(isset($_SESSION[LoginHelper::SES_UG_L]))
-        {
+        {            
             return $_SESSION[LoginHelper::SES_UG_L];
         }
         else
-        {
+        {            
             return false;
         }
     }

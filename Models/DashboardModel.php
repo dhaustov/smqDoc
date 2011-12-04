@@ -19,11 +19,10 @@ class DashboardModel implements IModel
         $this->currentCommand = $_command;
         switch($this->currentCommand->action)
         { 
-        case Actions::SAVE : 
+        case Actions::SAVE :                         
             $currGroupId = $_POST['currGroupId'];
             LoginHelper::SetCurrentUserGroupId($currGroupId);
             break;
-
         }
 
         $ugRep = new UserGroupRepository();
